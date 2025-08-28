@@ -1,123 +1,130 @@
 <template>
   <v-container
-    v-if="!loading"
     class="containerSetup mb-5"
   >
-    <v-row
-      no-gutters
-      align="center"
-    >
-      <h3>
-        Successful Course Challenge Reports - {{ startingYear }}/{{ endingYear }}
-      </h3>
-      <v-spacer />
-      <div class="tooltip-wrapper">
-        <v-chip
-          v-if="activePeriod.challengeReportsSessionStatus"
-          ref="chipRef"
-          :color="chipDetails.color"
-        >
-          <strong>{{ chipDetails.text }}</strong>
-          <v-icon
-            icon="mdi-help-circle"
-            class="ml-1 help-icon"
-            size="small"
-            @mouseover="showTooltip"
-            @mouseleave="hideTooltip"
-          />
-        </v-chip>
-        <div
-          v-if="showCustomTooltip"
-          class="custom-tooltip"
-          :style="{ width: tooltipWidth }"
-        >
-          <div v-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_NOT_YET_AVAILABLE">
-            The ministry has not yet released the preliminary data on course challenges. Your district’s Enrolment Data Collection Administrator will be emailed when data is available.
-          </div>
-          <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY">
-            Data corrections can be made through <strong>GRAD File Upload</strong> or a <a
-              href="https://forms.gov.bc.ca/education-training/trax-change-form"
-              target="_blank"
-              rel="noopener noreferrer"
-            >GRAD Change Form</a>.
-            Changes submitted before the due date will be reflected in the report data.
-            Changes submitted past the due date will not be reflected in the report and are not eligible for funding.
-            Your district’s Enrolment Data Collection Administrator will be emailed when the final data is available.
-          </div>
-          <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_FINAL">
-            The data reported is final. It reflects the course challenges that will be funded for your district.
+    <Spinner
+      v-if="loading"
+      flat
+    />
+    <div v-else>
+      <v-row
+        no-gutters
+        align="center"
+      >
+        <h3>
+          Successful Course Challenge Reports - {{ startingYear }}/{{ endingYear }}
+        </h3>
+        <v-spacer />
+        <div class="tooltip-wrapper">
+          <v-chip
+            v-if="activePeriod.challengeReportsSessionStatus"
+            ref="chipRef"
+            :color="chipDetails.color"
+          >
+            <strong>{{ chipDetails.text }}</strong>
+            <v-icon
+              icon="mdi-help-circle"
+              class="ml-1 help-icon"
+              size="small"
+              @mouseover="showTooltip"
+              @mouseleave="hideTooltip"
+            />
+          </v-chip>
+          <div
+            v-if="showCustomTooltip"
+            class="custom-tooltip"
+            :style="{ width: tooltipWidth }"
+          >
+            <div v-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_NOT_YET_AVAILABLE">
+              The ministry has not yet released the preliminary data on course challenges. Your district’s Enrolment Data Collection Administrator will be emailed when data is available.
+            </div>
+            <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY">
+              Data corrections can be made through <strong>GRAD File Upload</strong> or a <a
+                href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                target="_blank"
+                rel="noopener noreferrer"
+              >GRAD Change Form</a>.
+              Changes submitted before the due date will be reflected in the report data.
+              Changes submitted past the due date will not be reflected in the report and are not eligible for funding.
+              Your district’s Enrolment Data Collection Administrator will be emailed when the final data is available.
+            </div>
+            <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_FINAL">
+              The data reported is final. It reflects the course challenges that will be funded for your district.
+            </div>
           </div>
         </div>
-      </div>
-    </v-row>
-    <v-row
-      no-gutters
-      align="center"
-      class="mt-4"
-      style="color: gray;font-size: small"
-    >
-      <strong>Includes students that were eligible for funding and received a passing grade when challenging a course in the {{ startingYear }}/{{ endingYear }} school year.</strong>
-    </v-row>
-    <v-row
-      v-if="activePeriod.challengeReportsSessionStatus !== REPORT_STATUS_NOT_YET_AVAILABLE && !districtCountsPayload?.schoolsWithCounts?.length"
-      no-gutters
-      align="center"
-      class="mt-4"
-    >
-      <v-alert
-        type="info"
-        class="elevation-0 custom-info-alert mt-4"
-        prominent
+      </v-row>
+      <v-row
+        no-gutters
+        align="center"
+        class="mt-4"
+        style="color: gray;font-size: small"
       >
-        There were no course challenges found for your district for the school year.
-      </v-alert>
-    </v-row>
-    <v-row
-      no-gutters
-      align="center"
-      class="mt-4"
-    >
-      <DownloadLink
-        :download-action="downloadDistrictReport"
-        icon="mdi-tray-arrow-down"
-        :disabled="disableDownload"
-        :label="`District-Level Successful Course Challenges - ${startingYear}/${endingYear}`"
-      />
-    </v-row>
-    <v-row
-      v-if="activePeriod.challengeReportsSessionStatus !== REPORT_STATUS_NOT_YET_AVAILABLE && districtCountsPayload"
-      no-gutters
-      align="center"
-      class="mt-5 mb-2"
-    >
-      <h4>
-        Summary of District's Course Challenges
-      </h4>
-      <v-data-table
-        :items="tableData"
-        :headers="headers"
-        class="elevation-1 mt-2 challenge-report-table"
-        :hide-default-footer="true"
-        items-per-page="100"
+        <strong>Includes students that were eligible for funding and received a passing grade when challenging a course in the {{ startingYear }}/{{ endingYear }} school year.</strong>
+      </v-row>
+      <v-row
+        v-if="activePeriod.challengeReportsSessionStatus !== REPORT_STATUS_NOT_YET_AVAILABLE && !districtCountsPayload?.schoolsWithCounts?.length"
+        no-gutters
+        align="center"
+        class="mt-4"
       >
-        <template #item="{ item }">
-          <tr :class="{ 'district-row-blue': item.depth === 0 }">
-            <td :style="{ 'font-weight': item.depth === 0 ? 'bold' : 'normal' }">
-              <div :style="{ 'padding-left': item.depth * 30 + 'px' }">
-                {{ item.value.name }}
-              </div>
-            </td>
-            <td style="text-align: center;">
-              {{ item.value.count }}
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-    </v-row>
+        <v-alert
+          type="info"
+          class="elevation-0 custom-info-alert mt-4"
+          prominent
+        >
+          There were no course challenges found for your district for the school year.
+        </v-alert>
+      </v-row>
+      <v-row
+        no-gutters
+        align="center"
+        class="mt-4"
+      >
+        <DownloadLink
+          :download-action="downloadDistrictReport"
+          icon="mdi-tray-arrow-down"
+          :disabled="disableDownload"
+          :label="`District-Level Successful Course Challenges - ${startingYear}/${endingYear}`"
+        />
+      </v-row>
+      <v-row
+        v-if="activePeriod.challengeReportsSessionStatus !== REPORT_STATUS_NOT_YET_AVAILABLE && districtCountsPayload"
+        no-gutters
+        align="center"
+        class="mt-5 mb-2"
+      >
+        <h4>
+          Summary of District's Course Challenges
+        </h4>
+        <v-data-table
+          :items="tableData"
+          :headers="headers"
+          class="elevation-1 mt-2 challenge-report-table"
+          :hide-default-footer="true"
+          items-per-page="1000"
+        >
+          <template #item="{ item }">
+            <tr :class="{ 'district-row-blue': item.depth === 0 }">
+              <td :style="{ 'font-weight': item.depth === 0 ? 'bold' : 'normal' }">
+                <div :style="{ 'padding-left': item.depth * 30 + 'px' }">
+                  {{ item.value.name }}
+                </div>
+              </td>
+              <td style="text-align: center;">
+                {{ item.value.count }}
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
 <script>
+import Spinner from '../common/Spinner.vue';
+
 const REPORT_STATUS_NOT_YET_AVAILABLE = 'Not Yet Available';
 const REPORT_STATUS_PRELIMINARY = 'Preliminary';
 const REPORT_STATUS_FINAL = 'Final';
@@ -127,10 +134,12 @@ import { ApiRoutes } from '../../utils/constants';
 import { setSuccessAlert } from '../composable/alertComposable';
 import DownloadLink from '../common/DownloadLink.vue';
 import alertMixin from '../../mixins/alertMixin';
+import {sortBy} from 'lodash';
 
 export default {
   name: 'ChallengeReports',
   components: {
+    Spinner,
     DownloadLink,
   },
   mixins: [alertMixin],
@@ -186,7 +195,7 @@ export default {
       if (!this.districtCountsPayload) {
         return [];
       }
-      const data = [];
+      let data = [];
 
       const districtDisplayName = this.districtCountsPayload.districtName || 'District Data Unavailable';
 
@@ -207,7 +216,9 @@ export default {
             count: school.count,
           },
         });
+        
       });
+      data = sortBy(data, ['value.name']);
       return data;
     },
   },
