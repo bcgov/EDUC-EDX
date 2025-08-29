@@ -146,6 +146,7 @@ async function postAssessmentStudent(req, res) {
   try {
     const payload = {
       ...req.body,
+      studentStatus: 'ACTIVE',
       updateUser: getCreateOrUpdateUserValue(req),
       updateDate: null,
       createDate: null
