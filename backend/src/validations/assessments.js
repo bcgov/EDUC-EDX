@@ -75,7 +75,7 @@ const postAssessmentStudentSchema = object({
     proficiencyScore: number().nullable().optional(),
     localCourseID: string().max(20).nullable().optional(),
     provincialSpecialCaseCode: string().max(1).nullable().optional(),
-    studentStatus: string().nullable().optional(),
+    studentStatusCode: string().nullable().optional(),
     gradeAtRegistration: string().nullable().optional(),
     wroteFlag: string().nullable().optional(),
     assessmentStudentValidationIssues: array().of(object({
