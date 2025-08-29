@@ -125,7 +125,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' }
+      { title: 'Assessment Centre', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,
@@ -144,7 +144,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
-      { title: 'Assessment Center', key: 'assessmentCenterName_desc' }
+      { title: 'Assessment Centre', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,

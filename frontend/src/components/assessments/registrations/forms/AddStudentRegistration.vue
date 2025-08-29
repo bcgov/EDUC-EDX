@@ -162,7 +162,7 @@
                     v-model="newStudentDetail.assessmentCenterSchoolID"
                     variant="underlined"
                     :items="assessmentCenterSearchNames"
-                    label="Assessment Center"
+                    label="Assessment Centre"
                     :clearable="true"
                     item-title="schoolCodeName"
                     item-value="schoolID"

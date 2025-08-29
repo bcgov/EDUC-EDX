@@ -133,7 +133,7 @@
                 v-model="assessmentStudentDetail.assessmentCenterSchoolID"
                 variant="underlined"
                 :items="assessmentCenterSearchNames"
-                label="Assessment Center"
+                label="Assessment Centre"
                 :clearable="isSessionEditable"
                 item-title="schoolCodeName"
                 item-value="schoolCodeValue"
