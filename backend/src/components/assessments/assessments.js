@@ -146,11 +146,11 @@ async function postAssessmentStudent(req, res) {
   try {
     const payload = {
       ...req.body,
-      studentStatus: 'ACTIVE',
       updateUser: getCreateOrUpdateUserValue(req),
       updateDate: null,
       createDate: null
     };
+    payload.studentStatus = 'ACTIVE';
     const token = getAccessToken(req);
     const result = await postData(token, payload, `${config.get('assessments:assessmentStudentsURL')}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
