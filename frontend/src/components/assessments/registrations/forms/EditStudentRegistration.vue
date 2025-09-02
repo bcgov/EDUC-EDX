@@ -475,7 +475,7 @@ export default {
     },
     setupActiveFlag() {      
       this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen;
-      this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore && this.hasEditPermission();
+      this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore && this.hasEditPermission;
     },
     saveStudentRegistration() {
       this.loadingCount += 1;
