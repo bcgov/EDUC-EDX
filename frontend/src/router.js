@@ -385,7 +385,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
-            permission: PERMISSION.EAS_DIS_EDIT
+            permission: PERMISSION.EAS_DIS_VIEW
           },
         },
         {
@@ -396,7 +396,7 @@ const router = createRouter({
           meta: {
             pageTitle: PAGE_TITLES.ASSESSMENT,
             requiresAuth: true,
-            permission: PERMISSION.EAS_SCH_EDIT
+            permission: PERMISSION.EAS_SCH_VIEW
           },
         },
         {

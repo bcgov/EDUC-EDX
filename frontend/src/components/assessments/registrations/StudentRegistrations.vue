@@ -107,6 +107,7 @@
               text="Add Registration"
               prepend-icon="mdi-plus"
               class="mr-1 mb-1"
+              v-if="hasEditPermission"
               @click="openCreateStudentRegDialog"
             />
             <v-btn
@@ -116,6 +117,7 @@
               variant="outlined"
               prepend-icon="mdi-trash-can-outline"
               class="mr-1 mb-1"
+              v-if="hasEditPermission"
               :disabled="selectedAssessmentStudents.length <= 0"
               @click="removeStudents"
             />
@@ -235,6 +237,7 @@ import StudentRegistrationDetail from './StudentRegistrationDetail.vue';
 import AddStudentRegistration from './forms/AddStudentRegistration.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StudentRegistrations',
@@ -299,6 +302,9 @@ export default {
     ...mapState(authStore, ['userInfo']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter ).reduce((total, filter) => total.concat(filter), []).length;
+    },
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || PERMISSION.EAS_DIS_EDIT).length > 0);
     },
   },
   created() {

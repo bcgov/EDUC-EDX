@@ -249,17 +249,17 @@ export default {
         },
         {
           title: PAGE_TITLES.GRADUATION,
-          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'SCHOOL',
+          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_SCH_RPT_VIEW) && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_SCH_VIEW) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'SCHOOL',
           items: [
             {
               title: PAGE_TITLES.GRAD_DATA_COLLECTION,
               link: { name: 'graduationSchoolTabs', params: {schoolID: this.userInfo.activeInstituteIdentifier}},
-              authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_UPLOAD) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableGdcFunctionality,
+              authorized: this.hasRequiredPermission(PERMISSION.GRAD_SCH_RPT_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableGdcFunctionality,
             },
             {
               title: PAGE_TITLES.ASSESSMENT,
               link: {name: 'school-assessment-session-detail'},
-              authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_EDIT) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableAssessmentFunctionality,
+              authorized: this.hasRequiredPermission(PERMISSION.EAS_SCH_VIEW) && this.userInfo.activeInstituteType === 'SCHOOL' && !this.disableAssessmentFunctionality,
             }
           ]
         },
@@ -285,17 +285,17 @@ export default {
         },
         {
           title: PAGE_TITLES.GRADUATION,
-          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD)  && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'DISTRICT',
+          authorized: (this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW)  && !this.disableGdcFunctionality) || (this.hasRequiredPermission(PERMISSION.EAS_DIS_VIEW) && !this.disableAssessmentFunctionality) && this.userInfo.activeInstituteType === 'DISTRICT',
           items: [
             {
               title: PAGE_TITLES.GRAD_DATA_COLLECTION,
               link: { name: 'graduationDistrictTabs', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-              authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_UPLOAD) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
+              authorized: this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
             },
             {
               title: PAGE_TITLES.ASSESSMENT,
               link: {name: 'district-assessment-session-detail'},
-              authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_EDIT) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableAssessmentFunctionality,
+              authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableAssessmentFunctionality,
             }
           ]
         },

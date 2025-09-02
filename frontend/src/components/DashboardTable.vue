@@ -454,7 +454,7 @@
       </v-col>
 
       <v-col
-        v-if="((hasRequiredPermission('EAS_SCH_EDIT') && isLoggedInSchoolUser) || (hasRequiredPermission('EAS_DIS_EDIT') && isLoggedInDistrictUser)) && !disableAssessmentFunctionality"
+        v-if="((hasRequiredPermission('EAS_SCH_VIEW') && isLoggedInSchoolUser) || (hasRequiredPermission('EAS_DIS_VIEW') && isLoggedInDistrictUser)) && !disableAssessmentFunctionality"
         cols="12"
         md="6"
       >
