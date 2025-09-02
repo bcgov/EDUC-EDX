@@ -156,7 +156,7 @@
           item-value="sessionCodeValue"
           :rules="[rules.required()]"
           :clearable="true"
-           @update:model-value="getAssessmentsForSelectedSession(selectedSessionID)"
+          @update:model-value="getAssessmentsForSelectedSession(selectedSessionID)"
         />
       </v-col>
     </v-row>
@@ -372,6 +372,7 @@ export default {
         )[0];
 
         this.selectedSessionID = mostRecentApprovedSession.sessionID;
+        getAssessmentsForSelectedSession(this.selectedSessionID);
       }
     },
     setupSchoolLists() {

@@ -314,6 +314,9 @@ export default {
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap', 'config']),
     ...mapState(easStore, ['specialCaseCodes']),
+    hasEditPermission(){
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || PERMISSION.EAS_DIS_EDIT).length > 0);
+    },
   },
   watch: {
     selectedAssessmentStudentId: {
@@ -471,7 +474,7 @@ export default {
     },
     setupActiveFlag() {      
       this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen;
-      this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore;
+      this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore && this.hasEditPermission();
     },
     saveStudentRegistration() {
       this.loadingCount += 1;
