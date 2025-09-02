@@ -372,7 +372,7 @@ export default {
         )[0];
 
         this.selectedSessionID = mostRecentApprovedSession.sessionID;
-        getAssessmentsForSelectedSession(this.selectedSessionID);
+        this.getAssessmentsForSelectedSession(this.selectedSessionID);
       }
     },
     setupSchoolLists() {

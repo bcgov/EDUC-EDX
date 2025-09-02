@@ -252,6 +252,7 @@ import {authStore} from '../../../../store/modules/auth';
 import { mapState } from 'pinia';
 import {easStore} from '../../../../store/modules/eas';
 import {PROFICIENCY_SCORE_RANGE_FILTER} from '../../../../utils/eas/StudentRegistrationTableConfiguration';
+import {PERMISSION} from '../../../../utils/constants/Permission';
 
 export default {
   name: 'EditStudentRegistration',

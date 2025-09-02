@@ -237,6 +237,7 @@ import StudentRegistrationDetail from './StudentRegistrationDetail.vue';
 import AddStudentRegistration from './forms/AddStudentRegistration.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
+import {PERMISSION} from '../../../utils/constants/Permission';
 
 export default {
   name: 'StudentRegistrations',
