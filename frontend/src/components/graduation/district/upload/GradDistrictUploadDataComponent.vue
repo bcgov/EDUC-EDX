@@ -191,7 +191,7 @@
                 type="warning"
                 icon="mdi-alert"
                 variant="text"
-                text="Only submit data for students who are part of the 2024/2025 reporting cycle. If reporting students in the 2025/2026 school year, wait until the new reporting period opens in October."
+                :text="'Only submit data for students who are part of the ' + currentYear + '/' + nextYear + ' reporting cycle. If reporting students in the ' + nextYear + '/' + yearAfterNext + ' school year, wait until the new reporting period opens in October.'"
               />
             </v-col>
           </v-row>
@@ -883,7 +883,7 @@ export default {
       ApiService.apiAxios.get(ApiRoutes.gdc.ACTIVE_REPORTING_PERIODS)
         .then(response => {
           this.activeReportingPeriod = response.data;
-          let reportingPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.schYrStart);
+          let reportingPeriodStart = LocalDateTime.parse(this.activeReportingPeriod.periodStart);
           this.currentYear = reportingPeriodStart.year();
           this.nextYear = reportingPeriodStart.plusYears(1).year();
           this.yearAfterNext = reportingPeriodStart.plusYears(2).year();

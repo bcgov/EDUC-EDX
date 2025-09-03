@@ -835,7 +835,7 @@ export default {
       this.isXlsUpload = false;
     },
     setActiveReportingDates() {
-      let reportingPeriodStart = LocalDateTime.parse(this.collectionObject.schYrStart);
+      let reportingPeriodStart = LocalDateTime.parse(this.collectionObject.periodStart);
       this.currentYear = reportingPeriodStart.year();
       this.nextYear = reportingPeriodStart.plusYears(1).year();
       this.yearAfterNext = reportingPeriodStart.plusYears(2).year();
