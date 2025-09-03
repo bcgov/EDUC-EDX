@@ -316,7 +316,7 @@ export default {
     ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap', 'config']),
     ...mapState(easStore, ['specialCaseCodes']),
     hasEditPermission(){
-      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || PERMISSION.EAS_DIS_EDIT).length > 0);
+      return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || perm === PERMISSION.EAS_DIS_EDIT).length > 0);
     },
   },
   watch: {
