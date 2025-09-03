@@ -135,7 +135,7 @@
                 variant="underlined"
                 :items="assessmentCenterSearchNames"
                 color="#003366"
-                label="Assessment Centre Name or Number"
+                label="Assessment Centre Code & Name"
                 single-line
                 :clearable="true"
                 item-title="schoolCodeName"
