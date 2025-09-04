@@ -11,12 +11,10 @@ const constants = require('../util/constants');
 
 let sdcStaffDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'DIS_SDC_EDIT', 'DIS_SDC_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
 let sdcStaffSchoolPermissions = ['EDX_SCHOOL_VIEW', 'SCH_SDC_EDIT', 'SCH_SDC_VIEW'];
-let gradStaffAdminSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_SCH_EDIT'];
-let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
-let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_EDIT', 'CHALLENGE_REPORTS'];
-let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW'];
-let assessmentStaffAdminSchoolPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW','EAS_SCH_EDIT', 'EAS_SCH_VIEW'];
-let assessmentStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW','EAS_DIS_EDIT', 'EAS_DIS_VIEW'];
+let gradStaffAdminSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_SCH_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_SCH_EDIT', 'EAS_SCH_VIEW'];
+let gradStaffViewSchoolPermissions = ['EDX_SCHOOL_VIEW', 'GRAD_SCH_TVR_VIEW', 'GRAD_SCH_RPT_VIEW', 'GRAD_ERR_RPT_VIEW', 'EAS_SCH_VIEW'];
+let gradStaffAdminDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_DIS_UPLOAD', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_EDIT', 'CHALLENGE_REPORTS', 'EAS_DIS_VIEW'];
+let gradStaffViewDistrictPermissions = ['EDX_DISTRICT_VIEW', 'EDX_SCHOOL_VIEW', 'GRAD_DIS_TVR_VIEW', 'GRAD_DIS_RPT_VIEW', 'GRAD_ERR_RPT_VIEW', 'EAS_DIS_VIEW'];
 let schoolMap = new Map();
 let districtToSchoolsMap = new Map();
 let schools = [];
@@ -195,17 +193,11 @@ const cacheService = {
   getGradStaffSchoolAdminPermissions() {
     return gradStaffAdminSchoolPermissions;
   },
-  getAssessmentStaffSchoolAdminPermissions() {
-    return assessmentStaffAdminSchoolPermissions;
-  },
   getGradStaffSchoolViewerPermissions() {
     return gradStaffViewSchoolPermissions;
   },
   getGradStaffDistrictAdminPermissions() {
     return gradStaffAdminDistrictPermissions;
-  },
-  getAssessmentStaffDistrictAdminPermissions() {
-    return assessmentStaffAdminDistrictPermissions;
   },
   getGradStaffDistrictViewerPermissions() {
     return gradStaffViewDistrictPermissions;
