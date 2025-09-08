@@ -190,7 +190,7 @@ async function removeAssessmentStudents(req, res) {
 function includeAssessmentStudentProps(assessmentStudent) {
   if (assessmentStudent) {
     let school = cacheService.getSchoolBySchoolID(assessmentStudent.schoolOfRecordSchoolID);
-    let assessmentCenter = cacheService.getSchoolBySchoolID(assessmentStudent.assessmentCenterID);
+    let assessmentCenter = cacheService.getSchoolBySchoolID(assessmentStudent.assessmentCenterSchoolID);
 
     if (school) {
       assessmentStudent.schoolName_desc = getSchoolName(school);

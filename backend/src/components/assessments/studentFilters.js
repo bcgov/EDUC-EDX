@@ -134,7 +134,7 @@ function createAssessmentCenterNameNumberSearchCriteria(value) {
   const searchAssessmentCenterCriteriaList = [];
 
   searchAssessmentCenterCriteriaList.push({
-    key: 'assessmentCenterID',
+    key: 'assessmentCenterSchoolID',
     operation: FILTER_OPERATION.EQUAL,
     value: value,
     valueType: VALUE_TYPE.UUID,
