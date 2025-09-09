@@ -340,13 +340,16 @@ export default {
       this.sessionSearchNames = [];
       this.assessmentTypeSearchNames = [];
       this.schoolYearSessions.forEach(session => {
-        this.sessionSearchNames.push({
-          id: session.sessionID,
-          courseMonth: parseInt(session.courseMonth),
-          courseYear: parseInt(session.courseYear),
-          title: this.formatMonth(session.courseMonth),
-          value: session.sessionID
-        });
+        if(session.completionDate === null) {
+          this.sessionSearchNames.push({
+            id: session.sessionID,
+            courseMonth: parseInt(session.courseMonth),
+            courseYear: parseInt(session.courseYear),
+            title: this.formatMonth(session.courseMonth),
+            value: session.sessionID
+          });
+        }
+
         session.assessments.forEach(assessment => {
           let existingItem = this.assessmentTypeSearchNames.find(item => item.id === assessment.assessmentTypeCode);
           if (!existingItem) {

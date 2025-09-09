@@ -410,12 +410,14 @@ export default {
     setupSessions() {
       let sessions = [];
       this.schoolYearSessions?.forEach((session) => {
-        sessions.push({
-          sessionCourseMonth: parseInt(session.courseMonth),
-          sessionCourseYear: parseInt(session.courseYear),
-          sessionCodeName: session.courseYear + '/' + session.courseMonth,
-          sessionCodeValue: session.sessionID
-        });
+        if(session.completionDate === null) {
+          sessions.push({
+            sessionCourseMonth: parseInt(session.courseMonth),
+            sessionCourseYear: parseInt(session.courseYear),
+            sessionCodeName: session.courseYear + '/' + session.courseMonth,
+            sessionCodeValue: session.sessionID
+          });
+        }
       });
       this.sessionSearchNames = sortBy(sessions, ['sessionCourseYear','sessionCourseMonth']);
     },

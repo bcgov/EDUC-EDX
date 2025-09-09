@@ -335,12 +335,12 @@ export default {
       this.config = this.userInfo.activeInstituteType === 'DISTRICT' ? SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT : SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL;
     },
     applyDefaultFilters() {
-      if (this.sessionID) {
-        const activeSession = this.schoolYearSessions.find(
-          (session) => session.sessionID === this.sessionID
-        );
+      if (this.activeSession) {
         this.filterSearchParams.moreFilters.session = [
-          { title: capitalize(Month.of(activeSession.courseMonth).toString()) , id: activeSession.sessionID, value: activeSession.sessionID },
+          { title: capitalize(Month.of(this.activeSession.courseMonth).toString()) , id: this.activeSession.sessionID, value: this.activeSession.sessionID }
+        ];
+         this.filterSearchParams.moreFilters.schoolYear = [
+          { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
         ];
       }
     },
@@ -348,11 +348,6 @@ export default {
       this.isLoading = true;
       let sort = {assessmentStudentID: 'ASC',};
       let assessmentSearchParams = cloneDeep(this.filterSearchParams);
-      if (! this.sessionID) {
-        assessmentSearchParams.moreFilters.schoolYear = [
-          { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
-        ];
-      }
       ApiService.apiAxios
         .get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/paginated`, {
           params: {
