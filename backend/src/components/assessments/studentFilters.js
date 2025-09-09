@@ -62,6 +62,7 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
 
     if (key === 'session' && pValue) {
       searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.sessionID', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.completionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
 
     if (key === 'assessmentTypeCode' && pValue) {

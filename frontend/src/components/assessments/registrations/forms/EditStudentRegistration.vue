@@ -387,12 +387,14 @@ export default {
     setupAssessmentSessions() {
       this.sessionSearchNames = [];
       this.schoolYearSessions?.forEach((session) => {
-        this.sessionSearchNames.push({
-          sessionCourseMonth: parseInt(session.courseMonth),
-          sessionCourseYear: parseInt(session.courseYear),
-          sessionCodeName: session.courseMonth + '/' + session.courseYear,
-          sessionCodeValue: session.sessionID
-        });
+        if(session.completionDate === null) {
+          this.sessionSearchNames.push({
+            sessionCourseMonth: parseInt(session.courseMonth),
+            sessionCourseYear: parseInt(session.courseYear),
+            sessionCodeName: session.courseMonth + '/' + session.courseYear,
+            sessionCodeValue: session.sessionID
+          });
+        }
       });
       this.sessionSearchNames = sortBy(this.sessionSearchNames, ['sessionCourseYear','sessionCourseMonth']); 
     },
