@@ -308,7 +308,8 @@ export default {
       loadingCount: 0,
       isActive: false,
       isSessionEditable: false,
-      hasError: false
+      hasError: false,
+      isDistrictUser: false
     };
   },
   computed: {
@@ -358,6 +359,7 @@ export default {
       easStore().getSpecialCaseCodes().then(() => {            
         this.setupSpecialCaseCodes();     
         this.loading = false;
+         this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
       });
     });
     this.setupProficiencyScore();
