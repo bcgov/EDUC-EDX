@@ -352,7 +352,7 @@ export default {
       this.sessions = [];
       let sessionYearMinusTwo = LocalDate.now().minusYears(2).year();
       this.schoolYearSessions?.forEach((session) => {
-        if(parseInt(session.courseYear) >= sessionYearMinusTwo){
+        if(session.completionDate !== null && parseInt(session.courseYear) >= sessionYearMinusTwo){
           this.sessions.push({
             sessionCodeName: session.courseYear + '/' + session.courseMonth,
             sessionCode: session.courseYear + '' + session.courseMonth,
