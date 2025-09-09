@@ -397,6 +397,7 @@ export default {
     clearFilters() {
       this.filterSearchParams.moreFilters = {};
       this.pageNumber = 1;
+      this.applyDefaultFilters();
       this.getAssessmentStudents();
     },
     toggleFilters() {
