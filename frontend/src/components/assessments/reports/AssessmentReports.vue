@@ -363,7 +363,7 @@ export default {
       this.sessionSearchNames = sortBy(this.sessions, ['sessionCourseYear','sessionCourseMonth']);
 
       const approvedSessions = this.schoolYearSessions.filter(session =>
-        !session.isOpen && parseInt(session.courseYear) >= sessionYearMinusTwo
+        session.completionDate !== null && parseInt(session.courseYear) >= sessionYearMinusTwo
       );
 
       if (approvedSessions.length > 0) {
