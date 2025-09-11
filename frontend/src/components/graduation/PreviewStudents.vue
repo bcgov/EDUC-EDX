@@ -25,7 +25,7 @@
     </v-card-title>
     <v-divider />
     <v-card-text>
-      <span>Below is a preview of your uploaded data from file: <b>{{ fileName }}</b>. Please review the data before processing the data. See the Summary of Uploaded data table for status and error reporting.</span>
+      <span>Below is a preview of file upload: <b>{{ fileName }}</b>. Please review before submitting.</span>
 
       <v-data-table
         v-model:page="pageNumber"
@@ -42,7 +42,7 @@
           <v-btn
             id="waitForReporting"
             color="#003366"
-            text="Wait until the next Reporting Cycle"
+            text="Cancel"
             class="mr-2 mb-1"
             variant="elevated"
             @click="waitForReporting"
@@ -50,7 +50,7 @@
           <v-btn
             id="processData"
             color="#003366"
-            text="Process Data"
+            text="Submit"
             class="mr-2 mb-1"
             variant="outlined"
             @click="processStudents"
