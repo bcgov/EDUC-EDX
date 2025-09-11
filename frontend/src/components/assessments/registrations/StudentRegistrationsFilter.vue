@@ -364,7 +364,7 @@ export default {
       this.schoolSearchNames = [];
       this.assessmentCenterSearchNames = [];
       this.schoolsMap?.forEach((school) => {
-        let schoolCodeName = `${school.schoolName} - ${school.mincode}`;
+        let schoolCodeName = `${school.mincode} - ${school.schoolName}`;
 
         this.assessmentCenterSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
 
