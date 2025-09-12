@@ -485,6 +485,7 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/student/${this.studentForSearch.studentID}/ISR/download`;
+        await ApiService.apiAxios.get(url);
         window.open(url);
       } catch (error) {
         console.error(error);

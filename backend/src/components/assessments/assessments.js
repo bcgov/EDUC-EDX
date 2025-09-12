@@ -14,6 +14,7 @@ const config = require('../../config');
 const cacheService = require('../cache-service');
 const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
+const {doesSchoolBelongToDistrict} = require('../institute-cache');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION, ASSESSMENTS_REPORT_TYPE_CODE_MAP,
   ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP
@@ -290,6 +291,33 @@ async function downloadAssessmentStudentReport(req, res) {
     }
 
     const token = getAccessToken(req);
+
+    if(reportType === 'ISR') {
+      let student = await getData(token, `${config.get('gradCurrentStudents:rootURL')}/stdid/${req.params.studentID}`);
+
+      if(student.studentStatus === 'MER'){
+        return res.status(HttpStatus.CONFLICT).json({
+          status: HttpStatus.CONFLICT,
+          message: 'Student was merged to another student. You must specify an active student PEN.'
+        });
+      }
+      
+      if(req.session.activeInstituteType === 'DISTRICT'){
+        if(!doesSchoolBelongToDistrict(student.schoolOfRecordId, req.session.activeInstituteIdentifier)){
+          return res.status(HttpStatus.CONFLICT).json({
+            status: HttpStatus.CONFLICT,
+            message: 'The student\'s current School of Record is not within your district. The student’s reports cannot be accessed.'
+          });
+        }
+      }else if(req.session.activeInstituteType === 'SCHOOL'){
+        if(student.schoolOfRecordId !== req.session.activeInstituteIdentifier){
+          return res.status(HttpStatus.CONFLICT).json({
+            status: HttpStatus.CONFLICT,
+            message: 'Your school is not currently the student\'s School of Record. The student’s reports cannot be accessed.'
+          });
+        }
+      }
+    }
 
     let url = `${config.get('assessments:rootURL')}/report/student/${req.params.studentID}/${reportType}/download`;
 

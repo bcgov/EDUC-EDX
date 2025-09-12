@@ -32,6 +32,7 @@ function checkEDXUserAccessToRequestedInstitute(req, res, next) {
 function checkEdxUserPermission(permission) {
   return function(req, res, next) {
     if (!req.session.activeInstitutePermissions.includes(permission)) {
+      console.log('Marco' + req.session.activeInstitutePermissions);
       return res.status(HttpStatus.FORBIDDEN).json({
         message: 'User doesn\'t have permission.'
       });
