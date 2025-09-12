@@ -392,7 +392,7 @@ export default {
     searchStudentForGivenPEN() {
       this.isSearchingStudent = true;
 
-      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL, {
+      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-grad-pen', {
         params: {
           pen: this.studentPENTranscript
         }
@@ -512,20 +512,20 @@ export default {
     },
     getReportName(assessmentTypeCode) {
       switch(assessmentTypeCode) {
-        case 'LTE10':
-          return 'lte10-detailed-doar';
-        case 'LTE12':
-          return 'lte12-detailed-doar';
-        case 'LTF12':
-          return 'ltf12-detailed-doar';
-        case 'LTP10':
-          return 'ltp10-detailed-doar';
-        case 'LTP12':
-          return 'ltp12-detailed-doar';
-        case 'NME10':
-          return 'nme-detailed-doar';
-        case 'NMF10':
-          return 'nmf-detailed-doar';
+      case 'LTE10':
+        return 'lte10-detailed-doar';
+      case 'LTE12':
+        return 'lte12-detailed-doar';
+      case 'LTF12':
+        return 'ltf12-detailed-doar';
+      case 'LTP10':
+        return 'ltp10-detailed-doar';
+      case 'LTP12':
+        return 'ltp12-detailed-doar';
+      case 'NME10':
+        return 'nme-detailed-doar';
+      case 'NMF10':
+        return 'nmf-detailed-doar';
       }
     },
     async downloadXamFile() {
