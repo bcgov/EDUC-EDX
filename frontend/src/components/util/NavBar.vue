@@ -170,7 +170,7 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['isAuthenticated', 'userInfo']),
-    ...mapState(appStore, ['config']),
+    ...mapState(appStore, ['config', 'activeDistrictsMap']),
     navWidth () {
       switch (this.$vuetify.display.name) {
       case 'xs':
@@ -296,6 +296,11 @@ export default {
               title: PAGE_TITLES.ASSESSMENT,
               link: {name: 'district-assessment-session-detail'},
               authorized: this.hasRequiredPermission(PERMISSION.EAS_DIS_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableAssessmentFunctionality,
+            },
+            {
+              title: PAGE_TITLES.STUDENT_GRADUTATION_DATA,
+              link: {name: 'yukonReports', params: {districtID: this.userInfo.activeInstituteIdentifier}},
+              authorized: this.isYukon() && this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
             }
           ]
         },
@@ -347,6 +352,11 @@ export default {
     },
     stripWhitespace(title) {
       return title.replace(/\s+/g, '');
+    },
+    isYukon() {
+      let districtID = this.userInfo.activeInstituteIdentifier;
+      let belongsToDistrict = this.activeDistrictsMap.get(districtID);
+      return belongsToDistrict !== null && belongsToDistrict.districtNumber === '098';
     }
   }
 };

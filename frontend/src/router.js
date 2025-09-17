@@ -42,6 +42,7 @@ import GradSchoolCurrentStudents from './components/graduation/school/students/G
 import GraduationDistrictTabs from './components/graduation/district/GraduationDistrictTabs.vue';
 import ChallengeReports from './components/challengeReports/ChallengeReports.vue';
 import DoarSummary from './components/assessments/static/DoarSummary.vue';
+import YukonReports from './components/graduation/district/yukon/YukonReports.vue';
 
 const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
 const router = createRouter({
@@ -365,6 +366,17 @@ const router = createRouter({
             requiresAuth: true,
             permission: PERMISSION.GRAD_DIS_RPT_VIEW
           },
+        },
+        {
+          path: 'graduation/district/:districtID/yukonReports',
+          name: 'yukonReports',
+          component: YukonReports,
+          props: true,
+          meta: {
+            pageTitle: PAGE_TITLES.STUDENT_GRADUTATION_DATA,
+            requiresAuth: true,
+            permission: PERMISSION.GRAD_DIS_RPT_VIEW
+          }
         },
         {
           path: 'graduation/:instituteIdentifierID/errorReport/:activeIncomingFilesetID',
