@@ -4,6 +4,7 @@ const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const {getSchoolBySchoolID, getDistrictByDistrictID} = require('./cache-service');
+const cacheService = require('./cache-service');
 
 async function getActiveChallengeReportsPeriod(req, res) {
   try {
@@ -31,10 +32,19 @@ async function getActiveChallengeReportsPeriod(req, res) {
 async function downloadDistrictChallengeReport(req, res) {
   try {
     const token = getAccessToken(req);
+
+    let district = cacheService.getDistrictByDistrictID(req.params.districtID);
+    if(!district || district.districtID !== req.session.activeInstituteIdentifier){
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid district provided' });
+    }
+    
     const url = `${config.get('challengeReports:rootURL')}/district/${req.params.districtID}/download`;
     const data = await getData(token, url);
 
-    const fileDetails = { contentType: 'text/csv' };
+    console.log('District: ' + JSON.stringify(district));
+    let reportType = req.query.isPrelim === true ? 'PRELIM_DISTRICT_REPORT' : 'FINAL_DISTRICT_REPORT';
+    
+    const fileDetails = getFileDetails(reportType, district.districtNumber, req.query.period);
     setResponseHeaders(res, fileDetails);
     const buffer = Buffer.from(data.documentData, 'base64');
 
@@ -83,7 +93,8 @@ async function createSchoolCountList(schoolsWithCounts){
   }));
 }
 
-function setResponseHeaders(res, {contentType }) {
+function setResponseHeaders(res, { filename, contentType }) {
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
 }
 
@@ -95,6 +106,15 @@ function formatCompletionDate(rawDate) {
   const day = date.getDate().toString().padStart(2, '0');
 
   return `${year}/${month}/${day}`;
+}
+
+function getFileDetails(reportType, district, session) {
+  const mappings = {
+    'PRELIM_DISTRICT_REPORT': { filename: `SD ${district} Preliminary District Level Funding Report For Course Challenges ${session}.csv`, contentType: 'text/csv' },
+    'FINAL_DISTRICT_REPORT': { filename: `SD ${district} District Level Funding Report For Course Challenges ${session}.csv`, contentType: 'text/csv' },
+    'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
+  };
+  return mappings[reportType] || mappings['DEFAULT'];
 }
 
 module.exports = {

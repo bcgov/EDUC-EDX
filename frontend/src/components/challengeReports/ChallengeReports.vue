@@ -131,7 +131,6 @@ const REPORT_STATUS_FINAL = 'Final';
 
 import ApiService from '../../common/apiService';
 import { ApiRoutes } from '../../utils/constants';
-import { setSuccessAlert } from '../composable/alertComposable';
 import DownloadLink from '../common/DownloadLink.vue';
 import alertMixin from '../../mixins/alertMixin';
 import {sortBy} from 'lodash';
@@ -281,39 +280,12 @@ export default {
         });
     },
     downloadDistrictReport() {
-      ApiService.apiAxios
-        .get(`${ApiRoutes.challengeReports.BASE_URL}/${this.districtID}/download`)
-        .then((response) => {
-          if (response.data && response.data.type === 'Buffer' && Array.isArray(response.data.data)) {
-            const byteArray = new Uint8Array(response.data.data);
-            const blob = new Blob([byteArray], { type: 'text/csv' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-
-            if (this.activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY) {
-              link.download = `Preliminary District Level Funding Report for Course Challenges ${this.startingYear}-${this.endingYear}.csv`;
-            } else {
-              link.download = `District Level Funding Report for Course Challenges ${this.startingYear}-${this.endingYear}.csv`;
-            }
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
-            setSuccessAlert('Challenge Report downloaded successfully.');
-          } else {
-            console.error('Unexpected response format for file download:', response.data);
-            this.setFailureAlert('Failed to process the report data. Unexpected format.');
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          this.setFailureAlert(
-            error?.response?.data?.message
-              ? error?.response?.data?.message
-              : 'An error occurred while trying to retrieve your district\'s report.'
-          );
-        });
+      let isPrelim = false;
+      if(this.activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY){
+        isPrelim = true;
+      }
+      let url = `${ApiRoutes.challengeReports.BASE_URL}/${this.districtID}/download?isPrelim=${isPrelim}&period=${this.startingYear}/${this.endingYear}`;
+      window.open(url);
     },
     showTooltip() {
       this.tooltipWidth = this.$refs.chipRef.$el.offsetWidth + 'px';

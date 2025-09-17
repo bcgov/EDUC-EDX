@@ -153,7 +153,6 @@ async function postAssessmentStudent(req, res) {
     };
     payload.studentStatusCode = 'ACTIVE';
     const token = getAccessToken(req);
-    console.log(JSON.stringify(payload));
     const result = await postData(token, payload, `${config.get('assessments:assessmentStudentsURL')}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {

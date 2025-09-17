@@ -1,4 +1,4 @@
-const { object, string} = require('yup');
+const { object, string, boolean} = require('yup');
 
 const getChallengeReportPeriodSchema = object({
   body: object().noUnknown(),
@@ -11,7 +11,10 @@ const getChallengeReportDownloadSchema = object({
   params: object({
     districtID: string()
   }).noUnknown(),
-  query: object().noUnknown()
+  query: object({
+    isPrelim: boolean(),
+    period: string()
+  }).noUnknown()
 }).noUnknown();
 
 
