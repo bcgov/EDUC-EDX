@@ -169,11 +169,13 @@ export default {
       if(this.fromDate) {
         return (this.fromDate + "/01").replaceAll('/', '-');
       }
+      return null;
     },
     calcToDate() {
       if(this.toDate) {
         return (this.toDate + "/01").replaceAll('/', '-');
       }
+      return null;
     }
   },
   watch: {
