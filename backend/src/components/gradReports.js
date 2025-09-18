@@ -1,11 +1,33 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getBinaryData } = require('./utils');
+const { getAccessToken, handleExceptionResponse, getBinaryData, getData } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
 const { v4: uuidv4 } = require('uuid');
 const {getSchoolBySchoolID, getDistrictByDistrictID} = require('./cache-service');
 const {edxUserHasAccessToInstitute} = require('./permissionUtils');
+
+async function downloadGradYukonReport(req, res) {
+  try {
+    const token = getAccessToken(req);
+    let url = `${config.get('gradCurrentStudents:rootURL')}/report/${req.params.districtID}/download/${req.params.fromDate}/${req.params.toDate}`;
+
+    const resData = await getData(token, url);
+    const fileDetails = getFileDetails('YUKON_REPORT', null, null);
+
+    setResponseHeaders(res, fileDetails);
+    const buffer = Buffer.from(resData.documentData, 'base64');
+    return res.status(HttpStatus.OK).send(buffer);
+  } catch (e) {
+    log.error('downloadReport Error', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
+function setResponseHeaders(res, { filename, contentType }) {
+  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.setHeader('Content-Type', contentType);
+}
 
 async function handleReportDownload(req, res, reportType) {
   try {
@@ -186,8 +208,17 @@ function checkDigit(pen) {
   return penDigits.pop() === (10 - (S3%10));
 }
 
+function getFileDetails(reportType, from, to) {
+  const mappings = {
+    'YUKON_REPORT': { filename: `Student Graduation Data -${from} - ${to}.csv`, contentType: 'text/csv' },
+    'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
+  };
+  return mappings[reportType] || mappings['DEFAULT'];
+}
+
 module.exports = {
   downloadStudentGradReport,
   downloadSummaryGradReport,
-  downloadTVRSummary
+  downloadTVRSummary,
+  downloadGradYukonReport
 };
