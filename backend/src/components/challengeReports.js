@@ -41,14 +41,13 @@ async function downloadDistrictChallengeReport(req, res) {
     const url = `${config.get('challengeReports:rootURL')}/district/${req.params.districtID}/download`;
     const data = await getData(token, url);
 
-    console.log('District: ' + JSON.stringify(district));
     let reportType = req.query.isPrelim === true ? 'PRELIM_DISTRICT_REPORT' : 'FINAL_DISTRICT_REPORT';
     
     const fileDetails = getFileDetails(reportType, district.districtNumber, req.query.period);
     setResponseHeaders(res, fileDetails);
     const buffer = Buffer.from(data.documentData, 'base64');
 
-    return res.status(HttpStatus.OK).json(buffer);
+    return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
     log.error(e, 'getActiveChallengeReportPeriod', 'Error occurred while attempting to GET active Challenge Reports Period.');
     return handleExceptionResponse(e, res);
