@@ -93,9 +93,9 @@
               transition="false"
               reverse-transition="false"
             >
-              <div>
-                todo
-              </div>
+              <PsiSelections
+                :school-i-d="schoolID"
+              />
             </v-window-item>
           </v-window>
         </v-card-text>
@@ -112,6 +112,7 @@ import { mapState } from 'pinia';
 import {ApiRoutes, PAGE_TITLES} from '../../../utils/constants';
 import GradSchoolUploadDataComponent from './upload/GradSchoolUploadDataComponent.vue';
 import GradReportsAndTranscripts from './reports/GradSchoolReportsAndTranscripts.vue';
+import PsiSelections from './reports/PsiSelection.vue';
 import GradSchoolStudentSearch from './students/GradSchoolStudentSearch.vue';
 import GradSchoolCurrentStudents from './students/GradSchoolCurrentStudents.vue';
 import ApiService from '../../../common/apiService';
@@ -123,7 +124,8 @@ export default {
     GradSchoolCurrentStudents,
     GradSchoolStudentSearch,
     GradReportsAndTranscripts,
-    GradSchoolUploadDataComponent
+    GradSchoolUploadDataComponent,
+    PsiSelections
   },
   mixins: [alertMixin],
   props: {
@@ -135,7 +137,7 @@ export default {
   },
   data() {
     return {
-      validTabs: ['uploadData', 'studentSearch', 'gradReports', 'currentStudents'],
+      validTabs: ['uploadData', 'studentSearch', 'gradReports', 'currentStudents', 'psiSelections'],
       PAGE_TITLES: PAGE_TITLES,
       collectionObject: null
     };
