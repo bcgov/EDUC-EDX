@@ -3,11 +3,11 @@ const {
   getAccessToken,
   getData,
   handleExceptionResponse
-} = require('../utils');
+} = require('./utils');
 const HttpStatus = require('http-status-codes');
-const config = require('../../config');
-const log = require('../logger');
-const {doesSchoolBelongToDistrict} = require('../institute-cache');
+const config = require('../config');
+const log = require('./logger');
+const {doesSchoolBelongToDistrict} = require('./institute-cache');
 
 
 async function downloadPsiSelectionReport(req, res) {

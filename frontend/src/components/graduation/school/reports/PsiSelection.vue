@@ -1,19 +1,24 @@
 <template>
   <v-container fluid>
     hello from PSI Selection
+    <DownloadLink
+      label="PSI Report"
+      :download-action="() => downloadPsiReport()"
+    />
   </v-container>
 </template>
 
 <script>
 import DownloadLink from '../../../common/DownloadLink.vue';
-import PrimaryButton from '../../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
 import { authStore } from '../../../../store/modules/auth';
 import alertMixin from '../../../../mixins/alertMixin';
+import {ApiRoutes} from '../../../../utils/constants';
+import ApiService from '../../../../common/apiService';
 
 export default {
   name: 'PsiSelection',
-  components: { DownloadLink, PrimaryButton },
+  components: { DownloadLink },
   mixins: [alertMixin],
   props: {
     schoolID: {
@@ -34,7 +39,30 @@ export default {
   async created() {
   },
   methods: {
+    async downloadPsiReport() {
+      this.isLoading = true;
+      const url = `${ApiRoutes.psiSelection.REPORT}/school/${this.schoolID}`;
 
+      try {
+        return await ApiService.apiAxios.get(url, {
+          responseType: 'blob'
+        });
+
+      } catch (error) {
+        console.error('Error downloading file:', error);
+        let errorMsg;
+
+        if (error.code === 'ERR_BAD_REQUEST') {
+          errorMsg = `PSI report not found for ${this.schoolID}`;
+        } else {
+          errorMsg = 'Error encountered while attempting to retrieve PSI report.';
+        }
+
+        this.setFailureAlert(errorMsg);
+      } finally {
+        this.isLoading = false;
+      }
+    }
   },
 };
 </script>

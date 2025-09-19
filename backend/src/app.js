@@ -36,6 +36,7 @@ const gradRouter = require('./routes/grad');
 const gradReportsRouter = require('./routes/gradReports');
 const challengeReportsRouter = require('./routes/challengeReports');
 const assessmentRouter = require('./routes/assessments');
+const psiRouter = require('./routes/psiSelection');
 const promMid = require('express-prometheus-middleware');
 const messagePubSub = require('./messaging/message-pub-sub');
 messagePubSub.init().then(() => {
@@ -223,6 +224,7 @@ apiRouter.use('/grad',gradRouter);
 apiRouter.use('/gradReports', gradReportsRouter);
 apiRouter.use('/challengeReports', challengeReportsRouter);
 apiRouter.use('/assessments',assessmentRouter);
+apiRouter.use('/psi', psiRouter);
 
 //Handle 500 error
 app.use((err, _req, res, next) => {
