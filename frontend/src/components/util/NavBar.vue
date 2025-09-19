@@ -354,6 +354,10 @@ export default {
       return title.replace(/\s+/g, '');
     },
     isYukon() {
+      let isDistrict = this.userInfo.activeInstituteType === 'DISTRICT';
+      if (!isDistrict) {
+        return false;
+      }
       let districtID = this.userInfo.activeInstituteIdentifier;
       let belongsToDistrict = this.activeDistrictsMap.get(districtID);
       return belongsToDistrict !== null && belongsToDistrict.districtNumber === '098';
