@@ -36,6 +36,13 @@
           >
             Current Students in GRAD System
           </v-tab>
+          <v-tab
+            id="psiSelections"
+            value="psiSelections"
+            prepend-icon="mdi-account-school-outline"
+          >
+            PSI Selections
+          </v-tab>
         </v-tabs>
       </v-col>
     </v-row>
@@ -80,6 +87,15 @@
               <GradSchoolCurrentStudents
                 :school-i-d="schoolID"
               />
+            </v-window-item>
+            <v-window-item
+              value="psiSelections"
+              transition="false"
+              reverse-transition="false"
+            >
+              <div>
+                todo
+              </div>
             </v-window-item>
           </v-window>
         </v-card-text>
