@@ -11,9 +11,8 @@ async function downloadGradYukonReport(req, res) {
   try {
     const token = getAccessToken(req);
     let url = `${config.get('gradCurrentStudents:rootURL')}/report/${req.params.districtID}/download/${req.params.fromDate}/${req.params.toDate}`;
-
     const resData = await getData(token, url);
-    const fileDetails = getFileDetails('YUKON_REPORT', null, null);
+    const fileDetails = getFileDetails('YUKON_REPORT', req.params.fromDate, req.params.toDate);
 
     setResponseHeaders(res, fileDetails);
     const buffer = Buffer.from(resData.documentData, 'base64');
