@@ -194,10 +194,10 @@ function checkDigit(pen) {
   const penDigits = [];
 
   for (let i = 0; i < 9; i++) {
-    penDigits[i] = parseInt(pen.charAt(i), 10);
+    penDigits[i] = Number.parseInt(pen.charAt(i), 10);
   }
   const S1 = penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 0;}).reduce((a,b) => a+b,0);
-  const A = parseInt(penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 1;}).join(''), 10);
+  const A = Number.parseInt(penDigits.slice(0,-1).filter((element,index) => {return index % 2 === 1;}).join(''), 10);
   const B = 2 * A;
   let S2 = B.toString().split('').map(Number).reduce(function (a, b) {return a + b;}, 0);
   const S3 = S1 + S2;
