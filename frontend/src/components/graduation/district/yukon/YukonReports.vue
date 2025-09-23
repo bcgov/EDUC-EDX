@@ -122,6 +122,7 @@
                 color="#003366"
                 text="Graduation Data"
                 class="mr-1 mt-2"
+                prepend-icon="mdi-download"
                 :disabled="!isValid"
                 @click="downloadGradData"
               />
