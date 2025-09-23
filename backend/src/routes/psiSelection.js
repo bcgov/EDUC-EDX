@@ -7,6 +7,6 @@ const { isValidUUIDParam, validateAccessToken, checkEdxUserPermission } = requir
 const { PERMISSION } = require('../util/Permission');
 
 
-router.get('/psi/report/school/:schoolID', auth.refreshJWT, isValidBackendToken, validateAccessToken, isValidUUIDParam('schoolID'), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadPsiSelectionReport);
+router.get('/report/school/:schoolID', auth.refreshJWT, isValidBackendToken, validateAccessToken, isValidUUIDParam('schoolID'), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadPsiSelectionReport);
 
 module.exports = router;
