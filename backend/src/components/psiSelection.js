@@ -33,16 +33,15 @@ async function downloadPsiSelectionReport(req, res) {
         });
       }
     }
-  
 
     const token = getAccessToken(req);
 
     let url = `${config.get('psiSelection:rootURL')}/report/school/${req.params.schoolID}`;
 
     const resData = await getData(token, url);
-    const fileDetails = getFileDetails('psi', null, null);
-
+    const fileDetails = getFileDetails('psi', resData?.reportName);
     setResponseHeaders(res, fileDetails);
+    
     const buffer = Buffer.from(resData.documentData, 'base64');
     return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
@@ -52,17 +51,18 @@ async function downloadPsiSelectionReport(req, res) {
 }
 
 function setResponseHeaders(res, { filename, contentType }) {
-  res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
   res.setHeader('Content-Type', contentType);
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition, Content-Type');
 }
 
-
-function getFileDetails(reportType) {
-  const mappings = {
-
-    'DEFAULT': { filename: 'download.csv', contentType: 'text/csv' }
-  };
-  return mappings[reportType] || mappings['DEFAULT'];
+function getFileDetails(reportType, reportName) {
+  if (reportType === 'psi') {
+    const base = (reportName || 'psi-selection-report').toString();
+    const safe = `${base}.csv`.replace(/[^\w .-]/g, '_');
+    return { filename: safe, contentType: 'text/csv; charset=utf-8' };
+  }
+  return { filename: 'download.csv', contentType: 'text/csv; charset=utf-8' };
 }
 
 module.exports = {

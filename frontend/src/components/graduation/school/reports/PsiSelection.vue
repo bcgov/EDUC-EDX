@@ -48,7 +48,12 @@ export default {
           responseType: 'blob'
         });
 
-        const filename = 'psi-selection.csv';
+        let filename = 'PSI Selection Report.csv';
+        const dispo = res.headers?.['content-disposition'] || res.headers?.['Content-Disposition'];
+        if (dispo) {
+          const m = dispo.match(/filename\*?=(?:UTF-8''|")(.*?)(?:"|;|$)/i);
+          if (m?.[1]) filename = decodeURIComponent(m[1]);
+        }
 
         const urlObj = window.URL.createObjectURL(res.data);
         const a = document.createElement('a');
