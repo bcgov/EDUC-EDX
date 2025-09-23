@@ -14,6 +14,7 @@ const studentRoot = baseRoot + '/students';
 const penServicesRoot = baseRoot + '/penServices';
 const assessmentsRoot = baseRoot + '/assessments';
 const challengeReportsRoot = baseRoot + '/challengeReports';
+const psiSelectionRoot = baseRoot + '/psi';
 
 let object;
 
@@ -145,6 +146,10 @@ export const ApiRoutes = Object.freeze({
   },
   challengeReports: {
     BASE_URL: challengeReportsRoot
+  },
+  psiSelection: {
+    BASE_URL: psiSelectionRoot,
+    REPORT: psiSelectionRoot + '/report',
   }
 });
 
