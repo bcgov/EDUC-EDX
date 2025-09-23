@@ -44,10 +44,21 @@ export default {
       const url = `${ApiRoutes.psiSelection.REPORT}/school/${this.schoolID}`;
 
       try {
-        return await ApiService.apiAxios.get(url, {
+        const res = await ApiService.apiAxios.get(url, {
           responseType: 'blob'
         });
 
+        const filename = 'psi-selection.csv';
+
+        const urlObj = window.URL.createObjectURL(res.data);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = urlObj;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(urlObj);
       } catch (error) {
         console.error('Error downloading file:', error);
         let errorMsg;
