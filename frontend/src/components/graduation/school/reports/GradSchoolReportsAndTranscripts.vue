@@ -181,12 +181,14 @@
         width="30em"
         border="sm"
       >
-        <v-card-title style="font-size: medium;">Current Reporting Cycle</v-card-title>
+        <v-card-title style="font-size: medium;">
+          Current Reporting Cycle
+        </v-card-title>
         <v-card-text
           style="color: gray;font-size: small;"
           class="mt-n3"
         >
-          October {{ lastYear }} to September {{ currentYear }}
+          {{ formattedActiveReportingPeriod }}
         </v-card-text>
         <v-form
           id="transcriptForm"
@@ -207,12 +209,14 @@
         width="30em"
         border="sm"
       >
-        <v-card-title style="font-size: medium;">Previous Reporting Cycle</v-card-title>
+        <v-card-title style="font-size: medium;">
+          Previous Reporting Cycle
+        </v-card-title>
         <v-card-text
           style="color: gray;font-size: small;"
           class="mt-n3"
         >
-          October {{ yearBeforeLast }} to September {{ lastYear }}
+          {{ formattedPreviousReportingPeriod }}
         </v-card-text>
         <v-form
           id="transcriptForm"
@@ -222,7 +226,7 @@
             <v-col cols="12">
               <DownloadLink
                 label="Projected Non-Graduates"
-                :download-action = "() => downloadGradProjections('historicalProjNonGrad')"
+                :download-action="() => downloadGradProjections('historicalProjNonGrad')"
               />
             </v-col>
           </v-row>
@@ -248,12 +252,14 @@
         width="30em"
         border="sm"
       >
-        <v-card-title style="font-size: medium;">Current Reporting Cycle</v-card-title>
+        <v-card-title style="font-size: medium;">
+          Current Reporting Cycle
+        </v-card-title>
         <v-card-text
           style="color: gray;font-size: small;"
           class="mt-n3"
         >
-          October {{ lastYear }} to September {{ currentYear }}
+          {{ formattedActiveReportingPeriod }}
         </v-card-text>
         <v-form
           id="transcriptForm"
@@ -283,12 +289,14 @@
         width="30em"
         border="sm"
       >
-        <v-card-title style="font-size: medium;">Previous Reporting Cycle</v-card-title>
+        <v-card-title style="font-size: medium;">
+          Previous Reporting Cycle
+        </v-card-title>
         <v-card-text
           style="color: gray;font-size: small;"
           class="mt-n3"
         >
-          October {{ yearBeforeLast }} to September {{ lastYear }}
+          {{ formattedPreviousReportingPeriod }}
         </v-card-text>
         <v-form
           id="transcriptForm"
@@ -323,9 +331,10 @@ import PrimaryButton from '../../../util/PrimaryButton.vue';
 import { mapState } from 'pinia';
 import { authStore } from '../../../../store/modules/auth';
 import { downloadDocument, fetchAndDownloadGradReport, searchStudentByPen, docTypeFilename, docTypeName } from '../../../../utils/gdc/gradReports';
-import { LocalDate } from '@js-joda/core';
 import alertMixin from '../../../../mixins/alertMixin';
 import { isValidPEN } from '../../../../utils/validation';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 
 export default {
   name: 'GradSchoolReportsAndTranscripts',
@@ -341,10 +350,9 @@ export default {
   emits: [],
   data() {
     return {
-      isLoading: false,
-      currentYear: null,
-      lastYear: null,
-      yearBeforeLast: null,
+      loadingCount: 0,
+      activeReportingPeriod: null,
+      previousReportingPeriod: null,
       showPENSearchResultArea: false,
       studentForSearch: {},
       studentDownloadType: '',
@@ -358,19 +366,59 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
+    isLoading() {
+      return this.loadingCount > 0;
+    },
+    formattedActiveReportingPeriod() {
+      if (this.activeReportingPeriod === null) {
+        return 'Loading';
+      }
+      let formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+      let periodStart = new Date(this.activeReportingPeriod.periodStart);
+      let periodEnd = new Date(this.activeReportingPeriod.periodEnd);
+      return `${formatter.format(periodStart)} to ${formatter.format(periodEnd)}`;
+    },
+    formattedPreviousReportingPeriod() {
+      if (this.previousReportingPeriod === null) {
+        return 'Loading';
+      }
+      let formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+      let periodStart = new Date(this.previousReportingPeriod.periodStart);
+      let periodEnd = new Date(this.previousReportingPeriod.periodEnd);
+      return `${formatter.format(periodStart)} to ${formatter.format(periodEnd)}`;
+    }
   },
-  async created() {
-    this.populateYearValues();
+  created() {
+    this.getActiveReportingPeriod();
+    this.getPreviousReportingPeriod();
   },
   methods: {
     backButtonClick() {
       this.$router.push({ name: 'graduation', params: { instituteIdentifierID: this.schoolID } });
     },
-    populateYearValues() {
-      const now = LocalDate.now();
-      this.currentYear = now.year();
-      this.lastYear = now.minusYears(1).year();
-      this.yearBeforeLast = now.minusYears(2).year();
+    getActiveReportingPeriod() {
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/active-reporting-period`)
+        .then(response => {
+          this.activeReportingPeriod = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while trying to retrieve the active Reporting Period. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
+    },
+    getPreviousReportingPeriod() {
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/previous-reporting-period`)
+        .then(response => {
+          this.previousReportingPeriod = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while trying to retrieve the previous Reporting Period. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
     },
     searchStudentForGivenPEN(isTranscriptRequest) {
       this.isSearchingStudent = true;
@@ -402,10 +450,10 @@ export default {
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, false);
     },
     async downloadGradProjections(reportType){
-      this.isLoading = true;
+      this.loadingCount += 1;
       const schoolID = this.userInfo.activeInstituteIdentifier;
       await fetchAndDownloadGradReport(this, schoolID, reportType, docTypeFilename(reportType), docTypeName(reportType), true, true);
-      this.isLoading = false;
+      this.loadingCount -= 1;
     },
     close() {
       this.studentForSearch = {};

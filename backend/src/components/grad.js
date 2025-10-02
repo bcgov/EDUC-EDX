@@ -58,6 +58,18 @@ async function getActiveReportingPeriod(req, res) {
   }
 }
 
+async function getPreviousReportingPeriod(req, res) {
+  try {
+    const token = getAccessToken(req);
+    const url = `${config.get('grad:rootURL')}/reporting-period/previous`;
+    const data = await getData(token, url);
+    return res.status(200).json(data);
+  } catch (e) {
+    log.error(e, 'getPreviousReportingPeriod', 'Error occurred while attempting to GET GDC Previous Reporting Period.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function uploadFileXLS(req, res) {
   try {
     let createUpdateUser = getCreateOrUpdateUserValue(req);
@@ -633,6 +645,7 @@ module.exports = {
   getErrorMetrics,
   uploadFileXLS,
   getActiveReportingPeriod,
+  getPreviousReportingPeriod,
   processSummerStudents,
   getGradSchoolDetails,
   getGradSchools

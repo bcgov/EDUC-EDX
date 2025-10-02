@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, uploadFileXLS, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, getPreviousReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
@@ -75,6 +75,7 @@ router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt'
   checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/active-reporting-period', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getActiveReportingPeriod);
+router.get('/previous-reporting-period', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getPreviousReportingPeriod);
 
 router.post('/school/:schoolID/process', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_UPLOAD), validate(gradProcessSchoolSummerStudentsSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, processSummerStudents);
