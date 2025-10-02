@@ -367,8 +367,6 @@ export default {
       }
       let districtID = this.userInfo.activeInstituteIdentifier;
       let belongsToDistrict = this.activeDistrictsMap.get(districtID);
-      console.log(this.activeDistrictsMap)
-      console.log(belongsToDistrict)
       return belongsToDistrict !== null && belongsToDistrict?.districtNumber === '098';
     }
   }
