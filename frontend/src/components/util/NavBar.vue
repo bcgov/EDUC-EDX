@@ -210,6 +210,13 @@ export default {
       },
       immediate: true,
       deep: true
+    },
+    activeDistrictsMap : {
+      handler() {
+        this.refreshUserPermissions();
+      },
+      immediate: true,
+      deep: true
     }
   },
   async created(){
@@ -355,14 +362,12 @@ export default {
     },
     isYukon() {
       let isDistrict = this.userInfo.activeInstituteType === 'DISTRICT';
-      console.log(isDistrict)
-      console.log(this.userInfo.activeInstituteIdentifier)
-      console.log(this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW))
       if (!isDistrict) {
         return false;
       }
       let districtID = this.userInfo.activeInstituteIdentifier;
       let belongsToDistrict = this.activeDistrictsMap.get(districtID);
+      console.log(this.activeDistrictsMap)
       console.log(belongsToDistrict)
       return belongsToDistrict !== null && belongsToDistrict?.districtNumber === '098';
     }
