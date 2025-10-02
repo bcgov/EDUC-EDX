@@ -300,7 +300,7 @@ export default {
             {
               title: PAGE_TITLES.STUDENT_GRADUTATION_DATA,
               link: {name: 'yukonReports', params: {districtID: this.userInfo.activeInstituteIdentifier}},
-              authorized: this.isYukon() && this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW) && this.userInfo.activeInstituteType === 'DISTRICT' && !this.disableGdcFunctionality,
+              authorized: this.isYukon() && this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW) && !this.disableGdcFunctionality,
             }
           ]
         },
@@ -355,11 +355,15 @@ export default {
     },
     isYukon() {
       let isDistrict = this.userInfo.activeInstituteType === 'DISTRICT';
+      console.log(isDistrict)
+      console.log(this.userInfo.activeInstituteIdentifier)
+      console.log(this.hasRequiredPermission(PERMISSION.GRAD_DIS_RPT_VIEW))
       if (!isDistrict) {
         return false;
       }
       let districtID = this.userInfo.activeInstituteIdentifier;
       let belongsToDistrict = this.activeDistrictsMap.get(districtID);
+      console.log(belongsToDistrict)
       return belongsToDistrict !== null && belongsToDistrict?.districtNumber === '098';
     }
   }
