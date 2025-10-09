@@ -291,8 +291,15 @@ export default {
     schoolYearSessions: {
       handler(value) {
         if(value.length > 0) {
-          let openSession = value.filter(sch => sch.isOpen);
-          this.activeSession = openSession[0];
+          let sessionArray = value.filter(sch => sch.isOpen);
+          sessionArray = sessionArray.sort((a, b) => {
+            // Compare years first
+            const yearDiff = Number(a.courseYear) - Number(b.courseYear);
+            if (yearDiff !== 0) return yearDiff;
+            // If years are equal, compare months
+            return Number(a.courseMonth) - Number(b.courseMonth);
+          });
+          this.activeSession = sessionArray[0];
         }
       },
       immediate: true
@@ -339,7 +346,7 @@ export default {
         this.filterSearchParams.moreFilters.session = [
           { title: capitalize(Month.of(this.activeSession.courseMonth).toString()) , id: this.activeSession.sessionID, value: this.activeSession.sessionID }
         ];
-         this.filterSearchParams.moreFilters.schoolYear = [
+        this.filterSearchParams.moreFilters.schoolYear = [
           { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
         ];
       }
