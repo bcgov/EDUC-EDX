@@ -8,6 +8,9 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
   let schoolNameNumberFilter = [];
   let assessmentCenterNameNumberFilter = [];
 
+  //Always filter on ACTIVE students
+  searchCriteriaList.push({ key: 'studentStatusCode', value: 'ACTIVE', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
     
