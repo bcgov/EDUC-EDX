@@ -176,7 +176,7 @@
       >
         <StudentRegistrationsFilter
           :filters="config.allowedFilters"
-          :school-year-sessions="schoolYearSessions"
+          :school-year-sessions="activeSessionsList"
           :initial-filter-selection="filterSearchParams?.moreFilters"
           @apply-assessment-filters="applyFilters"
           @clear-assessment-filters="clearFilters"
@@ -193,7 +193,7 @@
     >
       <AddStudentRegistration
         :session-id="sessionID"
-        :school-year-sessions="schoolYearSessions"
+        :school-year-sessions="activeSessionsList"
         :active-session="activeSession"
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
         @close-new-student-registration="closeNewAndLoadStudentRegistrations"
@@ -209,7 +209,7 @@
     >
       <StudentRegistrationDetail
         :selected-student-registration-id="studentRegistrationForEdit?.assessmentStudentID"
-        :school-year-sessions="schoolYearSessions"
+        :school-year-sessions="activeSessionsList"
         :active-session="activeSession"
         @reload-student-registrations="reloadStudentRegistrationsFlag = true"
         @close-student-registration="closeEditAndLoadStudentRegistrations"
@@ -284,22 +284,23 @@ export default {
       newStudentRegistrationSheet: false,
       reloadStudentRegistrationsFlag: false,
       editStudentRegistrationSheet: false,
-      activeSession: null
+      activeSession: null,
+      activeSessionsList: null,
     };
   },
   watch: {
     schoolYearSessions: {
       handler(value) {
         if(value.length > 0) {
-          let sessionArray = value.filter(sch => sch.isOpen);
-          sessionArray = sessionArray.sort((a, b) => {
+          this.activeSessionsList = value.filter(sch => sch.isOpen);
+          this.activeSessionsList = this.activeSessionsList.sort((a, b) => {
             // Compare years first
             const yearDiff = Number(a.courseYear) - Number(b.courseYear);
             if (yearDiff !== 0) return yearDiff;
             // If years are equal, compare months
             return Number(a.courseMonth) - Number(b.courseMonth);
           });
-          this.activeSession = sessionArray[0];
+          this.activeSession = this.activeSessionsList[0];
         }
       },
       immediate: true
@@ -308,7 +309,9 @@ export default {
   computed: {
     ...mapState(authStore, ['userInfo']),
     filterCount() {
-      return Object.values(this.filterSearchParams.moreFilters).filter(filter => !!filter ).reduce((total, filter) => total.concat(filter), []).length;
+      return Object.values(this.filterSearchParams.moreFilters).filter(filter => {
+        return filter[0].id !== 'schoolYear';
+      } ).reduce((total, filter) => total.concat(filter), []).length;
     },
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || perm === PERMISSION.EAS_DIS_EDIT).length > 0);

@@ -32,7 +32,7 @@ async function getAssessmentSessions(req, res) {
     data.forEach(session => {
       const activeFromDate = LocalDate.parse(session.activeFromDate, formatter);
       const activeUntilDate = LocalDate.parse(session.activeUntilDate, formatter);
-      session.isOpen = activeFromDate.isBefore(today) && activeUntilDate.isAfter(today);
+      session.isOpen = activeFromDate.isBefore(today) && activeUntilDate.isAfter(today) && !session.completionDate;
     });
 
     return res.status(200).json(data);
@@ -65,7 +65,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
     data.forEach(session => {
       const activeFrom = LocalDateTime.parse(session.activeFromDate);
       const activeUntil = LocalDateTime.parse(session.activeUntilDate);
-      session.isOpen = activeFrom.isBefore(now) && activeUntil.isAfter(now);
+      session.isOpen = activeFrom.isBefore(now) && activeUntil.isAfter(now) && !session.completionDate;
 
       session.assessments.forEach(assessment => {
         let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
