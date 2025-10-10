@@ -68,6 +68,8 @@ const postAssessmentStudentSchema = object({
     schoolAtWriteSchoolID: string().nullable().optional(),
     assessmentCenterSchoolID: string().nullable().optional(),
     assessmentFormID: string().nullable().optional(),
+    courseMonth: number().optional(),
+    courseYear: number().optional(),
     adaptedAssessmentCode: string().nullable().optional(),
     irtScore: number().nullable().optional(),
     localAssessmentID: string().nullable().optional(),

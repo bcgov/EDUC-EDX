@@ -285,7 +285,7 @@ export default {
       reloadStudentRegistrationsFlag: false,
       editStudentRegistrationSheet: false,
       activeSession: null,
-      activeSessionsList: null,
+      activeSessionsList: [],
     };
   },
   watch: {

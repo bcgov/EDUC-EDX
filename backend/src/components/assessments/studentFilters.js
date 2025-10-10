@@ -14,15 +14,16 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     //Default Filter Begin
     if (key === 'schoolYear' && pValue) {
       searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.schoolYear', value: pValue[0].replace('-', '/'), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.completionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }  
     //Default Filter End
     
     if (key === 'transfer' && pValue) {
-     if(pValue.toString() === 'transfered') {
-      searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-     } else if(pValue.toString() === 'notTransfered') {
-      searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-     }
+      if(pValue.toString() === 'transfered') {
+        searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      } else if(pValue.toString() === 'notTransfered') {
+        searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
     }
 
     if (key === 'surName' && pValue) {
