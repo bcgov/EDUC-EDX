@@ -174,6 +174,9 @@ nconf.defaults({
     assessmentSpecialCaseTypeCodeURL: process.env.ASSESSMENT_API_ENDPOINT+ '/assessment-specialcase-types',
     assessmentStudentsURL: process.env.ASSESSMENT_API_ENDPOINT+ '/student',
   },
+  psiSelection:{
+    rootURL: process.env.PSI_SELECTION_API_ENDPOINT,
+  },
   challengeReports:{
     rootURL: process.env.CHALLENGE_REPORTS_API_ENDPOINT
   }
