@@ -410,10 +410,11 @@ export default {
           this.isSearchingStudent = false;
         })
         .catch(error => {
+          console.log(error);
           if (error?.response?.data?.message) {
-            this.setErrorAlert(error?.response?.data?.message);
+            this.setFailureAlert(error?.response?.data?.message);
           } else {
-            this.setErrorAlert('PEN must be a valid.');
+            this.setFailureAlert('PEN must be a valid.');
           }
         }).finally(() => {
           this.isSearchingStudent = false;

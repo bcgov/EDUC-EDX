@@ -1,12 +1,12 @@
 'use strict';
-const {errorResponse, getAccessToken, getDataWithParams, formatDate, postData, getCreateOrUpdateUserValue} = require('./utils');
+const {errorResponse, getAccessToken, getDataWithParams, formatDate, postData, getCreateOrUpdateUserValue, getData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../config');
 const log = require('./logger');
 const cacheService = require('./cache-service');
 const {v4: uuidv4} = require('uuid');
 
-async function getStudentByPEN(req, res, bypassInstituteHasStudent = false) {
+async function getStudentByPEN(req, res) {
   try {
     const accessToken = getAccessToken(req);
     const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
@@ -21,7 +21,7 @@ async function getStudentByPEN(req, res, bypassInstituteHasStudent = false) {
         instituteHasStudent = school.mincode === studentMincode;
       }
 
-      if (instituteHasStudent || bypassInstituteHasStudent) {
+      if (instituteHasStudent) {
         const body = {
           studentID: result[0].studentID,
           pen:result[0].pen,
@@ -48,7 +48,53 @@ async function getStudentByPEN(req, res, bypassInstituteHasStudent = false) {
 }
 
 async function getStudentByPENForGrad(req, res){
-  await getStudentByPEN(req, res, true);
+  try {
+    const accessToken = getAccessToken(req);
+    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
+    if (result && result[0] && result[0].studentID) {
+      let misMatchError = 'Your school is not currently the student\'s School of Record for Graduation; the student’s reports cannot be accessed.';
+      let gradStudent = await getData(accessToken, `${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
+      if(gradStudent.schoolOfRecordId){
+        let gradSchool = cacheService.getSchoolBySchoolID(gradStudent.schoolOfRecordId);
+        const studentMincode = gradSchool.mincode;
+        let instituteHasStudent = false;
+        if(req.session.activeInstituteType === 'DISTRICT'){
+          let district = cacheService.getDistrictByDistrictID(req.session.activeInstituteIdentifier);
+          instituteHasStudent = district.districtNumber === studentMincode.substring(0,3);
+          misMatchError = 'The student\'s current School of Record for Graduation is not within your district; the student’s reports cannot be accessed.';
+        }else if(req.session.activeInstituteType === 'SCHOOL'){
+          let school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
+          instituteHasStudent = school.mincode === studentMincode;
+        }
+
+        if (instituteHasStudent) {
+          const body = {
+            studentID: result[0].studentID,
+            pen:result[0].pen,
+            firstName: result[0].legalFirstName,
+            middleName: result[0].legalMiddleNames,
+            lastName: result[0].legalLastName,
+            gender: result[0].genderCode,
+            doB: result[0].dob,
+            localID: result[0].localID
+          };
+          return res.status(200).json(body);
+        }else{
+          return errorResponse(res, misMatchError, HttpStatus.CONFLICT);
+        }
+      }else{
+        return errorResponse(res, 'Student is not found in the Graduation system', HttpStatus.CONFLICT);
+      }
+    } else {
+      const message = 'PEN must be a valid PEN associated with a student at the Ministry of Education and Childcare';
+      log.error(message);
+      return errorResponse(res, message, HttpStatus.NOT_FOUND);
+    }
+
+  } catch (e) {
+    log.error(e, 'getStudentByPENForGrad', 'Error occurred while attempting to GET Student details.');
+    return errorResponse(res);
+  }
 }
 
 /**
