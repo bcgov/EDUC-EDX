@@ -213,7 +213,7 @@
             style="color: gray;font-size: small"
             class="mt-n3"
           >
-            October {{ lastYear }} to September {{ currentYear }}
+            {{ formattedActiveReportingPeriod }}
           </v-card-text>
           <v-form
             id="transcriptForm"
@@ -242,7 +242,7 @@
             style="color: gray;font-size: small"
             class="mt-n3"
           >
-            October {{ yearBeforeLast }} to September {{ lastYear }}
+            {{ formattedPreviousReportingPeriod }}
           </v-card-text>
           <v-form
             id="transcriptForm"
@@ -286,7 +286,7 @@
             style="color: gray;font-size: small"
             class="mt-n3"
           >
-            October {{ lastYear }} to September {{ currentYear }}
+            {{ formattedActiveReportingPeriod }}
           </v-card-text>
           <v-form
             id="transcriptForm"
@@ -324,7 +324,7 @@
             style="color: gray;font-size: small"
             class="mt-n3"
           >
-            October {{ yearBeforeLast }} to September {{ lastYear }}
+            {{ formattedPreviousReportingPeriod }}
           </v-card-text>
           <v-form
             id="transcriptForm"
@@ -383,6 +383,8 @@ import {
 import { LocalDate } from '@js-joda/core';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import DownloadLink from '../../../common/DownloadLink.vue';
+import ApiService from '../../../../common/apiService';
+import {ApiRoutes} from '../../../../utils/constants';
 
 export default {
   name: 'GradDistrictReportsAndTranscripts',
@@ -405,6 +407,8 @@ export default {
       isLoading: false,
       currentYear: null,
       lastYear: null,
+      activeReportingPeriod: null,
+      previousReportingPeriod: null,
       gradSchoolCodeNameFilter: null,
       yearBeforeLast: null,
       showPENSearchResultArea: false,
@@ -420,11 +424,55 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
+    formattedActiveReportingPeriod() {
+      if (this.activeReportingPeriod === null) {
+        return 'Loading';
+      }
+      let formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+      let periodStart = new Date(this.activeReportingPeriod.periodStart);
+      let periodEnd = new Date(this.activeReportingPeriod.periodEnd);
+      return `${formatter.format(periodStart)} to ${formatter.format(periodEnd)}`;
+    },
+    formattedPreviousReportingPeriod() {
+      if (this.previousReportingPeriod === null) {
+        return 'Loading';
+      }
+      let formatter = new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' });
+      let periodStart = new Date(this.previousReportingPeriod.periodStart);
+      let periodEnd = new Date(this.previousReportingPeriod.periodEnd);
+      return `${formatter.format(periodStart)} to ${formatter.format(periodEnd)}`;
+    }
   },
   created() {
+    this.getActiveReportingPeriod();
+    this.getPreviousReportingPeriod();
     this.populateYearValues();
   },
   methods: {
+    getActiveReportingPeriod() {
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/active-reporting-period`)
+        .then(response => {
+          this.activeReportingPeriod = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while trying to retrieve the active Reporting Period. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
+    },
+    getPreviousReportingPeriod() {
+      this.loadingCount += 1;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/previous-reporting-period`)
+        .then(response => {
+          this.previousReportingPeriod = response.data;
+        }).catch(error => {
+          console.error(error);
+          this.setFailureAlert('An error occurred while trying to retrieve the previous Reporting Period. Please try again later.');
+        }).finally(() => {
+          this.loadingCount -= 1;
+        });
+    },
     populateYearValues() {
       const now = LocalDate.now();
       this.currentYear = now.year();
