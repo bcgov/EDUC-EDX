@@ -233,7 +233,10 @@
               </v-col>
             </v-row>
           </v-card-title>
-          <v-row class="pl-3 pb-3">
+          <v-row
+            v-if="!isSessionBeforeGoLive"
+            class="pl-3 pb-3"
+          >
             <v-col 
               cols="12"
             >
@@ -243,11 +246,21 @@
               />
             </v-col>
           </v-row>
-          <div 
+          <v-card-text
+            v-else
+            style="color: gray;font-size: small"
+            class="mt-n3"
+          >
+            Historic DOAR Reports are not available through EDX.
+          </v-card-text>
+          <div
             v-for="(assessment, index) in selectedAssessments"
             :key="index"
           >
-            <v-row class="pl-3 pb-3">
+            <v-row
+              v-if="!isSessionBeforeGoLive"
+              class="pl-3 pb-3"
+            >
               <v-col 
                 cols="12"
               >
@@ -311,7 +324,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(appStore, ['schoolsMap']),
+    ...mapState(appStore, ['schoolsMap', 'config']),
     ...mapState(authStore, ['userInfo']),
     disableCondition() {
       return this.userInfo.activeInstituteType === 'DISTRICT' ? (!this.schoolNameNumberFilter || !this.selectedSessionID)  : !this.selectedSessionID;
@@ -321,6 +334,18 @@ export default {
         return this.userInfo.activeInstituteIdentifier;
       }
       return this.schoolNameNumberFilter;
+    },
+    selectedSession() {
+      if (!this.selectedSessionID) return null;
+      return this.schoolYearSessions.find(
+        session => session.sessionID === this.selectedSessionID
+      ) || null;
+    },
+    isSessionBeforeGoLive() {
+      if(!this.selectedSession) {
+        return false;
+      }
+      return LocalDateTime.parse(this.selectedSession?.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE));
     }
   },
   async created() {
