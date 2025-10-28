@@ -161,7 +161,8 @@ nconf.defaults({
     termsOfUseURL: process.env.TERMS_OF_USE,
     helpURL: process.env.HELP,
     webSocketURL: process.env.WEB_SOCKET_URL,
-    sldMigrationDate: process.env.SLD_MIGRATION_DATE
+    sldMigrationDate: process.env.SLD_MIGRATION_DATE,
+    doarReportsAvailableDate: process.env.DOAR_REPORTS_AVAILABLE_DATE
   },
   clamav: {
     host: process.env.CLAMAV_HOST,
