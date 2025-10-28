@@ -234,7 +234,7 @@
             </v-row>
           </v-card-title>
           <v-row
-            v-if="!isSessionBeforeGoLive"
+            v-if="!isSessionAvailableForDOAR"
             class="pl-3 pb-3"
           >
             <v-col 
@@ -258,7 +258,7 @@
             :key="index"
           >
             <v-row
-              v-if="!isSessionBeforeGoLive"
+              v-if="!isSessionAvailableForDOAR"
               class="pl-3 pb-3"
             >
               <v-col 
@@ -341,7 +341,7 @@ export default {
         session => session.sessionID === this.selectedSessionID
       ) || null;
     },
-    isSessionBeforeGoLive() {
+    isSessionAvailableForDOAR() {
       if(!this.selectedSession) {
         return false;
       }
