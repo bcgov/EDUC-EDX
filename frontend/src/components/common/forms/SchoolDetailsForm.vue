@@ -1039,13 +1039,15 @@ export default {
       return type;
     },
     isGradeOfferedUpdateAllowed() {
-      const restrictedCategories = [
-        SCHOOL_CATEGORY_CODES.INDP_FNS,
-        SCHOOL_CATEGORY_CODES.INDEPEND,
-        SCHOOL_CATEGORY_CODES.EAR_LEARN,
-        SCHOOL_CATEGORY_CODES.POST_SEC
-      ];
-      return !restrictedCategories.includes(this.school.schoolCategoryCode);
+      // const restrictedCategories = [
+      //   SCHOOL_CATEGORY_CODES.INDP_FNS,
+      //   SCHOOL_CATEGORY_CODES.INDEPEND,
+      //   SCHOOL_CATEGORY_CODES.EAR_LEARN,
+      //   SCHOOL_CATEGORY_CODES.POST_SEC
+      // ];
+      // return !restrictedCategories.includes(this.school.schoolCategoryCode);
+      // reference HD-34057, editing grades is now not allowed.
+      return false;
     }
   },
   watch: {
