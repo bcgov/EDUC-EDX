@@ -50,11 +50,13 @@ async function getStudentByPEN(req, res) {
 async function getStudentByPENForGrad(req, res){
   try {
     const accessToken = getAccessToken(req);
+    const allowAcrossInstitute = req.query.allowAcrossInstitute === 'Y';
     const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       let misMatchError = 'Your school is not currently the student\'s School of Record for Graduation; the student’s reports cannot be accessed.';
       let gradStudent = await getData(accessToken, `${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
-      if(gradStudent.schoolOfRecordId){
+
+      if(!allowAcrossInstitute && gradStudent.schoolOfRecordId) {
         let gradSchool = cacheService.getSchoolBySchoolID(gradStudent.schoolOfRecordId);
         const studentMincode = gradSchool.mincode;
         let instituteHasStudent = false;
@@ -82,7 +84,19 @@ async function getStudentByPENForGrad(req, res){
         }else{
           return errorResponse(res, misMatchError, HttpStatus.CONFLICT);
         }
-      }else{
+      } else if(allowAcrossInstitute && gradStudent !== null) {
+        const body = {
+            studentID: result[0].studentID,
+            pen:result[0].pen,
+            firstName: result[0].legalFirstName,
+            middleName: result[0].legalMiddleNames,
+            lastName: result[0].legalLastName,
+            gender: result[0].genderCode,
+            doB: result[0].dob,
+            localID: result[0].localID
+          };
+        return res.status(200).json(body);
+      } else{
         return errorResponse(res, 'Student is not found in the Graduation system', HttpStatus.CONFLICT);
       }
     } else {

@@ -112,7 +112,8 @@ export async function searchStudentByPen(context, pen, onSuccess) {
   try {
     const response = await ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-grad-pen', {
       params: {
-        pen: pen
+        pen: pen,
+        allowAcrossInstitute: 'Y'
       }
     });
 

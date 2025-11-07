@@ -416,10 +416,13 @@ export default {
     },
     searchStudentForGivenPEN() {
       this.isSearchingStudent = true;
+      this.studentForSearch = {};
+      this.showPENSearchResultArea = false;
 
       ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-grad-pen', {
         params: {
-          pen: this.studentPENTranscript
+          pen: this.studentPENTranscript,
+          allowAcrossInstitute: 'N'
         }
       })
         .then(response => {

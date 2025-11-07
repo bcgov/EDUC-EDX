@@ -481,6 +481,8 @@ export default {
     },
     searchStudentForGivenPEN(isTranscriptRequest) {
       this.isSearchingStudent = true;
+      this.studentForSearch = {};
+      this.showPENSearchResultArea = false;
       const pen = isTranscriptRequest ? this.studentPENTranscript : this.studentPENXML;
       this.studentDownloadType = isTranscriptRequest ? 'transcript' : 'xml';
 
