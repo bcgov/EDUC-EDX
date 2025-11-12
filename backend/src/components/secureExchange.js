@@ -1220,24 +1220,24 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
       permissionsArray = cacheService.getSDCStaffSchoolPermissions();
     }else{
       let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
-      selectedUserSchool[0].edxUserSchoolRoles.forEach((role) => {
+      for (const role of selectedUserSchool[0].edxUserSchoolRoles) {
         if (disableGradFunctionality && gradRolesToBlock.has(role.edxRoleCode)) {
-          return;
+          continue;
         }
         permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-      });
+      }
     }
   }else{
     if(req.session.passport.user._json.idir_guid){
       permissionsArray = cacheService.getSDCStaffDistrictPermissions();
     }else {
       let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
-      selectedUserDistrict[0].edxUserDistrictRoles.forEach((role) => {
+      for (const role of selectedUserDistrict[0].edxUserDistrictRoles) {
         if (disableGradFunctionality && gradRolesToBlock.has(role.edxRoleCode)) {
-          return;
+          continue;
         }
         permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-      });
+      }
     }
   }
 
