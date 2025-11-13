@@ -1079,7 +1079,7 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
   }
 }
 
- function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
+function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
   if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER')) || (roles.includes('ASSESSMENT_ADMIN'))) && directToGrad){
     Promise.all([
@@ -1100,7 +1100,7 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
     log.info('IDIR user logged in without GRAD_DATA_COLLECTION_ADMIN or GRAD_DATA_COLLECTION_VIEWER role; redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
   }
- }
+}
 
 function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
   if(!isValidTenant || isValidTenant !== 'true'){
@@ -1212,24 +1212,32 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
   req.session.activeInstituteIdentifier = activeInstituteIdentifier;
   req.session.activeInstituteType = activeInstituteType;
   let permissionsArray = [];
+  const disableGradFunctionality = config.get('frontendConfig').disableGradFunctionality;
+  const gradRolesToBlock = new Set(['GRAD_DIS_ADMIN', 'GRAD_DIS_RO', 'GRAD_SCH_ADMIN', 'GRAD_SCH_RO']);
 
   if(activeInstituteType === 'SCHOOL'){
     if(req.session.passport.user._json.idir_guid){
       permissionsArray = cacheService.getSDCStaffSchoolPermissions();
     }else{
       let selectedUserSchool = req.session.edxUserData.edxUserSchools.filter(school => school.schoolID === activeInstituteIdentifier);
-      selectedUserSchool[0].edxUserSchoolRoles.forEach(function (role) {
+      for (const role of selectedUserSchool[0].edxUserSchoolRoles) {
+        if (disableGradFunctionality && gradRolesToBlock.has(role.edxRoleCode)) {
+          continue;
+        }
         permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-      });
+      }
     }
   }else{
     if(req.session.passport.user._json.idir_guid){
       permissionsArray = cacheService.getSDCStaffDistrictPermissions();
     }else {
       let selectedUserDistrict = req.session.edxUserData.edxUserDistricts.filter(district => district.districtID === activeInstituteIdentifier);
-      selectedUserDistrict[0].edxUserDistrictRoles.forEach(function (role) {
+      for (const role of selectedUserDistrict[0].edxUserDistrictRoles) {
+        if (disableGradFunctionality && gradRolesToBlock.has(role.edxRoleCode)) {
+          continue;
+        }
         permissionsArray.push(...cacheService.getPermissionsForRole(role.edxRoleCode));
-      });
+      }
     }
   }
 
