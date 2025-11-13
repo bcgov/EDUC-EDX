@@ -73,15 +73,6 @@
               {{ studentForSearch.dob }}
             </v-col>
             <v-col
-              style="font-weight: bold"
-              cols="3"
-            >
-              Gender:
-            </v-col>
-            <v-col cols="9">
-              {{ studentForSearch.gender }}
-            </v-col>
-            <v-col
               cols="12"
               class="mt-n2"
             >
@@ -416,8 +407,10 @@ export default {
     },
     searchStudentForGivenPEN() {
       this.isSearchingStudent = true;
+      this.studentForSearch = {};
+      this.showPENSearchResultArea = false;
 
-      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-grad-pen', {
+      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-assessment-pen', {
         params: {
           pen: this.studentPENTranscript
         }
