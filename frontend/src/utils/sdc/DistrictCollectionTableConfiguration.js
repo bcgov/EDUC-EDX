@@ -215,8 +215,8 @@ export const INDSUPPORT_PR = Object.freeze(
     summaryReport: [
       { tableID: 'eligIndigenousSupportHeadcount', title: 'Eligible Indigenous Support Program Headcount for the District', endpoint:'indigenous'},
       { tableID: 'eligIndigenousSupportHeadcountPerSchool', title: 'Eligible Indigenous Support Program Headcount per School', endpoint:'indigenous-per-school'},
-      { tableID: 'eligBandOfResidenceHeadcount', title: 'Eligible Band of Residence Headcount for the District', endpoint:'band-codes'},
-      { tableID: 'eligBandOfResidenceHeadcountPerSchool', title: 'Eligible Band of Residence Headcount per School', endpoint:'band-codes-per-school'}
+      { tableID: 'eligBandOfResidenceHeadcount', title: 'Eligible Band of Residence Headcount and FTE for the District', endpoint:'band-codes'},
+      { tableID: 'eligBandOfResidenceHeadcountPerSchool', title: 'Eligible Band of Residence Headcount and FTE per School', endpoint:'band-codes-per-school'}
     ],
     allowedFilters: {
       studentType: STUDENT_TYPE_FILTER,
