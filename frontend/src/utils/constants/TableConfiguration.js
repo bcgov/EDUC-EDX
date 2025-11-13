@@ -109,14 +109,14 @@ export const FUNDING_TYPE_FILTER = Object.freeze(
         value: '14'
       },
       {
-        title: '20 - Living on Reserve',
-        id: 'funding20',
-        value: '20'
-      },
-      {
         title: '16 - Newcomer Refugee',
         id: 'funding16',
         value: '16'
+      },
+      {
+        title: '20 - Living on Reserve',
+        id: 'funding20',
+        value: '20'
       },
       {
         title: 'No Funding Code',
@@ -359,6 +359,16 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
     key: 'frenchProgram',
     filterOptions: [
       {
+        title: '05 - Programme Francophone',
+        id: 'french05',
+        value: '05'
+      },
+      {
+        title: '08 - Core French',
+        id: 'french08',
+        value: '08'
+      },
+      {
         title: '11 - Early French Immersion',
         id: 'french11',
         value: '11'
@@ -367,11 +377,6 @@ export const FRENCH_PROGRAMS_FILTER = Object.freeze(
         title: '14 - Late French Immersion',
         id: 'french14',
         value: '14'
-      },
-      {
-        title: '08 - Core French',
-        id: 'french08',
-        value: '08'
       }
     ]
   }
@@ -810,11 +815,6 @@ export const FTE = Object.freeze(
         ...FRENCH_PROGRAMS_FILTER,
         filterOptions: [
           ...FRENCH_PROGRAMS_FILTER.filterOptions,
-          {
-            title: '05 - Programme Francophone',
-            id: 'french05',
-            value: '05'
-          },
           {
             title: 'No French Programs',
             id: 'noFrenchProgram',
