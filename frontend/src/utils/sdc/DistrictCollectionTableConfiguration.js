@@ -66,11 +66,6 @@ export const FTE = Object.freeze(
         filterOptions: [
           ...FRENCH_PROGRAMS_FILTER.filterOptions,
           {
-            title: '05 - Programme Francophone',
-            id: 'french05',
-            value: '05'
-          },
-          {
             title: 'No French Programs',
             id: 'noFrenchProgram',
             value: 'noFrenchPrograms'
@@ -151,17 +146,7 @@ export const FRENCH_PR = Object.freeze(
       fte: FTE_FILTER,
       grade: GRADE_FILTER,
       fundingType: FUNDING_TYPE_FILTER,
-      frenchProgram: {
-        ...FRENCH_PROGRAMS_FILTER,
-        filterOptions: [
-          ...FRENCH_PROGRAMS_FILTER.filterOptions,
-          {
-            title: '05 - Programme Francophone',
-            id: 'french05',
-            value: '05'
-          }
-        ]
-      },
+      frenchProgram: FRENCH_PROGRAMS_FILTER,
       frenchFunding: FRENCH_FUNDING_FILTER,
       warnings: WARNING_FILTER
     }
@@ -411,11 +396,6 @@ export const DISTRICT_STUDENT_DIFFERENCES = Object.freeze(
         filterOptions: [
           ...FRENCH_PROGRAMS_FILTER.filterOptions,
           {
-            title: '05 - Programme Francophone',
-            id: 'french05',
-            value: '05'
-          },
-          {
             title: 'No French Programs',
             id: 'noFrenchProgram',
             value: 'noFrenchPrograms'
@@ -502,11 +482,6 @@ export const SCHOOL_STUDENT_DIFFERENCES = Object.freeze(
         ...FRENCH_PROGRAMS_FILTER,
         filterOptions: [
           ...FRENCH_PROGRAMS_FILTER.filterOptions,
-          {
-            title: '05 - Programme Francophone',
-            id: 'french05',
-            value: '05'
-          },
           {
             title: 'No French Programs',
             id: 'noFrenchProgram',
