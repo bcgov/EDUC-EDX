@@ -1,8 +1,12 @@
 <template>
   <v-container fluid>
-    hello from PSI Selection
+    <v-row class="mb-1">
+      <v-col>
+        The report shows all students in the final (grade 12 or AD) of an active program and any transcript orders sent by the student to a PSI during the current reporting period (October 1st to September 30th).
+      </v-col>
+    </v-row>
     <DownloadLink
-      label="PSI Report"
+      :label="'PSI Selections Report ' + currentYearRange"
       :download-action="() => downloadPsiReport()"
     />
   </v-container>
@@ -30,15 +34,31 @@ export default {
   emits: [],
   data() {
     return {
-      isLoading: false,
+      currentYearRange: '',
+      isLoading: false
     };
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
   },
-  async created() {
+  created() {
+    this.populateYearFields();
   },
   methods: {
+    populateYearFields() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+      let startingYear = null;
+      
+      if (currentMonth < 10) {
+        startingYear = currentYear - 1;
+      } else {
+        startingYear = currentYear;
+      }
+      let endingYear = startingYear + 1;
+      this.currentYearRange = startingYear + '/' + endingYear;
+    },
     async downloadPsiReport() {
       this.isLoading = true;
       const url = `${ApiRoutes.psiSelection.REPORT}/school/${this.schoolID}`;
