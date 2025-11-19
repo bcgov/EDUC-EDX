@@ -1,5 +1,5 @@
 'use strict';
-const { logApiError, errorResponse, getAccessToken, getDataWithParams, getData, putData, postData, handleExceptionResponse,
+const { logApiError, errorResponse, getDataWithParams, getData, putData, postData, handleExceptionResponse,
   getCreateOrUpdateUserValue
 } = require('./utils');
 const cacheService = require('./cache-service');
@@ -30,8 +30,7 @@ async function getSchoolBySchoolID(req, res) {
 
 async function updateSchool(req, res){
   try{
-    const token = getAccessToken(req);
-    let returnSchool = await getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
+    let returnSchool = await getData(`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
     if (!returnSchool) {
       log.error('School not found');
       return errorResponse(res);
@@ -105,7 +104,7 @@ async function updateSchool(req, res){
       schoolFundingGroup.createDate = null;
     });
 
-    const result = await putData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
+    const result = await putData(payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateSchool', 'Error occurred while attempting to update a school.');
@@ -132,8 +131,7 @@ async function addSchoolContact(req, res) {
       updateUser: createUpdateUser
     };
 
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact`, req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(data);
   }catch (e) {
@@ -151,8 +149,7 @@ async function updateSchoolContact(req, res) {
     params.expiryDate = req.body.expiryDate ? req.body.expiryDate : null;
     params.updateUser = getCreateOrUpdateUserValue(req);
 
-    const token = getAccessToken(req);
-    const result = await putData(token, params,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
+    const result = await putData(params,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'updateSchoolContact', 'Error occurred while attempting to update a school contact.');
@@ -162,8 +159,7 @@ async function updateSchoolContact(req, res) {
 
 async function removeSchoolContact(req, res) {
   try {
-    const token = getAccessToken(req);
-    const contact = await getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`);
+    const contact = await getData(`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`);
     if (!contact) {
       log.error('Contact not found');
       return errorResponse(res);
@@ -174,7 +170,7 @@ async function removeSchoolContact(req, res) {
     contact.expiryDate = LocalDate.now().atStartOfDay().format(DateTimeFormatter.ofPattern('yyyy-MM-dd\'T\'HH:mm:ss')).toString();
     contact.updateUser = getCreateOrUpdateUserValue(req);
 
-    const result = await putData(token, contact,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
+    const result = await putData(contact,`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}/contact/${res.locals.requestedSchoolContactId}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     await logApiError(e, 'removeSchoolContact', 'Error occurred while attempting to remove a school contact.');
@@ -204,9 +200,8 @@ function checkSchoolBelongsToDistrict(req, res) {
 }
 
 async function getFullSchoolDetails(req, res){
-  const token = getAccessToken(req);
   return Promise.all([
-    getData(token, `${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID),
+    getData(`${config.get('institute:rootURL')}/school/${res.locals.requestedInstituteIdentifier}`, req.session?.correlationID),
   ])
     .then(async ([dataResponse]) => {
       delete dataResponse['schoolFundingGroups'];
@@ -250,8 +245,7 @@ async function getSchoolsPaginated(req){
       searchCriteriaList: JSON.stringify(schoolSearchCriteria)
     }
   };
-  const accessToken = getAccessToken(req);
-  return getDataWithParams(accessToken, `${config.get('institute:rootURL')}/school/paginated`, schoolSearchParam, req.session?.correlationID);
+  return getDataWithParams(`${config.get('institute:rootURL')}/school/paginated`, schoolSearchParam, req.session?.correlationID);
 }
 
 function createSchoolSearchCriteria(searchParams){

@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData} = require('./utils');
+const { handleExceptionResponse, getData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -8,12 +8,11 @@ const cacheService = require('./cache-service');
 
 async function getActiveChallengeReportsPeriod(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('challengeReports:rootURL')}/activeSession`;
-    const data = await getData(token, url);
+    const data = await getData(url);
 
     const statusURL = `${config.get('challengeReports:rootURL')}/challenge-report-status-codes`;
-    const statusData = await getData(token, statusURL);
+    const statusData = await getData(statusURL);
 
     const response = {
       challengeReportsSessionID: data.challengeReportsSessionID,
@@ -31,15 +30,13 @@ async function getActiveChallengeReportsPeriod(req, res) {
 
 async function downloadDistrictChallengeReport(req, res) {
   try {
-    const token = getAccessToken(req);
-
     let district = cacheService.getDistrictByDistrictID(req.params.districtID);
     if(!district || district.districtID !== req.session.activeInstituteIdentifier){
       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid district provided' });
     }
     
     const url = `${config.get('challengeReports:rootURL')}/district/${req.params.districtID}/download`;
-    const data = await getData(token, url);
+    const data = await getData(url);
 
     let reportType = req.query.isPrelim === true ? 'PRELIM_DISTRICT_REPORT' : 'FINAL_DISTRICT_REPORT';
     
@@ -56,9 +53,8 @@ async function downloadDistrictChallengeReport(req, res) {
 
 async function getDistrictChallengeReportsCounts(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('challengeReports:rootURL')}/district/${req.params.districtID}`;
-    const data = await getData(token, url);
+    const data = await getData(url);
 
     const districtData = getDistrictByDistrictID(data.districtID);
 

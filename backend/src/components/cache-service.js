@@ -1,7 +1,6 @@
 'use strict';
 const config = require('../config/index');
 const log = require('../components/logger');
-const {getApiCredentials} = require('../components/auth');
 const {getData} = require('../components/utils');
 const retry = require('async-retry');
 const {generateSchoolObject, isSchoolActive} = require('./schoolUtils');
@@ -51,8 +50,7 @@ const cacheService = {
     log.debug('Loading all schoolsMap');
     await retry(async () => {
       // if anything throws, we retry
-      const data = await getApiCredentials(); // get the tokens first to make api calls.
-      const schoolsResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/school`);
+      const schoolsResponse = await getData(`${config.get('institute:rootURL')}/school`);
       schools = []; // reset the value.
       schoolMap.clear();// reset the value.
       districtToSchoolsMap.clear();
@@ -101,8 +99,7 @@ const cacheService = {
   async loadAllAuthoritiesToMap() {
     log.debug('Loading all authorities during start up');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const authoritiesResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/authority`);
+      const authoritiesResponse = await getData(`${config.get('institute:rootURL')}/authority`);
       // reset the value.
       authorities = [];
       activeAuthorities = [];
@@ -127,8 +124,7 @@ const cacheService = {
   async loadAllGradSchools() {
     log.debug('Loading all grad schools during start up');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const schools = await getData(data.accessToken,`${config.get('gradSchool:rootURL')}`);
+      const schools = await getData(`${config.get('gradSchool:rootURL')}`);
       gradSchoolsMap.clear();
       gradSchools=[];
       if (schools && schools.length > 0) {
@@ -155,8 +151,7 @@ const cacheService = {
   async loadAllAssessmentTypeCodesToMap() {
     log.debug('Loading all assessment Type Codes during start up');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const assessmentTypeCodesResponse = await getData(data.accessToken, `${config.get('assessments:assessmentTypeCodeURL')}`);
+      const assessmentTypeCodesResponse = await getData(`${config.get('assessments:assessmentTypeCodeURL')}`);
       if (assessmentTypeCodesResponse && assessmentTypeCodesResponse.length > 0) {
         assessmentTypeCodesMap.clear();
         assessmentTypeCodesResponse.forEach(entry => {
@@ -171,8 +166,7 @@ const cacheService = {
   async loadAllSpecialCaseTypeCodesToMap() {
     log.debug('Loading all special case Type codes during start up');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const provincialSpecialCaseTypeCodesResponse = await getData(data.accessToken, `${config.get('assessments:assessmentSpecialCaseTypeCodeURL')}`);
+      const provincialSpecialCaseTypeCodesResponse = await getData(`${config.get('assessments:assessmentSpecialCaseTypeCodeURL')}`);
       if (provincialSpecialCaseTypeCodesResponse && provincialSpecialCaseTypeCodesResponse.length > 0) {
         assessmentSpecialCaseTypeCodesMap.clear();
         provincialSpecialCaseTypeCodesResponse.forEach(entry => {
@@ -215,8 +209,7 @@ const cacheService = {
     log.debug('Loading all role permissions during start up');
     await retry(async () => {
       // if anything throws, we retry
-      const data = await getApiCredentials(); // get the tokens first to make api calls.
-      const roles = await getData(data.accessToken, `${config.get('edx:edxRolePermissionsURL')}`);
+      const roles = await getData(`${config.get('edx:edxRolePermissionsURL')}`);
       rolePermissionsMap.clear();// reset the value.
       if (roles && roles.length > 0) {
         for (const role of roles) {
@@ -233,8 +226,7 @@ const cacheService = {
   async loadAllDistrictsToMap() {
     log.debug('Loading all districtsMap');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const districtsResponse = await getData(data.accessToken, `${config.get('institute:rootURL')}/district`);
+      const districtsResponse = await getData(`${config.get('institute:rootURL')}/district`);
       // reset the value.
       districts = [];
       activeDistricts = [];
@@ -280,8 +272,7 @@ const cacheService = {
     log.debug('Loading all document type codes during start up');
     await retry(async () => {
       // if anything throws, we retry
-      const data = await getApiCredentials(); // get the tokens first to make api calls.
-      const documentTypeCodesList = await getData(data.accessToken, `${config.get('edx:exchangeURL')}/document-types`);
+      const documentTypeCodesList = await getData(`${config.get('edx:exchangeURL')}/document-types`);
       documentTypeCodes = []; // reset the value.
       documentTypeCodesMap.clear();// reset the value.
       if (documentTypeCodesList && documentTypeCodesList.length > 0) {
@@ -308,8 +299,7 @@ const cacheService = {
   async loadAllEdxUsersToMap() {
     log.debug('Loading all EDX Users to cache.');
     await retry(async () => {
-      const data = await getApiCredentials();
-      const edxUsersResponse = await getData(data.accessToken, config.get('edx:edxUsersURL'));
+      const edxUsersResponse = await getData(config.get('edx:edxUsersURL'));
       if (edxUsersResponse && edxUsersResponse.length > 0) {
         edxUsers.clear();
         edxUsersResponse.forEach(user => {
@@ -334,8 +324,7 @@ const cacheService = {
   async loadDataToCache(cacheKey,url){
     log.debug(` loading all ${cacheKey} during start up`);
     await retry(async () => {
-      const tokenData = await getApiCredentials();
-      const responseData = await getData(tokenData.accessToken, config.get(url));
+      const responseData = await getData(config.get(url));
       // reset the value.
       const records = [];
       const activeRecords = [];

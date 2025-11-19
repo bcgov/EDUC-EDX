@@ -2,7 +2,6 @@
 const CronJob = require('cron').CronJob;
 const config = require('../config/index');
 const log = require('../components/logger');
-const {getApiCredentials} = require('../components/auth');
 const safeStringify = require('fast-safe-stringify');
 const {getData} = require('../components/utils');
 const schedulerCronStaleSagaRecordRedis = config.get('scheduler:schedulerCronStaleSagaRecordRedis');
@@ -33,9 +32,8 @@ function findStaleSagaRecords(inProgressSagas) {
 async function removeStaleSagas(staleSagas) {
   let sagaRecordFromAPIPromises = [];
   try {
-    const data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret')); // get the tokens first to make api calls.
     for (const saga of staleSagas) {
-      sagaRecordFromAPIPromises.push(getData(data.accessToken, `${config.get('secureExchange:sagaApiEndpoint')}/${saga.sagaId}`));
+      sagaRecordFromAPIPromises.push(getData(`${config.get('secureExchange:sagaApiEndpoint')}/${saga.sagaId}`));
     }
     const results = await Promise.allSettled(sagaRecordFromAPIPromises);
     for (const result of results) {

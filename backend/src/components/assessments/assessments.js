@@ -1,7 +1,6 @@
 'use strict';
 const {
   logApiError,
-  getAccessToken,
   getData,
   putData,
   postData,
@@ -24,8 +23,7 @@ const log = require('../logger');
 async function getAssessmentSessions(req, res) {
   try {
     const url = `${config.get('assessments:assessmentSessionsURL')}`;
-    const token = getAccessToken(req);
-    const data = await getData(token, url);
+    const data = await getData(url);
     const today = LocalDate.now();
     const formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -45,8 +43,7 @@ async function getAssessmentSessions(req, res) {
 async function getActiveAssessmentSessions(req, res) {
   try {
     const url = `${config.get('assessments:assessmentSessionsURL')}/active`;
-    const token = getAccessToken(req);
-    const data = await getData(token, url);
+    const data = await getData(url);
     return res.status(200).json(data);
   } catch (e) {
     logApiError(e, 'getActiveAssessmentSessions', 'Error occurred while attempting to GET active assessment sessions.');
@@ -57,11 +54,9 @@ async function getActiveAssessmentSessions(req, res) {
 async function getAssessmentSessionsBySchoolYear(req, res) {
   try {
     const url = `${config.get('assessments:assessmentSessionsURL')}/school-year/${req.params.schoolYear}`;
-    const token = getAccessToken(req);
-    let data = await getData(token, url);
+    let data = await getData(url);
 
     const now = LocalDateTime.now();
-
     data.forEach(session => {
       const activeFrom = LocalDateTime.parse(session.activeFromDate);
       const activeUntil = LocalDateTime.parse(session.activeUntilDate);
@@ -122,8 +117,7 @@ async function getAssessmentStudentsPaginated(req, res) {
       }
     };
 
-    const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('assessments:assessmentStudentsURL')}/paginated`, params);
+    let data = await getDataWithParams(`${config.get('assessments:assessmentStudentsURL')}/paginated`, params);
 
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
@@ -152,8 +146,7 @@ async function postAssessmentStudent(req, res) {
       createDate: null
     };
     payload.studentStatusCode = 'ACTIVE';
-    const token = getAccessToken(req);
-    const result = await postData(token, payload, `${config.get('assessments:assessmentStudentsURL')}`, req.session?.correlationID);
+    const result = await postData(payload, `${config.get('assessments:assessmentStudentsURL')}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     await logApiError(e, 'postAssessmentStudent', 'Error occurred while attempting to create the assessment student registration.');
@@ -163,8 +156,7 @@ async function postAssessmentStudent(req, res) {
 
 async function getAssessmentStudentByID(req, res) {
   try {
-    const token = getAccessToken(req);
-    let assessmentStudent = await getAssessmentStudent(req.params.assessmentStudentID, res, token, req.session?.correlationID);
+    let assessmentStudent = await getAssessmentStudent(req.params.assessmentStudentID, res, req.session?.correlationID);
     return res.status(200).json(includeAssessmentStudentProps(assessmentStudent));
   } catch (e) {
     if (e?.status === 404) {
@@ -178,8 +170,7 @@ async function getAssessmentStudentByID(req, res) {
 
 async function removeAssessmentStudents(req, res) {
   try {
-    const token = getAccessToken(req);
-    const result = await postData(token, req.body, `${config.get('assessments:assessmentStudentsURL')}/delete-students`, req.session?.correlationID);
+    const result = await postData(req.body, `${config.get('assessments:assessmentStudentsURL')}/delete-students`, req.session?.correlationID);
     return res.status(HttpStatus.NO_CONTENT).json(result);
   } catch (e) {
     logApiError(e, 'removeAssessmentStudents', 'Error occurred while attempting to delete the assessment student registrations.');
@@ -216,12 +207,11 @@ async function updateAssessmentStudentByID(req, res) {
     });
   }
   try {
-    const token = getAccessToken(req);
     const payload = req.body;
     payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.updateDate = null;
     payload.createDate = null;
-    const result = await putData(token, payload, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
+    const result = await putData(payload, `${config.get('assessments:assessmentStudentsURL')}/${req.params.assessmentStudentID}`, getCreateOrUpdateUserValue(req));
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     logApiError(e, 'updateAssessmentStudent', 'Error occurred while attempting to save the changes to the assessment student registration.');
@@ -231,10 +221,9 @@ async function updateAssessmentStudentByID(req, res) {
 
 async function downloadXamFile(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/XAM_FILE/download`;
 
-    const data = await getData(token, url);
+    const data = await getData(url);
 
     const fileName = `${data?.reportType || 'SessionResults.xam'}`;
     res.setHeader('Content-Type', 'text/plain');
@@ -261,13 +250,11 @@ async function downloadAssessmentReport(req, res) {
         message: 'Invalid report type provided'
       });
     }
-
-    const token = getAccessToken(req);
     
     let mincode = cacheService.getSchoolBySchoolID(req.params.schoolID).mincode;
     let url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/${reportType}/download`;
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
     let session = req.query.sessionCode;
     const fileDetails = getFileDetails(reportType, mincode, session);
 
@@ -289,10 +276,8 @@ async function downloadAssessmentStudentReport(req, res) {
       });
     }
 
-    const token = getAccessToken(req);
-
     if(reportType === 'ISR') {
-      let student = await getData(token, `${config.get('gradCurrentStudents:rootURL')}/stdid/${req.params.studentID}`);
+      let student = await getData(`${config.get('gradCurrentStudents:rootURL')}/stdid/${req.params.studentID}`);
 
       if(student.studentStatus === 'MER'){
         return res.status(HttpStatus.CONFLICT).json({
@@ -320,7 +305,7 @@ async function downloadAssessmentStudentReport(req, res) {
 
     let url = `${config.get('assessments:rootURL')}/report/student/${req.params.studentID}/${reportType}/download`;
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
     const fileDetails = getFileDetails(reportType, null, null);
 
     setResponseHeaders(res, fileDetails);
@@ -351,11 +336,11 @@ function getAssessmentSpecialCases(req, res) {
   }
 }
 
-async function getAssessmentStudent(assessmentStudentID, res, token, correlationID) {
+async function getAssessmentStudent(assessmentStudentID, res, correlationID) {
   if (res.locals.requestedAssessmentStudent && res.locals.requestedAssessmentStudent.assessmentStudentID === assessmentStudentID) {
     return res.locals.requestedAssessmentStudent;
   }
-  return getData(token, `${config.get('assessments:assessmentStudentsURL')}/${assessmentStudentID}`, correlationID);
+  return getData(`${config.get('assessments:assessmentStudentsURL')}/${assessmentStudentID}`, correlationID);
 }
 
 function getFileDetails(reportType, mincode, session) {

@@ -1,6 +1,5 @@
 'use strict';
 const {
-  getAccessToken,
   getData,
   handleExceptionResponse
 } = require('./utils');
@@ -12,7 +11,6 @@ const {doesSchoolBelongToDistrict} = require('./institute-cache');
 
 async function downloadPsiSelectionReport(req, res) {
   try {
-    console.log(req.params.schoolID);
     if(req.session.activeInstituteType === 'DISTRICT'){
       if(!doesSchoolBelongToDistrict(req.params.schoolID, req.session.activeInstituteIdentifier)){
         return res.status(HttpStatus.CONFLICT).json({
@@ -34,11 +32,8 @@ async function downloadPsiSelectionReport(req, res) {
       }
     }
 
-    const token = getAccessToken(req);
-
     let url = `${config.get('psiSelection:rootURL')}/report/school/${req.params.schoolID}`;
-
-    const resData = await getData(token, url);
+    const resData = await getData(url);
     const fileDetails = getFileDetails('psi', resData?.reportName);
     setResponseHeaders(res, fileDetails);
     

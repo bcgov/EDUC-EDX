@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData
+const { handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData
 } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -25,12 +25,11 @@ async function uploadFile(req, res) {
       payload.courseSessionOverride = true;
     }
 
-    const token = getAccessToken(req);
     let data;
     if (req.params.schoolID){
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/file`, req.session?.correlationID);
     } else {
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/file`, req.session?.correlationID);
     }
     data.eventType = CONSTANTS.EVENT_TYPE.GDC_FILE_UPLOAD_EVENT;
     broadcastUtil.publishGdcEvents(data, CONSTANTS.GDC_UPLOAD_TOPIC);
@@ -48,9 +47,8 @@ async function uploadFile(req, res) {
 
 async function getActiveReportingPeriod(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('grad:rootURL')}/reporting-period/active`;
-    const data = await getData(token, url);
+    const data = await getData(url);
     return res.status(200).json(data);
   } catch (e) {
     log.error(e, 'getActiveReportingPeriod', 'Error occurred while attempting to GET GDC Active Reporting Period.');
@@ -60,9 +58,8 @@ async function getActiveReportingPeriod(req, res) {
 
 async function getPreviousReportingPeriod(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('grad:rootURL')}/reporting-period/previous`;
-    const data = await getData(token, url);
+    const data = await getData(url);
     return res.status(200).json(data);
   } catch (e) {
     log.error(e, 'getPreviousReportingPeriod', 'Error occurred while attempting to GET GDC Previous Reporting Period.');
@@ -85,12 +82,11 @@ async function uploadFileXLS(req, res) {
       payload.courseSessionOverride = true;
     }
 
-    const token = getAccessToken(req);
     let data;
     if (req.params.schoolID){
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/excel-upload`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/excel-upload`, req.session?.correlationID);
     } else {
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/excel-upload`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/excel-upload`, req.session?.correlationID);
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -111,12 +107,11 @@ async function processSummerStudents(req, res) {
       createUser: createUpdateUser,
       updateUser: createUpdateUser
     };
-    const token = getAccessToken(req);
     let data;
     if (req.params.schoolID){
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/process`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/${req.params.schoolID}/process`, req.session?.correlationID);
     } else {
-      data = await postData(token, payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/process`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('grad:rootURL')}/district/${req.params.districtID}/process`, req.session?.correlationID);
     }
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -130,10 +125,9 @@ async function processSummerStudents(req, res) {
 
 async function downloadErrorReport(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('grad:rootURL')}/reportGeneration/errorReport/${req.params.activeIncomingFilesetID}`;
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
 
     res.setHeader('Content-Disposition', `attachment; filename=${resData?.reportName}.csv`);
     res.setHeader('Content-Type', 'text/csv');
@@ -155,8 +149,7 @@ async function getStudentFilesetByPenFilesetId(req, res) {
       }
     };
 
-    const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
 
     data.courseStudents.forEach(cs => {
       cs.session = cs.courseYear + '/' + cs.courseMonth;
@@ -237,8 +230,7 @@ async function getFilesetsPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-    const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
 
     if (data.content && data.content.length > 0) {
       data.content = data.content.map(fileset => {
@@ -289,8 +281,7 @@ async function getErrorFilesetStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-    const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('grad:errorFilesetURL')}/paginated`, params, req.session?.correlationID);
 
     data.content = data?.content.map(error => toTableRow(error));
     data.content.forEach(item => {
@@ -324,10 +315,9 @@ async function getSubmissionMetrics(req, res){
 
 async function getErrorMetrics(req, res){
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/errors`;
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
 
     return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
@@ -338,10 +328,9 @@ async function getErrorMetrics(req, res){
 
 async function getGradSchoolDetails(req, res){
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('gradSchool:rootURL')}/search/${req.params.schoolID}`;
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
 
     return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
@@ -381,8 +370,7 @@ async function getCurrentGradStudentsPaginated(req, res){
     }
   };
 
-  const accessToken = getAccessToken(req);
-  let data = await getDataWithParams(accessToken, `${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
+  let data = await getDataWithParams(`${config.get('gradCurrentStudents:rootURL')}/grad/student/search`, studentSearchParam, req.session?.correlationID);
 
   data.content.forEach(item => {
     if(item.schoolAtGradId){

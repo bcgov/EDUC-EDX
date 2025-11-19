@@ -1,7 +1,6 @@
 'use strict';
 const {FILTER_OPERATION, VALUE_TYPE} = require('../util/constants');
 const {
-  getAccessToken,
   deleteData,
   getData,
   postData,
@@ -19,7 +18,6 @@ const HttpStatus = require('http-status-codes');
 const {ServiceError} = require('./error');
 const {LocalDateTime, DateTimeFormatter} = require('@js-joda/core');
 const {CACHE_KEYS} = require('../util/constants');
-const {getApiCredentials} = require('./auth');
 const cacheService = require('./cache-service');
 const user = require('../components/user');
 const {isDistrictActive} = require('./districtUtils');
@@ -32,8 +30,7 @@ async function uploadFile(req, res) {
     req.body.edxUserID = edxUserInfo.edxUserID;
     req.body.updateUser = getCreateOrUpdateUserValue(req);
 
-    const token = getAccessToken(req);
-    const data = await postData(token, req.body, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`, req.session?.correlationID);
+    const data = await postData(req.body, `${config.get('edx:exchangeURL')}/${req.params.id}/documents`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('uploadFile Error', e.stack);
@@ -41,11 +38,11 @@ async function uploadFile(req, res) {
   }
 }
 
-async function getDocument(token, secureExchangeID, documentID, correlationID) {
+async function getDocument(secureExchangeID, documentID, correlationID) {
   try {
     const endpoint = config.get('edx:exchangeURL');
     log.info('About to call for document');
-    let resDoc = await getData(token, `${endpoint}/${secureExchangeID}/documents/${documentID}`, correlationID);
+    let resDoc = await getData(`${endpoint}/${secureExchangeID}/documents/${documentID}`, correlationID);
     log.info('Document returned');
     return resDoc;
   } catch (e) {
@@ -55,11 +52,10 @@ async function getDocument(token, secureExchangeID, documentID, correlationID) {
 
 async function deleteDocument(req, res) {
   try {
-    const token = getAccessToken(req);
     const endpoint = config.get('edx:exchangeURL');
     const url = `${endpoint}/${req.params.id}/documents/${req.params.documentId}`;
     log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing document:: ' + req.params.documentId);
-    await deleteData(token, url, req.session?.correlationID);
+    await deleteData(url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json();
   } catch (e) {
     log.error('deleteDocument Error', e.stack);
@@ -69,9 +65,7 @@ async function deleteDocument(req, res) {
 
 async function downloadFile(req, res) {
   try {
-    const token = getAccessToken(req);
-
-    let resData = await getDocument(token, req.params.id, req.params.documentId, req.session?.correlationID);
+    let resData = await getDocument(req.params.id, req.params.documentId, req.session?.correlationID);
     if(!isImage(resData) && !isPdf(resData)) {
       res.setHeader('Content-disposition', 'attachment; filename=' + resData.fileName?.replace(/ /g, '_').replace(/,/g, '_').trim());
       res.setHeader('Content-type', resData.fileExtension);
@@ -96,13 +90,12 @@ async function getExchangesPaginated(req) {
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getExchangesPaginated error: User activeInstituteIdentifier does not exist in session');
   }
-  const accessToken = getAccessToken(req);
   let criteria = [];
   let parsedParams = '';
   if (req.query.searchParams) {
     parsedParams = req.query.searchParams;
     if (parsedParams.studentPEN) {
-      let studentDetail = await getData(accessToken, `${config.get('student:apiEndpoint')}?pen=${parsedParams.studentPEN}`);
+      let studentDetail = await getData(`${config.get('student:apiEndpoint')}?pen=${parsedParams.studentPEN}`);
       if (studentDetail[0]) {
         parsedParams.studentId = studentDetail[0].studentID;
         delete parsedParams.studentPEN;
@@ -130,7 +123,7 @@ async function getExchangesPaginated(req) {
     }
   };
 
-  return getDataWithParams(accessToken, `${config.get('edx:exchangeURL')}/paginated`, params, req.session?.correlationID);
+  return getDataWithParams(`${config.get('edx:exchangeURL')}/paginated`, params, req.session?.correlationID);
 }
 
 async function getExchangesCountPaginated(req) {
@@ -159,8 +152,7 @@ async function getExchangesCountPaginated(req) {
       searchCriteriaList: JSON.stringify(criteria),
     }
   };
-  const accessToken = getAccessToken(req);
-  return getDataWithParams(accessToken, `${config.get('edx:exchangeURL')}/paginated`, params, req.session?.correlationID);
+  return getDataWithParams(`${config.get('edx:exchangeURL')}/paginated`, params, req.session?.correlationID);
 }
 
 async function createExchange(req, res) {
@@ -202,8 +194,7 @@ async function createExchange(req, res) {
       createUser: createUpdateUser
     };
 
-    const token = getAccessToken(req);
-    const result = await postData(token, payload, config.get('edx:exchangeURL'), req.session?.correlationID);
+    const result = await postData(payload, config.get('edx:exchangeURL'), req.session?.correlationID);
 
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
@@ -234,10 +225,9 @@ async function clearActiveSession(req) {
 }
 
 async function getExchanges(req, res) {
-  const token = getAccessToken(req);
   return Promise.all([
-    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
-    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getCodeTable(CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
     getExchangesPaginated(req)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
@@ -268,11 +258,10 @@ async function getExchanges(req, res) {
 }
 
 async function getExchange(req, res) {
-  const token = getAccessToken(req);
   return Promise.all([
-    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
-    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
-    getSecureExchange(req.params.id, res, token, req.session?.correlationID)
+    getCodeTable(CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getSecureExchange(req.params.id, res, req.session?.correlationID)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
       let school = {};
@@ -336,7 +325,7 @@ async function getExchange(req, res) {
       }
       if (dataResponse['studentsList']) {
         for (const student of dataResponse['studentsList']) {
-          let studentDetail = await getData(token, `${config.get('student:apiEndpoint')}/${student.studentId}`, req.session?.correlationID);
+          let studentDetail = await getData(`${config.get('student:apiEndpoint')}/${student.studentId}`, req.session?.correlationID);
           let includeDemographicDetails = false;
           if(req.session.activeInstituteType === 'SCHOOL') {
             includeDemographicDetails = studentDetail.mincode === school.mincode;
@@ -384,10 +373,9 @@ async function getExchange(req, res) {
 }
 
 async function getExchangesCount(req, res) {
-  const token = getAccessToken(req);
   return Promise.all([
-    getCodeTable(token, CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
-    getCodeTable(token, CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
+    getCodeTable(CACHE_KEYS.EDX_SECURE_EXCHANGE_STATUS, config.get('edx:exchangeStatusesURL')),
+    getCodeTable(CACHE_KEYS.EDX_MINISTRY_TEAMS, config.get('edx:ministryTeamURL')),
     getExchangesCountPaginated(req)
   ])
     .then(async ([statusCodeResponse, ministryTeamCodeResponse, dataResponse]) => {
@@ -423,8 +411,7 @@ async function markAs(req, res) {
     }
     let isReadByExchangeContact = readStatus === 'read';
 
-    const token = getAccessToken(req);
-    const currentExchange = await getSecureExchange(req.params.id, res, token, req.session?.correlationID);
+    const currentExchange = await getSecureExchange(req.params.id, res, req.session?.correlationID);
 
     if (currentExchange.isReadByExchangeContact === isReadByExchangeContact) {
       return res.status(HttpStatus.OK).json({
@@ -435,7 +422,7 @@ async function markAs(req, res) {
     currentExchange.createDate = null;
     currentExchange.updateDate = null;
     currentExchange.updateUser = getCreateOrUpdateUserValue(req);
-    const result = await putData(token, currentExchange, config.get('edx:exchangeURL'), req.session?.correlationID);
+    const result = await putData(currentExchange, config.get('edx:exchangeURL'), req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'markAs', 'Error with updating the read status of an exchange.');
@@ -444,7 +431,6 @@ async function markAs(req, res) {
 }
 
 async function createSecureExchangeStudent(req, res) {
-  const accessToken = getAccessToken(req);
   try {
 
     const edxUserInfo = req.session.edxUserData;
@@ -456,12 +442,12 @@ async function createSecureExchangeStudent(req, res) {
       createUser: getCreateOrUpdateUserValue(req)
     };
 
-    const attachedSecureExchangeStudents = await getData(accessToken, `${exchangeURL}/${req.params.id}/students`, req.session?.correlationID);
+    const attachedSecureExchangeStudents = await getData(`${exchangeURL}/${req.params.id}/students`, req.session?.correlationID);
     if (attachedSecureExchangeStudents && attachedSecureExchangeStudents?.some((student) => student.studentId === req.body.studentID)) {
       return errorResponse(res, 'Error adding student to an existing secure exchange. Student already attached.', HttpStatus.CONFLICT);
     }
 
-    const result = await postData(accessToken, secureExchangeStudent, `${exchangeURL}/${req.params.id}/students`, req.session?.correlationID);
+    const result = await postData(secureExchangeStudent, `${exchangeURL}/${req.params.id}/students`, req.session?.correlationID);
     return res.status(HttpStatus.CREATED).json(result);
   } catch (e) {
     log.error(e, 'createSecureExchangeStudent', 'Error adding a student to an existing Secure Exchange.');
@@ -471,9 +457,8 @@ async function createSecureExchangeStudent(req, res) {
 
 async function removeSecureExchangeStudent(req, res) {
   try {
-    const token = getAccessToken(req);
     log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing student:: ' + req.params.studentID);
-    const result = await deleteData(token, `${config.get('edx:exchangeURL')}/${req.params.id}/students/${req.params.studentID}`, req.session?.correlationID);
+    const result = await deleteData(`${config.get('edx:exchangeURL')}/${req.params.id}/students/${req.params.studentID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
 
   } catch (e) {
@@ -484,8 +469,7 @@ async function removeSecureExchangeStudent(req, res) {
 
 async function updateEdxUserSchool(req, res) {
   try {
-    const token = getAccessToken(req);
-    let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+    let edxUser = await getData(`${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.edxUserSchoolID === req.body.params.edxUserSchoolID);
 
     let schoolAlreadyPresentForUser = edxUser.edxUserSchools.some(school => school.edxUserSchoolID !== req.body.params.edxUserSchoolID && school.schoolID === req.body.params.schoolID);
@@ -521,7 +505,7 @@ async function updateEdxUserSchool(req, res) {
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
     selectedUserSchool.updateUser = createUpdateUser;
 
-    const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
+    const result = await putData(selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateEdxUserSchool', 'Error occurred while attempting to update user school.');
@@ -531,8 +515,7 @@ async function updateEdxUserSchool(req, res) {
 
 async function updateEdxUserSchoolRoles(req, res) {
   try {
-    const token = getAccessToken(req);
-    let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+    let edxUser = await getData(`${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
 
     let selectedUserSchools = edxUser.edxUserSchools.filter(school => school.schoolID === req.body.params.schoolID);
     if (!selectedUserSchools[0]) {
@@ -562,7 +545,7 @@ async function updateEdxUserSchoolRoles(req, res) {
     selectedUserSchool.createDate = null;
     selectedUserSchool.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
     selectedUserSchool.updateUser = createUpdateUser;
-    const result = await putData(token, selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
+    const result = await putData(selectedUserSchool, `${config.get('edx:edxUsersURL')}/${selectedUserSchool.edxUserID}/school`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateEdxUserSchoolRoles', 'Error occurred while attempting to update user roles.');
@@ -572,8 +555,7 @@ async function updateEdxUserSchoolRoles(req, res) {
 
 async function updateEdxUserDistrictRoles(req, res) {
   try {
-    const token = getAccessToken(req);
-    let edxUser = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
+    let edxUser = await getData(`${config.get('edx:edxUsersURL')}/${req.body.params.edxUserID}`, req.session?.correlationID);
     let selectedUserDistricts = edxUser.edxUserDistricts.filter(district => district.districtID === req.body.params.districtID);
     if (!selectedUserDistricts[0]) {
       return errorResponse(res, 'A user district entry was not found for the selected user.', HttpStatus.NOT_FOUND);
@@ -603,7 +585,7 @@ async function updateEdxUserDistrictRoles(req, res) {
     selectedUserDistrict.updateUser = createUpdateUser;
     selectedUserDistrict.expiryDate = req.body.params.expiryDate ? req.body.params.expiryDate : null;
 
-    const result = await putData(token, selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
+    const result = await putData(selectedUserDistrict, `${config.get('edx:edxUsersURL')}/${selectedUserDistrict.edxUserID}/district`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'updateEdxUserDistrictRoles', 'Error occurred while attempting to update user roles.');
@@ -646,12 +628,12 @@ async function activateEdxUser(req, res) {
       incrementNumberOfRetriesCounter(req);
       return errorResponse(res, 'Incorrect activation details have been entered. Please try again.', HttpStatus.BAD_REQUEST);
     }
-    const token = getAccessToken(req);
-    const response = await postData(token, payload, config.get('edx:userActivationURL'), req.session.correlationID);
+
+    const response = await postData(payload, config.get('edx:userActivationURL'), req.session.correlationID);
     log.info('User Activation Successful');
     req.session.userSchoolIDs = response.edxUserSchools?.map(el => el.schoolID);
     req.session.userDistrictIDs = response.edxUserDistricts?.map(el => el.districtID);
-    await getAndSetupEDXUserAndRedirect(req, res, token, req.session.digitalIdentityData.digitalID, req.session.correlationID);
+    await getAndSetupEDXUserAndRedirect(req, res, req.session.digitalIdentityData.digitalID, req.session.correlationID);
   } catch (e) {
     const msg = mapEdxUserActivationErrorMessage(e?.data?.message);
     log.error(e, 'activateSchoolUser', 'Error getting activated user');
@@ -672,8 +654,7 @@ function incrementNumberOfRetriesCounter(req) {
 
 async function getAllDistrictSchoolEdxUsers(req, res) {
   try {
-    const token = getAccessToken(req);
-    let response = await getData(token, `${config.get('edx:edxUsersURL')}/districtSchools/${req.query.districtID}`, req.session.correlationID);
+    let response = await getData(`${config.get('edx:edxUsersURL')}/districtSchools/${req.query.districtID}`, req.session.correlationID);
     return res.status(HttpStatus.OK).json(response);
   } catch (e) {
     log.error(e, 'getAllDistrictSchoolEdxUsers', 'Error getting all district school EDX users');
@@ -683,8 +664,7 @@ async function getAllDistrictSchoolEdxUsers(req, res) {
 
 async function getEdxUsers(req, res) {
   try {
-    const token = getAccessToken(req);
-    let response = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
+    let response = await getDataWithParams(config.get('edx:edxUsersURL'), {params: req.query}, req.session.correlationID);
     let filteredResponse = [];
 
     //if we search by schoolID strip out other school and district information for the frontend
@@ -715,8 +695,7 @@ async function getEdxUsers(req, res) {
 
 async function districtUserActivationInvite(req, res) {
   try {
-    const token = getAccessToken(req);
-    if(!await checkIfPrimaryCodeExists(req,res,token,'DISTRICT', req.session.activeInstituteIdentifier)){
+    if(!await checkIfPrimaryCodeExists(req,res,'DISTRICT', req.session.activeInstituteIdentifier)){
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No primary code exists for this district'
       });
@@ -728,7 +707,7 @@ async function districtUserActivationInvite(req, res) {
       createUser: createUpdateUser,
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
-    const response = await postData(token, payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
+    const response = await postData(payload, config.get('edx:districtUserActivationInviteURL'), req.session.correlationID);
     return res.status(200).json(response);
   } catch (e) {
     log.error(e, 'districtUserActivationInvite', 'Error occurred while sending user activation invite');
@@ -738,8 +717,7 @@ async function districtUserActivationInvite(req, res) {
 
 async function schoolUserActivationInvite(req, res) {
   try {
-    const token = getAccessToken(req);
-    if(!await checkIfPrimaryCodeExists(req,res,token, 'SCHOOL' , req.body.schoolID)){
+    if(!await checkIfPrimaryCodeExists(req,res, 'SCHOOL' , req.body.schoolID)){
       return res.status(HttpStatus.UNAUTHORIZED).json({
         message: 'No primary code exists for this school'
       });
@@ -752,7 +730,7 @@ async function schoolUserActivationInvite(req, res) {
       edxUserExpiryDate: req.body.edxUserExpiryDate ? req.body.edxUserExpiryDate : null
     };
 
-    const response = await postData(token, payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
+    const response = await postData(payload, config.get('edx:schoolUserActivationInviteURL'), req.session.correlationID);
     return res.status(200).json(response);
   } catch (e) {
     log.error(e, 'schoolUserActivationInvite', 'Error occurred while sending user activation invite');
@@ -765,8 +743,7 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
     let edxUserInstituteType = req.body.params.userSchoolID ? 'school' : 'district';
     let edxUserInstituteID = req.body.params.userSchoolID ?? req.body.params.edxUserDistrictID;
     log.info('EDX User :: ' + req.session.edxUserData.edxUserID + ' is removing '+edxUserInstituteType+' access for:: ' + req.body.params.userToRemove);
-    const token = getAccessToken(req);
-    await deleteData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.userToRemove}/${edxUserInstituteType}/${edxUserInstituteID}`, req.session.correlationID);
+    await deleteData(`${config.get('edx:edxUsersURL')}/${req.body.params.userToRemove}/${edxUserInstituteType}/${edxUserInstituteID}`, req.session.correlationID);
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
     log.error(e, 'removeUserSchoolOrDistrictAccess', 'Error occurred while attempting to remove user school or district access.');
@@ -776,11 +753,10 @@ async function removeUserSchoolOrDistrictAccess(req, res) {
 
 async function relinkUserAccess(req, res) {
   try {
-    const token = getAccessToken(req);
-    let edxUserDetails = await getData(token, `${config.get('edx:edxUsersURL')}/${req.body.params.userToRelink}`, req.session?.correlationID);
+    let edxUserDetails = await getData(`${config.get('edx:edxUsersURL')}/${req.body.params.userToRelink}`, req.session?.correlationID);
     const payload = createRelinkPayload(req, req.body.params.schoolID, edxUserDetails, req.body.params);
     const postUrl = req.body.params.schoolID ? config.get('edx:schoolUserActivationRelink') : config.get('edx:districtUserActivationRelink');
-    await postData(token, payload, postUrl, req.session?.correlationID);
+    await postData(payload, postUrl, req.session?.correlationID);
     return res.status(HttpStatus.OK).json('');
   } catch (e) {
     log.error(e, 'relinkUserAccess', 'Error occurred while attempting to relink user access.');
@@ -830,7 +806,6 @@ function createRelinkPayload(req, schoolID, edxUserDetails, requestParams) {
 async function createSecureExchangeComment(req, res) {
   try {
     let createUpdateUser = getCreateOrUpdateUserValue(req);
-    const token = getAccessToken(req);
     const edxUserInfo = req.session.edxUserData;
     const payload = {
       secureExchangeID: req.params.id,
@@ -842,7 +817,7 @@ async function createSecureExchangeComment(req, res) {
       createUser: createUpdateUser
     };
 
-    const result = await postData(token, payload, `${config.get('edx:exchangeURL')}/${req.params.id}/comments`, req.session.correlationID);
+    const result = await postData(payload, `${config.get('edx:exchangeURL')}/${req.params.id}/comments`, req.session.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'createExchangeComment', 'Error occurred while attempting to create a new exchange comment.');
@@ -875,8 +850,7 @@ async function verifyActivateUserLink(req, res) {
     validationCode: req.query.validationCode
   };
   try {
-    let data = await getApiCredentials(config.get('oidc:clientId'), config.get('oidc:clientSecret'));
-    const result = await postData(data.accessToken, payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
+    const result = await postData(payload, config.get('edx:updateActivationUrlClicked'), req.session?.correlationID);
     if (result === 'SCHOOL') {
       return res.redirect(baseUrl + '/invite-selection?type=SCHOOL');
     }
@@ -1004,12 +978,12 @@ async function setInstituteTypeIdentifierAndRedirectToDistrict(req, res, distric
   }
 }
 
-function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, schoolID, sdcSchoolCollectionID, directToGrad) {
+function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, schoolID, sdcSchoolCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
   if(roles.includes('STUDENT_DATA_COLLECTION') && sdcSchoolCollectionID){
     Promise.all([
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+      getData(config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+      getData(config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
     ])
       .then(async ([userSchools, userDistricts]) => {
         req.session.userSchoolIDs = userSchools?.filter((el) => {
@@ -1029,7 +1003,7 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
       });
   } else if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER')) || (roles.includes('ASSESSMENT_ADMIN'))) && directToGrad){
     Promise.all([
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID)
+      getData(config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID)
     ])
       .then(async ([userSchools]) => {
         req.session.userSchoolIDs = userSchools?.filter((el) => {
@@ -1050,12 +1024,12 @@ function getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, acces
   }
 }
 
-function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
+function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, districtID, sdcDistrictCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
   if(roles.includes('EDX_ADMIN')){
     Promise.all([
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+      getData(config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+      getData(config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
     ])
       .then(async ([userSchools, userDistricts]) => {
         req.session.userSchoolIDs = userSchools?.filter((el) => {
@@ -1079,11 +1053,11 @@ function getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, acc
   }
 }
 
-function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, districtID, sdcDistrictCollectionID, directToGrad) {
+function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, districtID, sdcDistrictCollectionID, directToGrad) {
   let roles = req.session.passport.user._json.realm_access.roles;
   if((roles.includes('GRAD_DATA_COLLECTION_ADMIN') || (roles.includes('GRAD_DATA_COLLECTION_VIEWER')) || (roles.includes('ASSESSMENT_ADMIN'))) && directToGrad){
     Promise.all([
-      getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+      getData(config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
     ])
       .then(async ([userDistricts]) => {
         req.session.userDistrictIDs = userDistricts?.filter((el) => {
@@ -1102,12 +1076,12 @@ function getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessTok
   }
 }
 
-function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
+function getAndSetupEDXUserAndRedirect(req, res, digitalID, correlationID, isValidTenant='true', isIDIRUser= 'false') {
   if(!isValidTenant || isValidTenant !== 'true'){
     log.info('Not a valid tenant, redirecting to Unauthorized Page');
     res.redirect(config.get('server:frontend') + '/unauthorized');
   }else if(!isIDIRUser || isIDIRUser !== 'true'){
-    user.getEdxUserByDigitalId(accessToken, digitalID, correlationID).then(async ([edxUserData]) => {
+    user.getEdxUserByDigitalId(digitalID, correlationID).then(async ([edxUserData]) => {
       if (edxUserData) {
         req.session.userSchoolIDs = edxUserData.edxUserSchools?.filter((el) => {
           var school = cacheService.getSchoolBySchoolID(el.schoolID);
@@ -1137,8 +1111,8 @@ function getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correla
     let roles = req.session.passport.user._json.realm_access.roles;
     if(roles.includes('EDX_ADMIN')){
       Promise.all([
-        getData(accessToken, config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
-        getData(accessToken, config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
+        getData(config.get('edx:edxUsersURL') + '/user-schools', req.session.correlationID),
+        getData(config.get('edx:edxUsersURL') + '/user-districts', req.session.correlationID)
       ])
         .then(async ([userSchools, userDistricts]) => {
           req.session.userSchoolIDs = userSchools?.filter((el) => {
@@ -1246,8 +1220,7 @@ function setSessionInstituteIdentifiers(req, activeInstituteIdentifier, activeIn
 
 async function findPrimaryEdxActivationCode(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType.toUpperCase()}/${req.params.instituteIdentifier}`, req.session?.correlationID);
+    const data = await getData(`${config.get('edx:activationCodeUrl')}/primary/${req.params.instituteType.toUpperCase()}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e.message === '404' || e.status === '404' || e.status === 404) {
@@ -1258,9 +1231,9 @@ async function findPrimaryEdxActivationCode(req, res) {
   }
 }
 
-async function checkIfPrimaryCodeExists(req,res, token, instituteType, instituteIdentifier){
+async function checkIfPrimaryCodeExists(req,res, instituteType, instituteIdentifier){
   try {
-    await getData(token, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${instituteIdentifier}`, req.session?.correlationID);
+    await getData(`${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${instituteIdentifier}`, req.session?.correlationID);
     return true;
   } catch (e) {
     return false;
@@ -1277,8 +1250,8 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
       updateUser: createUpdateUser,
       createUser: createUpdateUser
     };
-    const token = getAccessToken(req);
-    const result = await postData(token, payload, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
+
+    const result = await postData(payload, `${config.get('edx:activationCodeUrl')}/primary/${instituteType}/${req.params.instituteIdentifier}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {
     log.error(e, 'generateOrRegeneratePrimaryEdxActivationCode', 'Error occurred while attempting to generate a Primary Activation Code.');
@@ -1288,11 +1261,10 @@ async function generateOrRegeneratePrimaryEdxActivationCode(req, res) {
 
 async function getRolesByInstituteType(req, res) {
   try {
-    const token = getAccessToken(req);
     const params = {
       params: req.query
     };
-    let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting roles', e.stack);
@@ -1300,11 +1272,11 @@ async function getRolesByInstituteType(req, res) {
   }
 }
 
-async function getSecureExchange(secureExchangeID, res, token, correlationID) {
+async function getSecureExchange(secureExchangeID, res, correlationID) {
   if (res.locals.requestedSecureExchange && res.locals.requestedSecureExchange.secureExchangeID === secureExchangeID) {
     return res.locals.requestedSecureExchange;
   }
-  return getData(token, `${config.get('edx:exchangeURL')}/${secureExchangeID}`, correlationID);
+  return getData(`${config.get('edx:exchangeURL')}/${secureExchangeID}`, correlationID);
 }
 
 module.exports = {
