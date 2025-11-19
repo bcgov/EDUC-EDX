@@ -50,13 +50,12 @@ async function deleteData(url, correlationID) {
 
 async function forwardGetReq(req, res, url) {
   try {
-    const accessToken = await getAccessToken();
     const params = {
       params: req.query
     };
 
     log.info('forwardGetReq Url', url);
-    const data = await getDataWithParams(accessToken, url, params, req.session?.correlationID);
+    const data = await getDataWithParams(url, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('forwardGetReq Error', e.stack);
@@ -264,9 +263,8 @@ async function getCodeTable(key, url, useCache = true) {
 function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   return async function getCodesHandler(req, res) {
     try {
-      const token = await getAccessToken();
       const url = config.get(urlKey);
-      const codes = await getCodeTable(token, cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
+      const codes = await getCodeTable(cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
 
       return res.status(HttpStatus.OK).json(codes);
 
