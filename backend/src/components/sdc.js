@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getData, postData, putData, getDataWithParams,
+const { handleExceptionResponse, getData, postData, putData, getDataWithParams,
   getCreateOrUpdateUserValue, stripNumberFormattingNumberOfCourses} = require('./utils');
 const { edxUserHasAccessToInstitute } = require('./permissionUtils');
 const HttpStatus = require('http-status-codes');
@@ -16,8 +16,7 @@ const {LocalDate} = require('@js-joda/core');
 
 async function getCollectionBySchoolId(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('sdc:schoolCollectionURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
+    const data = await getData(`${config.get('sdc:schoolCollectionURL')}/search/${req.params.schoolID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e?.status === 404) {
@@ -31,8 +30,7 @@ async function getCollectionBySchoolId(req, res) {
 
 async function getCollectionByDistrictId(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('sdc:districtCollectionURL')}/search/${req.params.districtID}`, req.session?.correlationID);
+    const data = await getData(`${config.get('sdc:districtCollectionURL')}/search/${req.params.districtID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e?.status === 404) {
@@ -53,12 +51,11 @@ async function uploadFile(req, res) {
       createUser: createUpdateUser,
       updateUser: createUpdateUser
     };
-    const token = getAccessToken(req);
     let data;
     if (req.params.sdcSchoolCollectionID){
-      data = await postData(token, payload, `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`, req.session?.correlationID);
     } else {
-      data = await postData(token, payload, `${config.get('sdc:rootURL')}/district/${req.params.sdcDistrictCollectionID}/file`, req.session?.correlationID);
+      data = await postData(payload, `${config.get('sdc:rootURL')}/district/${req.params.sdcDistrictCollectionID}/file`, req.session?.correlationID);
     }
     broadcastUtil.publishSdcEvents(data, CONSTANTS.SDC_UPLOAD_TOPIC);
 
@@ -75,9 +72,8 @@ async function uploadFile(req, res) {
 
 async function getSdcFileProgress(req, res) {
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('sdc:rootURL')}/${req.params.sdcSchoolCollectionID}/file`;
-    const data = await getData(token, url, req.session?.correlationID);
+    const data = await getData(url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('getSdcFileProgress Error', e.stack);
@@ -87,9 +83,8 @@ async function getSdcFileProgress(req, res) {
 
 async function getDistrictSdcFileProgress(req, res){
   try {
-    const token = getAccessToken(req);
     const url = `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/fileProgress`;
-    const data = await getData(token, url, req.session?.correlationID);
+    const data = await getData(url, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('getDistrictSdcFileProgress Error', e.stack);
@@ -105,8 +100,7 @@ async function updateDistrictCollection(req, res) {
     payload.updateDate = null;
     payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcDistrictCollectionStatusCode = req.body.status;
-    const token = getAccessToken(req);
-    const data = await putData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}`, req.session?.correlationID);
+    const data = await putData(payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating the school collection record', e.stack);
@@ -122,8 +116,7 @@ async function updateSchoolCollection(req, res) {
     payload.updateDate = null;
     payload.updateUser = getCreateOrUpdateUserValue(req);
     payload.sdcSchoolCollectionStatusCode = req.body.status;
-    const token = getAccessToken(req);
-    const data = await putData(token, payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    const data = await putData(payload, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating the school collection record', e.stack);
@@ -133,8 +126,7 @@ async function updateSchoolCollection(req, res) {
 
 async function getDistrictCollectionById(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+    const data = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error retrieving the district collection record', e.stack);
@@ -144,8 +136,7 @@ async function getDistrictCollectionById(req, res) {
 
 async function getSchoolCollectionById(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getSdcSchoolCollection(req.params.sdcSchoolCollectionID, res, token, req.session?.correlationID);
+    const data = await getSdcSchoolCollection(req.params.sdcSchoolCollectionID, res, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error retrieving the school collection record', e.stack);
@@ -215,17 +206,15 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-
-    let token = getAccessToken(req);    
     
     let collectionData = null;
     if(req.params.sdcDistrictCollectionID) {
-      collectionData = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+      collectionData = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, req.session?.correlationID);
     } else if(req.params.sdcSchoolCollectionID) {
-      collectionData = await getSdcSchoolCollection(req.params.sdcSchoolCollectionID, res, token, req.session?.correlationID);
+      collectionData = await getSdcSchoolCollection(req.params.sdcSchoolCollectionID, res, req.session?.correlationID);
     }
-    token = getAccessToken(req);        
-    let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionStudentURL')}/paginated`, params, req.session?.correlationID);
+
+    let data = await getDataWithParams(`${config.get('sdc:schoolCollectionStudentURL')}/paginated`, params, req.session?.correlationID);
     if (req?.query?.returnKey) {
       let result = data?.content.map((student) => student[req?.query?.returnKey]);
       return res.status(HttpStatus.OK).json(result);
@@ -272,8 +261,7 @@ function createAssignedPENSearchCriteria(searchParams) {
 
 async function getSDCSchoolCollectionStudentSummaryCounts(req, res) {
   try {
-    const token = getAccessToken(req);
-    let errorWarningCount = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/stats/error-warning-count/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
+    let errorWarningCount = await getData(`${config.get('sdc:schoolCollectionStudentURL')}/stats/error-warning-count/${req.params.sdcSchoolCollectionID}`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(errorWarningCount);
   } catch (e) {
     if (e?.status === 404) {
@@ -287,8 +275,7 @@ async function getSDCSchoolCollectionStudentSummaryCounts(req, res) {
 
 async function getSDCSchoolCollectionStudentDetail(req, res) {
   try {
-    const token = getAccessToken(req);
-    let sdcSchoolCollectionStudentData = await getSdcSchoolCollectionStudent(req.params.sdcSchoolCollectionStudentID, res, token, req.session?.correlationID);
+    let sdcSchoolCollectionStudentData = await getSdcSchoolCollectionStudent(req.params.sdcSchoolCollectionStudentID, res, req.session?.correlationID);
     if (sdcSchoolCollectionStudentData?.enrolledProgramCodes) {
       sdcSchoolCollectionStudentData.enrolledProgramCodes = sdcSchoolCollectionStudentData?.enrolledProgramCodes.match(/.{1,2}/g);
     }
@@ -320,8 +307,7 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
       payload.enrolledProgramCodes = payload.enrolledProgramCodes.join('');
     }
 
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/mark-for-review`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:sdcDuplicateURL')}/mark-for-review`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error updating sdc school collection student detail', e.stack);
@@ -332,10 +318,9 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
 async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
   try {
     let studentLock;
-    const token = getAccessToken(req);
     if(req.body.sdcSchoolCollectionStudentID) {
       let sdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
-      let currentStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, req.session?.correlationID);
+      let currentStudent = await getData(`${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, req.session?.correlationID);
       if (req.body.updateDate !== currentStudent.updateDate) {
         throw new Error(HttpStatus.CONFLICT.toString());
       }
@@ -357,7 +342,7 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
     if (payload?.numberOfCoursesDec) {
       payload.numberOfCourses = stripNumberFormattingNumberOfCourses(payload.numberOfCoursesDec);
     }
-    const data = await postData(token, payload, config.get('sdc:schoolCollectionStudentURL') + '/false', req.session?.correlationID);
+    const data = await postData(payload, config.get('sdc:schoolCollectionStudentURL') + '/false', req.session?.correlationID);
     if(studentLock) {
       await redisUtil.unlockSdcStudentBeingProcessedInRedis(studentLock);
     }
@@ -385,13 +370,12 @@ async function updateAndValidateSdcSchoolCollectionStudent(req, res) {
 
 async function removeSDCSchoolCollectionStudents(req, res) {
   try {
-    const token = getAccessToken(req);
     let payload = {
       softDeleteStudentIDs: req.body,
       updateUser: getCreateOrUpdateUserValue(req)
     };
     log.info('EDX User :: ' + getCreateOrUpdateUserValue(req) + ' is removing SDC students :: ' + JSON.stringify(payload));
-    let deletedSdcSchoolCollectionStudentData = await postData(token, payload, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
+    let deletedSdcSchoolCollectionStudentData = await postData(payload, `${config.get('sdc:schoolCollectionStudentURL')}/soft-delete-students`);
     return res.status(HttpStatus.OK).json(deletedSdcSchoolCollectionStudentData);
   } catch (e) {
     log.error('Error deleting SDC School Collection Students.', e.stack);
@@ -401,8 +385,7 @@ async function removeSDCSchoolCollectionStudents(req, res) {
 
 async function getSchoolStudentDuplicates(req, res) {
   try {
-    const token = getAccessToken(req);
-    let studentDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
+    let studentDuplicates = await getData(`${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/duplicates`, req.session?.correlationID);
 
     let dupsMap = new Map();
     studentDuplicates.forEach((dup) => {
@@ -437,8 +420,7 @@ function setStudentMetaData(student) {
 
 async function getSchoolSdcDuplicates(req, res) {
   try {
-    const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(`${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/sdc-duplicates`, req.session?.correlationID);
 
     res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, false, false));
   } catch (e) {
@@ -541,8 +523,7 @@ async function getStudentHeadcounts(req, res) {
         compare: req.query.compare
       }
     };
-    const token = getAccessToken(req);
-    let headCounts = await getDataWithParams(token, `${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params, req.session?.correlationID);
+    let headCounts = await getDataWithParams(`${config.get('sdc:schoolCollectionStudentURL')}/headcounts/${req.params.sdcSchoolCollectionID}`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(headCounts);
   } catch (e) {
     log.error('Error getting Student headcount.', e.stack);
@@ -558,8 +539,7 @@ async function getDistrictHeadcounts(req, res) {
         compare: req.query.compare
       }
     };
-    const token = getAccessToken(req);
-    let headCounts = await getDataWithParams(token, `${config.get('sdc:rootURL')}/headcounts/${req.params.sdcDistrictCollectionID}`, params, req.session?.correlationID);
+    let headCounts = await getDataWithParams(`${config.get('sdc:rootURL')}/headcounts/${req.params.sdcDistrictCollectionID}`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(headCounts);
   } catch (e) {
     log.error('Error getting District headcount.', e.stack);
@@ -567,35 +547,33 @@ async function getDistrictHeadcounts(req, res) {
   }
 }
 
-async function getSdcDistrictCollection(sdcDistrictCollectionID, res, token, correlationID) {
+async function getSdcDistrictCollection(sdcDistrictCollectionID, res, correlationID) {
   if (res.locals.requestedSdcDistrictCollection && res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID === sdcDistrictCollectionID) {
     return res.locals.requestedSdcDistrictCollection;
   }
-  return getData(token, `${config.get('sdc:districtCollectionURL')}/${sdcDistrictCollectionID}`, correlationID);
+  return getData(`${config.get('sdc:districtCollectionURL')}/${sdcDistrictCollectionID}`, correlationID);
 }
 
-async function getSdcSchoolCollection(sdcSchoolCollectionID, res, token, correlationID) {
+async function getSdcSchoolCollection(sdcSchoolCollectionID, res, correlationID) {
   if (res.locals.requestedSdcSchoolCollection && res.locals.requestedSdcSchoolCollection.sdcSchoolCollectionID === sdcSchoolCollectionID) {
     return res.locals.requestedSdcSchoolCollection;
   }
-  return getData(token, `${config.get('sdc:schoolCollectionURL')}/${sdcSchoolCollectionID}`, correlationID);
+  return getData(`${config.get('sdc:schoolCollectionURL')}/${sdcSchoolCollectionID}`, correlationID);
 }
 
-async function getSdcSchoolCollectionStudent(sdcSchoolCollectionStudentID, res, token, correlationID) {
+async function getSdcSchoolCollectionStudent(sdcSchoolCollectionStudentID, res, correlationID) {
   if (res.locals.requestedSdcSchoolCollectionStudent && res.locals.requestedSdcSchoolCollectionStudent.sdcSchoolCollectionStudentID === sdcSchoolCollectionStudentID) {
     return res.locals.requestedSdcSchoolCollectionStudent;
   }
-  return await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, correlationID);
+  return await getData(`${config.get('sdc:schoolCollectionStudentURL')}/${sdcSchoolCollectionStudentID}`, correlationID);
 }
 
 async function getSdcSchoolCollections(req, res) {
   try {
-    const token = getAccessToken(req);
-
     if (res.locals.requestedSdcDistrictCollection) {
       let url = `${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollectionID}/sdcSchoolCollections`;
 
-      let data = await getData(token, url, req.session?.correlationID);
+      let data = await getData(url, req.session?.correlationID);
       data?.forEach(value => {
         value.schoolName = getSchoolName(cacheService.getSchoolBySchoolID(value.schoolID));
       });
@@ -659,8 +637,6 @@ async function downloadSdcReport(req, res) {
       });
     }
 
-    const token = getAccessToken(req);
-
     let mincode;
     let url;
     if(req.params.sdcDistrictCollectionID){
@@ -671,7 +647,7 @@ async function downloadSdcReport(req, res) {
       url = `${config.get('sdc:rootURL')}/reportGeneration/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/${reportType}`;
     }
 
-    const resData = await getData(token, url);
+    const resData = await getData(url);
     const fileDetails = getFileDetails(reportType, mincode);
 
     setResponseHeaders(res, fileDetails);
@@ -871,8 +847,7 @@ async function getStudentDifferencesByInstituteCollectionId(req, res) {
       }
     };
 
-    const token = getAccessToken(req);
-    let data = await getDataWithParams(token, `${config.get('sdc:rootURL')}/reportGeneration/differences`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('sdc:rootURL')}/reportGeneration/differences`, params, req.session?.correlationID);
 
     data.content = data?.content?.map(pair => ({
       currentStudent: toTableRow(pair.currentStudent),
@@ -898,8 +873,7 @@ async function getStudentDifferencesByInstituteCollectionId(req, res) {
 
 async function getSdcSchoolCollectionMonitoringBySdcDistrictCollectionId(req, res) {
   try {
-    const token = getAccessToken(req);
-    const data = await getData(token, `${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID}/monitorSdcSchoolCollections`, req.session?.correlationID);
+    const data = await getData(`${config.get('sdc:districtCollectionURL')}/${res.locals.requestedSdcDistrictCollection.sdcDistrictCollectionID}/monitorSdcSchoolCollections`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error retrieving the district collection record', e.stack);
@@ -958,37 +932,36 @@ function setDuplicateResponsePayload(req, sdcDuplicates, isProvincialDuplicate, 
 }
 
 async function getUserWithSdcRole(req, sdcDuplicates) {
-  const token = getAccessToken(req);
   for(let sdcDuplicate of sdcDuplicates) {
     if(sdcDuplicate.duplicateSeverityCode === 'NON_ALLOW') {
       const school1 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent1Entity?.schoolID);
       const school2 = cacheService.getSchoolBySchoolID(sdcDuplicate.sdcSchoolCollectionStudent2Entity?.schoolID);
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID)) {
-        let responseEntity1 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
+        let responseEntity1 = await getDataWithParams(config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}}, req.session.correlationID);
         let sdcUser1 = responseEntity1?.find(user => {
           return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent1Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
         });
 
         if(sdcUser1 !== undefined) {
-          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
+          let school1Details = await getData(`${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent1Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
         } else if(sdcDuplicate.sdcSchoolCollectionStudent1Entity.sdcDistrictCollectionID !== null) {
-          let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school1.districtID}`, req.session?.correlationID);
+          let districtDetails = await getData(`${config.get('institute:rootURL')}/district/${school1.districtID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent1Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
         }
       }
 
       if(!edxUserHasAccessToInstitute(req.session.activeInstituteType, 'SCHOOL', req.session.activeInstituteIdentifier, sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID)) {
-        let responseEntity2 = await getDataWithParams(token, config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
+        let responseEntity2 = await getDataWithParams(config.get('edx:edxUsersURL'), {params: {schoolID: sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}}, req.session.correlationID);
         let sdcUser2 = responseEntity2?.find(user => {
           return user?.edxUserSchools.find(school => school?.schoolID === sdcDuplicate?.sdcSchoolCollectionStudent2Entity?.schoolID && school.edxUserSchoolRoles.some(role => role?.edxRoleCode === 'SCHOOL_SDC'));
         });
 
         if(sdcUser2 !== undefined) {
-          let school1Details = await getData(token, `${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}`, req.session?.correlationID);
+          let school1Details = await getData(`${config.get('institute:rootURL')}/school/${sdcDuplicate.sdcSchoolCollectionStudent2Entity.schoolID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: true, phoneNumber: school1Details?.phoneNumber};
         } else if(sdcDuplicate.sdcSchoolCollectionStudent2Entity.sdcDistrictCollectionID !== null) {
-          let districtDetails = await getData(token, `${config.get('institute:rootURL')}/district/${school2.districtID}`, req.session?.correlationID);
+          let districtDetails = await getData(`${config.get('institute:rootURL')}/district/${school2.districtID}`, req.session?.correlationID);
           sdcDuplicate.sdcSchoolCollectionStudent2Entity.contactInfo = {isSchoolContact: false, phoneNumber: districtDetails?.phoneNumber};
         }
       }
@@ -999,8 +972,7 @@ async function getUserWithSdcRole(req, sdcDuplicates) {
 
 async function getInDistrictDuplicates(req, res) {
   try {
-    const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(`${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/in-district-duplicates`, req.session?.correlationID);
     res.status(HttpStatus.OK).json(setDuplicateResponsePayload(req, sdcDuplicates, false, false));
   } catch (e) {
     log.error('Error retrieving the in district duplicates', e.stack);
@@ -1010,8 +982,7 @@ async function getInDistrictDuplicates(req, res) {
 
 async function getProvincialDuplicates(req, res) {
   try {
-    const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(`${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/provincial-duplicates`, req.session?.correlationID);
     let updatedDupes = await getUserWithSdcRole(req, sdcDuplicates);
     let responseDupe = setDuplicateResponsePayload(req, updatedDupes, true, false);
     res.status(HttpStatus.OK).json(responseDupe);
@@ -1023,8 +994,7 @@ async function getProvincialDuplicates(req, res) {
 
 async function getProvincialDuplicatesForSchool(req, res) {
   try {
-    const token = getAccessToken(req);
-    let sdcDuplicates = await getData(token, `${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
+    let sdcDuplicates = await getData(`${config.get('sdc:sdcDuplicateURL')}/sdcSchoolCollection/${req.params.sdcSchoolCollectionID}/provincial-duplicates`, req.session?.correlationID);
     let updatedDupes = await getUserWithSdcRole(req, sdcDuplicates);
     let responseDupe = setDuplicateResponsePayload(req, updatedDupes, true, true);
     res.status(HttpStatus.OK).json(responseDupe);
@@ -1108,8 +1078,7 @@ async function unsubmitSdcSchoolCollection(req, res) {
       'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/unsubmit`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:schoolCollectionURL')}/unsubmit`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error unsubmitting the school collection record', e.stack);
@@ -1123,8 +1092,7 @@ async function startFromPriorSeptCollection(req, res) {
       'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/priorCollection`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:schoolCollectionURL')}/priorCollection`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('startFromPriorSeptCollection Error', e.stack);
@@ -1138,8 +1106,7 @@ async function reportZeroEnrollment(req, res) {
       'updateUser': getCreateOrUpdateUserValue(req),
       'sdcSchoolCollectionID': req.params.sdcSchoolCollectionID
     };
-    const token = getAccessToken(req);
-    const data = await postData(token, payload, `${config.get('sdc:schoolCollectionURL')}/reportZeroEnrollment`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:schoolCollectionURL')}/reportZeroEnrollment`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('reportZeroEnrollment Error', e.stack);
@@ -1149,8 +1116,6 @@ async function reportZeroEnrollment(req, res) {
 
 async function resolveDuplicates(req, res) {
   try {
-    const token = getAccessToken(req);
-
     let duplicateLock = await redisUtil.lockSdcDuplicateBeingProcessedInRedis(res.locals.sdcSchoolCollectionStudentsToUpdate.sdcSchoolCollectionStudentID);
     const payload = req.body.students;
     payload.forEach(student => {
@@ -1168,7 +1133,7 @@ async function resolveDuplicates(req, res) {
       student.sdcSchoolCollectionStudentEnrolledPrograms = null;
     });
 
-    const data = await postData(token, payload, `${config.get('sdc:sdcDuplicateURL')}/type/${req.params.type}/false`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:sdcDuplicateURL')}/type/${req.params.type}/false`, req.session?.correlationID);
     await redisUtil.unlockSdcDuplicateBeingProcessedInRedis(duplicateLock);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
@@ -1185,8 +1150,7 @@ async function resolveDuplicates(req, res) {
 
 async function getStudentValidationIssueCodes(req, res) {
   try {
-    const token = getAccessToken(req);
-    let studentValidationIssueCodes = await getData(token, `${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/student-validation-issue-codes`, req.session?.correlationID);
+    let studentValidationIssueCodes = await getData(`${config.get('sdc:schoolCollectionURL')}/${req.params.sdcSchoolCollectionID}/student-validation-issue-codes`, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(studentValidationIssueCodes);
   } catch (e) {
     log.error('Error getting Student validation issue codes.', e.stack);
@@ -1196,10 +1160,9 @@ async function getStudentValidationIssueCodes(req, res) {
 
 async function submitDistrictSignature(req, res) {
   try {
-    const token = getAccessToken(req);
     let signatureLock = await redisUtil.lockSdcDistrictWhileSignatureIsBeingProcessedInRedis(req.params.sdcDistrictCollectionID);
 
-    const payload = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, token, req.session?.correlationID);
+    const payload = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, req.session?.correlationID);
     let signatures = Array.from(payload?.submissionSignatures);
 
     const newSignature = {
@@ -1216,7 +1179,7 @@ async function submitDistrictSignature(req, res) {
     signatures.push(newSignature);
     payload.submissionSignatures = signatures;
 
-    const data = await postData(token, payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/sign-off`, req.session?.correlationID);
+    const data = await postData(payload, `${config.get('sdc:districtCollectionURL')}/${req.params.sdcDistrictCollectionID}/sign-off`, req.session?.correlationID);
     await redisUtil.unlockSdcDistrictWhileSignatureIsBeingProcessedInRedis(signatureLock);
 
     return res.status(HttpStatus.OK).json(data);
@@ -1228,7 +1191,6 @@ async function submitDistrictSignature(req, res) {
 
 async function getSdcSchoolCollectionPaginated(req, res) {
   try {
-    const token = getAccessToken(req);
     const search = [];
     search.push({
       condition: null,
@@ -1246,7 +1208,7 @@ async function getSdcSchoolCollectionPaginated(req, res) {
       }
     };
 
-    let data = await getDataWithParams(token, `${config.get('sdc:schoolCollectionURL')}/paginated`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('sdc:schoolCollectionURL')}/paginated`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e?.status === 404) {
@@ -1283,7 +1245,6 @@ function addHistoricCollectionSearchCriteria(search, req) {
 
 async function getSdcDistrictCollectionPaginated(req, res) {
   try {
-    const token = getAccessToken(req);
     const search = [];
     search.push({
       condition: null,
@@ -1301,7 +1262,7 @@ async function getSdcDistrictCollectionPaginated(req, res) {
       }
     };
 
-    let data = await getDataWithParams(token, `${config.get('sdc:districtCollectionURL')}/paginated`, params, req.session?.correlationID);
+    let data = await getDataWithParams(`${config.get('sdc:districtCollectionURL')}/paginated`, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     if (e?.status === 404) {

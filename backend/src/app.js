@@ -10,7 +10,6 @@ const {rateLimit}  = require('express-rate-limit');
 const atob = require('atob');
 const passport = require('passport');
 const helmet = require('helmet');
-const utils = require('./components/utils');
 const auth = require('./components/auth');
 const bodyParser = require('body-parser');
 const lusca = require('lusca');
@@ -164,7 +163,7 @@ const parseJwt = (token) => {
 };
 
 //initialize our authentication strategy
-utils.getOidcDiscovery().then(discovery => {
+auth.getOidcDiscovery().then(discovery => {
   //OIDC Strategy is used for authorization
   addLoginPassportUse(discovery, 'oidcIDIRSilent', config.get('server:frontend') + '/api/auth/callback_idir_silent_sdc', 'keycloak_bcdevexchange_idir');
   addLoginPassportUse(discovery, 'oidcIDIR', config.get('server:frontend') + '/api/auth/callback_idir', 'keycloak_bcdevexchange_idir');

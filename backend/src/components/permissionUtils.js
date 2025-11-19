@@ -2,12 +2,13 @@
 
 const HttpStatus = require('http-status-codes');
 const {doesSchoolBelongToDistrict} = require('./institute-cache');
-const {getAccessToken, getData, SecureExchangeStatuses, getDataWithParams} = require('./utils');
+const {getData, SecureExchangeStatuses, getDataWithParams} = require('./utils');
 const {filterSchoolRoles} = require('./roleFilter');
 const config = require('../config');
 const log = require('./logger');
 const {v4: validate } = require('uuid');
 const {FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../util/constants');
+const auth = require('./auth');
 
 //Common checks
 function checkEDXUserAccessToRequestedInstitute(req, res, next) {
@@ -85,7 +86,7 @@ function verifyQueryParamValueMatchesBodyValue(paramKey, bodyKey) {
 }
 
 function validateAccessToken(req, res, next) {
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'The request didn\'t contain a valid access token.'
@@ -309,14 +310,14 @@ async function loadSecureExchange(req, res, next) {
   if (!res.locals.requestedSecureExchangeID) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
     });
   }
   try {
-    res.locals.requestedSecureExchange = await getData(token, `${config.get('edx:exchangeURL')}/${res.locals.requestedSecureExchangeID}`, req.session?.correlationID);
+    res.locals.requestedSecureExchange = await getData(`${config.get('edx:exchangeURL')}/${res.locals.requestedSecureExchangeID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the Secure Exchange in loadSecureExchange.', e.stack);
   }
@@ -405,7 +406,7 @@ function findSdcSchoolCollectionID_fromRequestedSdcSchoolCollectionStudent(req, 
 }
 
 async function loadIncomingFileset(req, res, next) {
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
@@ -414,7 +415,7 @@ async function loadIncomingFileset(req, res, next) {
   try {
     const url = `${config.get('grad:rootURL')}/metrics/${req.params.activeIncomingFilesetID}/submission`;
 
-    res.locals.requestedIncomingFileset = await getData(token, url);
+    res.locals.requestedIncomingFileset = await getData(url);
   } catch (e) {
     log.error('Unable to load the incoming fileset with ID: ' + req.params.activeIncomingFilesetID, e.stack);
   }
@@ -426,14 +427,14 @@ async function loadSdcSchoolCollection(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionID) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
     });
   }
   try {
-    res.locals.requestedSdcSchoolCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${res.locals.requestedSdcSchoolCollectionID}`, req.session?.correlationID);
+    res.locals.requestedSdcSchoolCollection = await getData(`${config.get('sdc:rootURL')}/sdcSchoolCollection/${res.locals.requestedSdcSchoolCollectionID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the SDC School Collection in loadSdcSchoolCollection.', e.stack);
   }
@@ -444,14 +445,14 @@ async function loadSdcDistrictCollection(req, res, next) {
   if (!res.locals.requestedSdcDistrictCollectionID) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
     });
   }
   try {
-    res.locals.requestedSdcDistrictCollection = await getData(token, `${config.get('sdc:rootURL')}/sdcDistrictCollection/${res.locals.requestedSdcDistrictCollectionID}`, req.session?.correlationID);
+    res.locals.requestedSdcDistrictCollection = await getData(`${config.get('sdc:rootURL')}/sdcDistrictCollection/${res.locals.requestedSdcDistrictCollectionID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the SDC District Collection in loadSdcDistrictCollection.', e.stack);
   }
@@ -478,14 +479,14 @@ async function loadSdcSchoolCollectionStudent(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionStudentID) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
     });
   }
   try {
-    res.locals.requestedSdcSchoolCollectionStudent = await getData(token, `${config.get('sdc:schoolCollectionStudentURL')}/${res.locals.requestedSdcSchoolCollectionStudentID}`, req.session?.correlationID);
+    res.locals.requestedSdcSchoolCollectionStudent = await getData(`${config.get('sdc:schoolCollectionStudentURL')}/${res.locals.requestedSdcSchoolCollectionStudentID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the SDC School Collection Student in loadSdcSchoolCollectionStudent.', e.stack);
   }
@@ -507,7 +508,7 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
       message: 'Too many SDC School Collection Student IDs were requested.'
     });
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
@@ -541,7 +542,7 @@ async function loadRequestedSdcSchoolCollectionStudents(req, res, next) {
     }
   };
   try {
-    let response = await getDataWithParams(token,`${config.get('sdc:schoolCollectionStudentURL')}/paginated`, searchParameters);
+    let response = await getDataWithParams(`${config.get('sdc:schoolCollectionStudentURL')}/paginated`, searchParameters);
     res.locals.requestedSdcSchoolCollectionStudents = response.content;
   } catch (e) {
     log.error('Unable to load the requested SDC School Collection Students in loadRequestedSdcSchoolCollectionStudents.', e.stack);
@@ -597,14 +598,14 @@ async function loadRequestedAssessmentStudent(req, res, next) {
   if (!res.locals.requestedAssessmentStudentID) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
     });
   }
   try {
-    res.locals.requestedAssessmentStudent = await getData(token, `${config.get('assessments:assessmentStudentsURL')}/${res.locals.requestedAssessmentStudentID}`, req.session?.correlationID);
+    res.locals.requestedAssessmentStudent = await getData(`${config.get('assessments:assessmentStudentsURL')}/${res.locals.requestedAssessmentStudentID}`, req.session?.correlationID);
   } catch (e) {
     log.error('Unable to load the requested Assessment Student in loadRequestedAssessmentStudent.', e.stack);
   }
@@ -626,7 +627,7 @@ async function loadRequestedAssessmentStudents(req, res, next) {
       message: 'Too many Assessment Student IDs were requested.'
     });
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
@@ -653,7 +654,7 @@ async function loadRequestedAssessmentStudents(req, res, next) {
     }
   };
   try {
-    let response = await getDataWithParams(token,`${config.get('assessments:assessmentStudentsURL')}/paginated`, searchParameters);
+    let response = await getDataWithParams(`${config.get('assessments:assessmentStudentsURL')}/paginated`, searchParameters);
     res.locals.requestedAssessmentStudents = response.content;
   } catch (e) {
     log.error('Unable to load the requested Assessment Students in loadRequestedAssessmentStudents.', e.stack);
@@ -725,8 +726,8 @@ function edxUserHasAccessToInstitute(activeInstituteType, requestedInstituteType
   return activeInstituteType === requestedInstituteType && activeInstituteID === requestedInstituteID;
 }
 
-async function checkSdcDuplicateAccess(req, res, next) {
-  const token = getAccessToken(req);
+function checkSdcDuplicateAccess(req, res, next) {
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
@@ -754,7 +755,7 @@ async function checkUserAccessToDuplicateSdcSchoolCollections(req, res, next) {
   if (!res.locals.requestedSdcSchoolCollectionIDs) {
     return next();
   }
-  const token = getAccessToken(req);
+  const token =  auth.getBackendUserToken(req);
   if (!token) {
     return res.status(HttpStatus.UNAUTHORIZED).json({
       message: 'Token is unavailable.'
@@ -763,7 +764,7 @@ async function checkUserAccessToDuplicateSdcSchoolCollections(req, res, next) {
   try {
     let promises = [];
     res.locals.requestedSdcSchoolCollectionIDs.forEach(id => {
-      promises.push(getData(token, `${config.get('sdc:rootURL')}/sdcSchoolCollection/${id}`, req.session?.correlationID));
+      promises.push(getData(`${config.get('sdc:rootURL')}/sdcSchoolCollection/${id}`, req.session?.correlationID));
     });
     res.locals.requestedSdcSchoolCollections = await Promise.all(promises);
 
@@ -851,11 +852,10 @@ function isValidUUIDParam(paramName) {
 
 
 async function checkValidRoles(req, incomingRoles, schoolID) {
-  const token = getAccessToken(req);
   const params = {
     params: req.query
   };
-  let data = await getDataWithParams(token, `${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
+  let data = await getDataWithParams(`${config.get('edx:rootURL')}/users/roles`, params, req.session?.correlationID);
   let allowedRoles = filterSchoolRoles(schoolID, data);
   return incomingRoles.every(role => {
     return allowedRoles.filter(allowed => allowed.edxRoleCode === role).length > 0;

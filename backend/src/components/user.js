@@ -8,14 +8,14 @@ const log = require('./logger');
 const cacheService = require('./cache-service');
 let codes = null;
 
-async function getEdxUserByDigitalId(accessToken, digitalID, correlationID) {
+async function getEdxUserByDigitalId(digitalID, correlationID) {
   try {
     const params = {
       params: {
         digitalId: digitalID,
       }
     };
-    return await getDataWithParams(accessToken, config.get('edx:edxUsersURL'), params, correlationID);
+    return await getDataWithParams(config.get('edx:edxUsersURL'), params, correlationID);
   } catch (e) {
     throw new ServiceError('getEdxUserByDigitalId error', e);
   }
@@ -87,13 +87,12 @@ async function getUserInfo(req, res) {
     return res.status(HttpStatus.OK).json(resData);
   }
 
-  const accessToken = userInfo.jwt;
   const digitalID = userInfo._json.digitalIdentityID;
 
   return Promise.all([
-    getDigitalIdData(accessToken, digitalID, correlationID),
-    getServerSideCodes(accessToken, correlationID),
-    getEdxUserByDigitalId(accessToken, digitalID, correlationID),
+    getDigitalIdData(digitalID, correlationID),
+    getServerSideCodes(correlationID),
+    getEdxUserByDigitalId(digitalID, correlationID),
   ]).then(async ([digitalIdData, codesData, edxUserData]) => {
     const identityType = lodash.find(codesData.identityTypes, ['identityTypeCode', digitalIdData.identityTypeCode]);
     if (!identityType) {
@@ -140,23 +139,23 @@ async function getUserInfo(req, res) {
   });
 }
 
-async function getDigitalIdData(token, digitalID, correlationID) {
+async function getDigitalIdData(digitalID, correlationID) {
   try {
-    return await getData(token, config.get('digitalID:apiEndpoint') + `/${digitalID}`, correlationID);
+    return await getData(config.get('digitalID:apiEndpoint') + `/${digitalID}`, correlationID);
   } catch (e) {
     throw new ServiceError('getDigitalIdData error', e);
   }
 }
 
 
-async function getServerSideCodes(accessToken, correlationID) {
+async function getServerSideCodes(correlationID) {
   if (!codes) {
     try {
       const codeUrls = [
         `${config.get('digitalID:apiEndpoint')}/identityTypeCodes`
       ];
 
-      const [identityTypes] = await Promise.all(codeUrls.map(url => getData(accessToken, url), correlationID));
+      const [identityTypes] = await Promise.all(codeUrls.map(url => getData(url), correlationID));
       codes = {identityTypes};
     } catch (e) {
       throw new ServiceError('getServerSideCodes error', e);

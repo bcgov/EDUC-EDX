@@ -6,27 +6,15 @@ const log = require('./logger');
 const HttpStatus = require('http-status-codes');
 const {ApiError} = require('./error');
 const {v4: uuidv4} = require('uuid');
-let discovery = null;
 const cache = require('memory-cache');
 let memCache = new cache.Cache();
 const fsStringify = require('fast-safe-stringify');
+const auth = require('./auth');
 
 axios.interceptors.request.use((axiosRequestConfig) => {
   axiosRequestConfig.headers['X-Client-Name'] = 'EDX-APP';
   return axiosRequestConfig;
 });
-// Returns OIDC Discovery values
-async function getOidcDiscovery() {
-  if (!discovery) {
-    try {
-      const response = await axios.get(config.get('oidc:discovery'));
-      discovery = response.data;
-    } catch (error) {
-      log.error('getOidcDiscovery', `OIDC Discovery failed - ${error.message}`);
-    }
-  }
-  return discovery;
-}
 
 function getSessionUser(req) {
   log.verbose('getSessionUser', req.session);
@@ -34,16 +22,15 @@ function getSessionUser(req) {
   return session && session.passport && session.passport.user;
 }
 
-function getAccessToken(req) {
-  const user = getSessionUser(req);
-  return user && user.jwt;
+async function getAccessToken() {
+  return await auth.getBackendServiceToken();
 }
 
-async function deleteData(token, url, correlationID) {
+async function deleteData(url, correlationID) {
   try {
     const delConfig = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         correlationID: correlationID || uuidv4()
       }
     };
@@ -63,13 +50,12 @@ async function deleteData(token, url, correlationID) {
 
 async function forwardGetReq(req, res, url) {
   try {
-    const accessToken = getAccessToken(req);
     const params = {
       params: req.query
     };
 
     log.info('forwardGetReq Url', url);
-    const data = await getDataWithParams(accessToken, url, params, req.session?.correlationID);
+    const data = await getDataWithParams(url, params, req.session?.correlationID);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('forwardGetReq Error', e.stack);
@@ -79,11 +65,11 @@ async function forwardGetReq(req, res, url) {
   }
 }
 
-async function getData(token, url, correlationID) {
+async function getData(url, correlationID) {
   try {
     const getDataConfig = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         correlationID: correlationID || uuidv4()
       }
     };
@@ -101,10 +87,10 @@ async function getData(token, url, correlationID) {
   }
 }
 
-async function getDataWithParams(token, url, params, correlationID) {
+async function getDataWithParams(url, params, correlationID) {
   try {
     params.headers = {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${await getAccessToken()}`,
       correlationID: correlationID || uuidv4()
     };
 
@@ -121,11 +107,11 @@ async function getDataWithParams(token, url, params, correlationID) {
   }
 }
 
-async function getBinaryData(token, url, correlationID) {
+async function getBinaryData(url, correlationID) {
   try {
     const getDataConfig = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         correlationID: correlationID || uuidv4()
       },
       responseType: 'arraybuffer'
@@ -145,11 +131,11 @@ async function getBinaryData(token, url, correlationID) {
     throw new ApiError(status, {message: 'API Get error'}, e.response);
   }
 }
-async function postData(token, data, url, correlationID) {
+async function postData(data, url, correlationID) {
   try {
     const postDataConfig = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         correlationID: correlationID || uuidv4()
       },
       maxContentLength: Infinity,
@@ -184,11 +170,11 @@ async function postData(token, data, url, correlationID) {
   }
 }
 
-async function putData(token, data, url, correlationID) {
+async function putData( data, url, correlationID) {
   try {
     const putDataConfig = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${await getAccessToken()}`,
         correlationID: correlationID || uuidv4()
       }
     };
@@ -245,7 +231,7 @@ function handleExceptionResponse(e, res) {
   }
 }
 
-function getCodeTable(token, key, url, useCache = true) {
+async function getCodeTable(key, url, useCache = true) {
   try {
     let cacheContent = useCache && memCache.get(key);
     if (cacheContent) {
@@ -253,7 +239,7 @@ function getCodeTable(token, key, url, useCache = true) {
     } else {
       const getDataConfig = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${await getAccessToken()}`,
         }
       };
       log.info('get Data Url', url);
@@ -277,9 +263,8 @@ function getCodeTable(token, key, url, useCache = true) {
 function getCodes(urlKey, cacheKey, extraPath, useCache = true) {
   return async function getCodesHandler(req, res) {
     try {
-      const token = getAccessToken(req);
       const url = config.get(urlKey);
-      const codes = await getCodeTable(token, cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
+      const codes = await getCodeTable(cacheKey, extraPath ? `${url}${extraPath}` : url, useCache);
 
       return res.status(HttpStatus.OK).json(codes);
 
@@ -363,7 +348,6 @@ function formatNumberOfCourses(value) {
 }
 
 const utils = {
-  getOidcDiscovery,
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
   getSessionUser,
   getAccessToken,

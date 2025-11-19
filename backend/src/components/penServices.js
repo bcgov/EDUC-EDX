@@ -1,5 +1,5 @@
 'use strict';
-const {logApiError, getAccessToken} = require('./utils');
+const {logApiError} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../config/index');
 const {postData} = require('./utils');
@@ -19,9 +19,8 @@ async function validateStudentDemogData(req, res) {
     student.gradeCode = student.enrolledGradeCode;
     student.isInteractive = true;
     student.transactionID = uuidv4();
-    const token = getAccessToken(req);
 
-    const dataResponse = await postData(token, student, config.get('penServices:validateDemographicsURL'));
+    const dataResponse = await postData(student, config.get('penServices:validateDemographicsURL'));
     return res.status(200).json(dataResponse);
 
   } catch (e) {

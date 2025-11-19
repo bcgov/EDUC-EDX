@@ -1,5 +1,5 @@
 'use strict';
-const { getAccessToken, handleExceptionResponse, getBinaryData, getData } = require('./utils');
+const { handleExceptionResponse, getBinaryData, getData } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -9,9 +9,8 @@ const {edxUserHasAccessToInstitute} = require('./permissionUtils');
 
 async function downloadGradYukonReport(req, res) {
   try {
-    const token = getAccessToken(req);
     let url = `${config.get('gradCurrentStudents:rootURL')}/report/${req.params.districtID}/download/${req.params.fromDate}/${req.params.toDate}`;
-    const resData = await getData(token, url);
+    const resData = await getData(url);
     const fileDetails = getFileDetails('YUKON_REPORT', req.params.fromDate, req.params.toDate);
 
     setResponseHeaders(res, fileDetails);
@@ -30,7 +29,6 @@ function setResponseHeaders(res, { filename, contentType }) {
 
 async function handleReportDownload(req, res, reportType) {
   try {
-    const token = getAccessToken(req);
     const correlationID = uuidv4();
     const formattedDate = getFormattedDate();
     const docType = req.query.docType;
@@ -134,7 +132,7 @@ async function handleReportDownload(req, res, reportType) {
       return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid reportType' });
     }
 
-    const result = await getBinaryData(token, url, correlationID);
+    const result = await getBinaryData(url, correlationID);
 
     if (result.status === 204) {
       return res.status(HttpStatus.NOT_FOUND).json({ message: notFoundMessage });

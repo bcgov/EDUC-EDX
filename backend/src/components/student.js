@@ -1,5 +1,5 @@
 'use strict';
-const {errorResponse, getAccessToken, getDataWithParams, formatDate, postData, getCreateOrUpdateUserValue, getData} = require('./utils');
+const {errorResponse, getDataWithParams, formatDate, postData, getCreateOrUpdateUserValue, getData} = require('./utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../config');
 const log = require('./logger');
@@ -8,8 +8,7 @@ const {v4: uuidv4} = require('uuid');
 
 async function getStudentByPEN(req, res) {
   try {
-    const accessToken = getAccessToken(req);
-    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
+    const result = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       const studentMincode = result[0].mincode;
       let instituteHasStudent = false;
@@ -49,11 +48,10 @@ async function getStudentByPEN(req, res) {
 
 async function getStudentByPENForAssessment(req, res){
   try {
-    const accessToken = getAccessToken(req);
-    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
+    const result = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       let misMatchError = 'Your school is not currently the student\'s School of Record for Graduation; the student’s reports cannot be accessed.';
-      let gradStudent = await getData(accessToken, `${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
+      let gradStudent = await getData(`${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
       if(gradStudent.schoolOfRecordId){
         let gradSchool = cacheService.getSchoolBySchoolID(gradStudent.schoolOfRecordId);
         const studentMincode = gradSchool.mincode;
@@ -99,8 +97,7 @@ async function getStudentByPENForAssessment(req, res){
 
 async function getStudentByPENForGrad(req, res){
   try {
-    const accessToken = getAccessToken(req);
-    const result = await getDataWithParams(accessToken, config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
+    const result = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
       const body = {
         studentID: result[0].studentID,
@@ -111,7 +108,7 @@ async function getStudentByPENForGrad(req, res){
         gender: result[0].genderCode,
         doB: result[0].dob,
         localID: result[0].localID
-        };
+      };
       return res.status(200).json(body);
     } else {
       const message = 'PEN must be a valid PEN associated with a student at the Ministry of Education and Childcare';
@@ -143,8 +140,7 @@ async function createNewStudent(req, res) {
         transactionID
       }
     };
-    const token = getAccessToken(req);
-    const penNumber = await getDataWithParams(token, config.get('penServices:nextPenURL'), params, null);
+    const penNumber = await getDataWithParams(config.get('penServices:nextPenURL'), params, null);
     const student = req.body.student;
     student.dob = formatDate(student.dob?.replace(/\D/g, ''));
     student.pen = penNumber;
@@ -162,7 +158,7 @@ async function createNewStudent(req, res) {
     let user = getCreateOrUpdateUserValue(req);
     student.createUser = user;
     student.updateUser = user;
-    const result = await postData(token, student, config.get('student:apiEndpoint'), null);
+    const result = await postData(student, config.get('student:apiEndpoint'), null);
     delete req.session.create_new_student_transactionID; // delete it when student is created successfully.
     return res.status(HttpStatus.OK).json(result);
   } catch (e) {

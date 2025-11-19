@@ -37,7 +37,9 @@ nconf.defaults({
     publicKey: process.env.SOAM_PUBLIC_KEY,
     clientId: process.env.SOAM_CLIENT_ID,
     clientSecret: process.env.SOAM_CLIENT_SECRET,
-    discovery: process.env.SOAM_DISCOVERY
+    discovery: process.env.SOAM_DISCOVERY,
+    serviceClientId: process.env.SERVICE_CLIENT_ID,
+    serviceClientSecret: process.env.SERVICE_CLIENT_SECRET,
   },
   secureExchange: {
     apiEndpoint: process.env.EDX_API_ENDPOINT,

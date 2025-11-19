@@ -5,11 +5,12 @@ const config = require('../config/index');
 const log = require('./logger');
 const jsonwebtoken = require('jsonwebtoken');
 const qs = require('querystring');
-const utils = require('./utils');
 const HttpStatus = require('http-status-codes');
 const safeStringify = require('fast-safe-stringify');
 const {ApiError} = require('./error');
 const {pick} = require('lodash');
+let discovery = null;
+let serviceToken = null;
 
 const auth = {
   // Check if JWT Access Token has expired
@@ -20,6 +21,22 @@ const auth = {
     return (!!payload['exp'] && payload['exp'] < (now + 30)); // Add 30 seconds to make sure , edge case is avoided and token is refreshed.
   },
 
+  async getBackendServiceToken() {
+    if(serviceToken){
+      if (auth.isTokenExpired(serviceToken)) {
+        log.info('Service token is expired, fetching new service client token');
+        serviceToken = await auth.getServiceAccountToken();
+      }
+    }else{
+      log.info('Service token not found, fetching new service client token');
+      serviceToken = await auth.getServiceAccountToken();
+    }
+    return serviceToken;
+  },
+  getBackendUserToken(req){
+    const thisSession = req.session;
+    return thisSession?.passport?.user?.jwt;
+  },
   // Check if JWT Refresh Token has expired
   isRenewable(token) {
     const now = Date.now().valueOf() / 1000;
@@ -35,7 +52,7 @@ const auth = {
     let result = {};
 
     try {
-      const discovery = await utils.getOidcDiscovery();
+      const discovery = await auth.getOidcDiscovery();
       const response = await axios.post(discovery.token_endpoint,
         qs.stringify({
           client_id: config.get('oidc:clientId'),
@@ -52,7 +69,6 @@ const auth = {
         }
       );
 
-      log.verbose('renew', utils.prettyStringify(response.data));
       if (response && response.data && response.data.access_token && response.data.refresh_token) {
         result.jwt = response.data.access_token;
         result.refreshToken = response.data.refresh_token;
@@ -118,7 +134,7 @@ const auth = {
 
   async getApiCredentials() {
     try {
-      const discovery = await utils.getOidcDiscovery();
+      const discovery = await auth.getOidcDiscovery();
       const response = await axios.post(discovery.token_endpoint,
         qs.stringify({
           client_id: config.get('oidc:clientId'),
@@ -148,9 +164,10 @@ const auth = {
   },
   isValidBackendToken() {
     return function (req, res, next) {
-      if (req?.session?.passport?.user?.jwt) {
+      const jwtToken = auth.getBackendUserToken(req);
+      if (jwtToken) {
         try {
-          jsonwebtoken.verify(req.session.passport.user.jwt, config.get('oidc:publicKey'));
+          jsonwebtoken.verify(jwtToken, config.get('oidc:publicKey'));
         } catch (e) {
           log.debug('error is from verify', e);
           return res.status(HttpStatus.UNAUTHORIZED).json();
@@ -163,7 +180,49 @@ const auth = {
         return res.status(HttpStatus.UNAUTHORIZED).json();
       }
     };
-  }
+  },
+  async getServiceAccountToken() {
+    try {
+      const discovery = await auth.getOidcDiscovery();
+      const response = await axios.post(discovery.token_endpoint,
+        qs.stringify({
+          client_id: config.get('oidc:serviceClientId'),
+          client_secret: config.get('oidc:serviceClientSecret'),
+          grant_type: 'client_credentials',
+          scope: 'openid profile'
+        }), {
+          headers: {
+            Accept: 'application/json',
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          }
+        }
+      );
+
+      log.verbose('getServiceAccountToken Res', safeStringify(response.data));
+
+      let result = {};
+      result.accessToken = response.data.access_token;
+      return result.accessToken;
+    } catch (error) {
+      log.error('getServiceAccountToken Error', error.response ? pick(error.response, ['status', 'statusText', 'data']) : error.message);
+      const status = error.response ? error.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+      throw new ApiError(status, {message: 'Get getServiceAccountToken error'}, error);
+    }
+  },
+
+  // Returns OIDC Discovery values
+  async getOidcDiscovery() {
+    if (!discovery) {
+      try {
+        const response = await axios.get(config.get('oidc:discovery'));
+        discovery = response.data;
+      } catch (error) {
+        log.error('getOidcDiscovery', `OIDC Discovery failed - ${error.message}`);
+      }
+    }
+    return discovery;
+  },
 };
 
 module.exports = auth;

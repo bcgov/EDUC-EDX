@@ -73,10 +73,9 @@ router.get('/callback_bceid',
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
-    const accessToken = userInfo.jwt;
     const digitalID = userInfo._json.digitalIdentityID;
     const correlationID = req.session?.correlationID;
-    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID);
+    getAndSetupEDXUserAndRedirect(req, res, digitalID, correlationID);
   }
 );
 
@@ -87,11 +86,10 @@ router.get('/callback_entra',
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
-    const accessToken = userInfo.jwt;
     const isValidTenant = userInfo._json.isValidTenant;
     const digitalID = userInfo._json.digitalIdentityID;
     const correlationID = req.session?.correlationID;
-    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, isValidTenant);
+    getAndSetupEDXUserAndRedirect(req, res, digitalID, correlationID, isValidTenant);
   }
 );
 
@@ -147,16 +145,14 @@ router.get(
     await client.del(idir_guid + '::staffLinkInstituteType');
     await client.del(idir_guid + '::staffLinkGradDashboard');
 
-    const userInfo = getSessionUser(req);
-    const accessToken = userInfo.jwt;
     if(instituteType === 'SCHOOL' && instituteCollectionID){
-      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, instituteID.toString(), instituteCollectionID.toString(), false);
     }else if(instituteType === 'SCHOOL' && staffLinkDashboard){
-      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, accessToken, instituteID.toString(), null, true);
+      getAndSetupStaffUserAndRedirectWithSchoolCollectionLink(req, res, instituteID.toString(), null, true);
     }else if(instituteType === 'DISTRICT' && instituteCollectionID){
-      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, accessToken, instituteID.toString(), instituteCollectionID.toString(), false);
+      getAndSetupStaffUserAndRedirectWithDistrictCollectionLink(req, res, instituteID.toString(), instituteCollectionID.toString(), false);
     }else if(instituteType === 'DISTRICT' && staffLinkDashboard){
-      getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, accessToken, instituteID.toString(), null, true);
+      getAndSetupStaffUserAndRedirectWithDistrictGradLink(req, res, instituteID.toString(), null, true);
     }else{
       await res.redirect(config.get('server:frontend') + '/unauthorized');
     }
@@ -170,10 +166,9 @@ router.get('/callback_idir',
   }),
   (req, res) => {
     const userInfo = getSessionUser(req);
-    const accessToken = userInfo.jwt;
     const digitalID = userInfo._json.idir_guid;
     const correlationID = req.session?.correlationID;
-    getAndSetupEDXUserAndRedirect(req, res, accessToken, digitalID, correlationID, 'true', 'true');
+    getAndSetupEDXUserAndRedirect(req, res, digitalID, correlationID, 'true', 'true');
   }
 );
 
