@@ -16,13 +16,77 @@
         Non-Allowable ({{ nonAllowableDuplicates?.length }})
       </v-btn>
     </v-btn-toggle>
+    <v-spacer />
+    <v-col
+      cols="auto"
+      class="d-flex align-center"
+    >
+      <strong>
+        Duplicate Students Found: {{ filteredDuplicates?.length }}
+        <span v-if="searchQuery && filteredDuplicates?.length !== nonAllowableDuplicates?.length">
+          of {{ nonAllowableDuplicates?.length }}
+        </span>
+      </strong>
+    </v-col>
   </v-row>
   <template v-if="duplicateView==='1'">
-    <strong>Duplicate Students Found: {{ nonAllowableDuplicates?.length }}</strong>
+    <v-row class="mb-3 mt-3">
+      <v-col
+        cols="12"
+        sm="6"
+        md="3"
+      >
+        <v-select
+          v-model="sortBy"
+          :items="sortOptions"
+          label="Sort by"
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        sm="6"
+        md="2"
+      >
+        <v-btn-toggle
+          v-model="sortOrder"
+          mandatory
+          density="compact"
+          variant="outlined"
+        >
+          <v-btn
+            value="asc"
+            icon="mdi-sort-ascending"
+          />
+          <v-btn
+            value="desc"
+            icon="mdi-sort-descending"
+          />
+        </v-btn-toggle>
+      </v-col>
+      <v-spacer class="d-none d-md-block" />
+      <v-col
+        cols="12"
+        md="5"
+      >
+        <v-text-field
+          v-model="searchQuery"
+          label="Search duplicates"
+          placeholder="Search by PEN, name, local ID, school, etc."
+          prepend-inner-icon="mdi-magnify"
+          clearable
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
+      </v-col>
+    </v-row>
     <v-data-iterator
-      v-model:page.sync="pageNumber"
-      :items="nonAllowableDuplicates"
-      :items-per-page="10"
+      v-model:page="pageNumber"
+      :items="sortedAndFilteredDuplicates"
+      :items-per-page="itemsPerPage"
     >
       <template #default="{ items }">
         <v-row
@@ -190,13 +254,35 @@
         </v-row>
       </template>
     </v-data-iterator>
-    <v-pagination
-      v-if="nonAllowableDuplicates?.length > 0"
-      v-model="pageNumber"
-      :length="Math.ceil(nonAllowableDuplicates?.length/10)"
-      total-visible="5"
-      rounded="circle"
-    />
+    <v-row
+      v-if="sortedAndFilteredDuplicates?.length > 0"
+      class="mt-3"
+      align="center"
+    >
+      <v-col cols="auto">
+        <div style="width: 100px;" />
+      </v-col>
+      <v-col class="d-flex justify-center">
+        <v-pagination
+          v-if="itemsPerPage !== -1"
+          v-model="pageNumber"
+          :length="Math.ceil(sortedAndFilteredDuplicates?.length/itemsPerPage)"
+          total-visible="5"
+          rounded="circle"
+        />
+      </v-col>
+      <v-col cols="auto">
+        <v-select
+          v-model="itemsPerPage"
+          :items="itemsPerPageOptions"
+          label="Items"
+          density="compact"
+          variant="outlined"
+          hide-details
+          style="width: 100px;"
+        />
+      </v-col>
+    </v-row>
 
     <v-row
       v-if="nonAllowableDuplicates?.length === 0"
@@ -315,8 +401,107 @@ export default defineComponent({
       selectedSdcSchoolCollectionStudent: {},
       pageNumber: 1,
       contactMenu: [],
-      showTooltip: false
+      showTooltip: false,
+      itemsPerPage: 10,
+      itemsPerPageOptions: [
+        { title: '10', value: 10 },
+        { title: '25', value: 25 },
+        { title: '50', value: 50 },
+        { title: '100', value: 100 },
+        { title: '250', value: 250 },
+        { title: '500', value: 500 },
+        { title: 'All', value: -1 }
+      ],
+      searchQuery: '',
+      sortBy: 'assignedPen',
+      sortOrder: 'asc',
+      sortOptions: [
+        { title: 'Assigned PEN', value: 'assignedPen' },
+        { title: 'District', value: 'districtName' },
+        { title: 'School', value: 'schoolName' },
+        { title: 'Local ID', value: 'localID' },
+        { title: 'Legal Name', value: 'legalName' }
+      ]
     };
+  },
+  computed: {
+    filteredDuplicates() {
+      if (!this.searchQuery) {
+        return this.nonAllowableDuplicates;
+      }
+
+      const query = this.searchQuery.toLowerCase();
+      return this.nonAllowableDuplicates.filter(duplicate => {
+        const student1 = duplicate.sdcSchoolCollectionStudent1Entity;
+        const student2 = duplicate.sdcSchoolCollectionStudent2Entity;
+
+        const searchableFields = [
+          student1?.assignedPen,
+          student2?.assignedPen,
+          student1?.districtName,
+          student2?.districtName,
+          student1?.schoolName,
+          student2?.schoolName,
+          student1?.localID,
+          student2?.localID,
+          student1?.legalFirstName,
+          student1?.legalMiddleNames,
+          student1?.legalLastName,
+          student2?.legalFirstName,
+          student2?.legalMiddleNames,
+          student2?.legalLastName,
+          student1?.usualFirstName,
+          student1?.usualMiddleNames,
+          student1?.usualLastName,
+          student2?.usualFirstName,
+          student2?.usualMiddleNames,
+          student2?.usualLastName,
+          duplicate.duplicateErrorDescriptionCode,
+          duplicate.programDuplicateTypeCodeDescription
+        ];
+
+        return searchableFields.some(field =>
+          field && field.toString().toLowerCase().includes(query)
+        );
+      });
+    },
+    sortedAndFilteredDuplicates() {
+      const duplicates = [...this.filteredDuplicates];
+
+      if (!this.sortBy) {
+        return duplicates;
+      }
+
+      return duplicates.sort((a, b) => {
+        let aVal, bVal;
+
+        const aStudent = a.sdcSchoolCollectionStudent1Entity;
+        const bStudent = b.sdcSchoolCollectionStudent1Entity;
+
+        if (this.sortBy === 'legalName') {
+          aVal = `${aStudent?.legalLastName || ''} ${aStudent?.legalFirstName || ''}`.trim();
+          bVal = `${bStudent?.legalLastName || ''} ${bStudent?.legalFirstName || ''}`.trim();
+        } else {
+          aVal = aStudent?.[this.sortBy] || '';
+          bVal = bStudent?.[this.sortBy] || '';
+        }
+
+
+        const comparison = String(aVal).localeCompare(String(bVal));
+        return this.sortOrder === 'asc' ? comparison : -comparison;
+      });
+    }
+  },
+  watch: {
+    searchQuery() {
+      this.pageNumber = 1;
+    },
+    sortBy() {
+      this.pageNumber = 1;
+    },
+    sortOrder() {
+      this.pageNumber = 1;
+    }
   },
   methods: {
     formatPhoneNumber,
