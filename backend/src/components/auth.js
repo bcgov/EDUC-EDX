@@ -164,9 +164,10 @@ const auth = {
   },
   isValidBackendToken() {
     return function (req, res, next) {
-      if (req?.session?.passport?.user?.jwt) {
+      const jwtToken = auth.getBackendUserToken(req);
+      if (jwtToken) {
         try {
-          jsonwebtoken.verify(req.session.passport.user.jwt, config.get('oidc:publicKey'));
+          jsonwebtoken.verify(jwtToken, config.get('oidc:publicKey'));
         } catch (e) {
           log.debug('error is from verify', e);
           return res.status(HttpStatus.UNAUTHORIZED).json();
