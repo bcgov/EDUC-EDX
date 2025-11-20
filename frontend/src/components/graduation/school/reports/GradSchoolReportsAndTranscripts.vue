@@ -84,21 +84,6 @@
               {{ studentForSearch.dob }}
             </v-col>
             <v-col
-              style="font-weight: bold"
-              cols="3"
-            >
-              Gender:
-            </v-col>
-            <v-col cols="9">
-              {{ studentForSearch.gender }}
-            </v-col>
-            <v-col cols="12">
-              <DownloadLink
-                label="TVR"
-                :download-action="downloadTVRReport"
-              />
-            </v-col>
-            <v-col
               cols="12"
               class="mt-n2"
             >
