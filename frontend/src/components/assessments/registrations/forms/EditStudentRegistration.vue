@@ -52,7 +52,7 @@
                 v-model="assessmentStudentDetail.pen"
                 label="Personal Education Number (PEN)"
                 variant="underlined"
-                :maxlength="10"
+                maxlength="9"
                 density="compact"
                 :readonly="true"
                 :class="['readonly-text']"

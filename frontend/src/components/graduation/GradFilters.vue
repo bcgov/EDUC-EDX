@@ -101,6 +101,7 @@
             <v-text-field
               id="searchInput"
               v-model="pen"
+              maxlength="9"
               label="PEN"
               color="primary"
               variant="underlined"

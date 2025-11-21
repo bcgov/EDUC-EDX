@@ -15,6 +15,7 @@
           <v-text-field
             ref="studentPENField"
             v-model="studentPEN"
+            maxlength="9"
             label="Enter PEN"
             :rules="[rules.required(),rules.validPEN()]"
             variant="underlined"

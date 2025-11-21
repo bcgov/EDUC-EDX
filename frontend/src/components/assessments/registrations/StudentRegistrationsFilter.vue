@@ -68,6 +68,7 @@
               id="pen"
               v-model="pen"
               label="PEN"
+              maxlength="9"
               color="primary"
               variant="underlined"
             />

@@ -70,7 +70,7 @@
                     v-model="newStudentDetail.pen"
                     label="Personal Education Number (PEN)"
                     variant="underlined"
-                    :maxlength="25"
+                    maxlength="9"
                     density="compact"
                     :rules="[rules.required(), rules.penIsValid()]"
                   />
