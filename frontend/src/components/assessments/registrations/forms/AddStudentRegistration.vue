@@ -30,7 +30,7 @@
             variant="tonal"
           >
             <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessments System on 
-              {{activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessments System unless schools enter them directly.</span>
+              {{ activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessments System unless schools enter them directly.</span>
           </v-alert>
         </v-col>
       </v-row>
@@ -45,26 +45,17 @@
       </v-alert>
     </v-card-text>
     <v-card-text class="mt-n5 mb-6">
-      <v-row v-if="isLoading()">
-        <v-col class="d-flex justify-center">
-          <Spinner
-            :flat="true"
-            style="margin-bottom: 15.5rem"
-          />
-        </v-col>
-      </v-row>
       <div
-        v-else
         ref="topDiv"
       >
         <v-row class="d-flex">
-          <v-col :cols="newStudentDetail.assessmentStudentValidationIssues.length > 0 ? 6 : 12">
+          <v-col :cols="newStudentDetail?.assessmentStudentValidationIssues?.length > 0 ? 6 : 12">
             <v-form
               ref="addRegistrationForm"
               v-model="addStudentRegistrationFormValid"
             >
               <v-row>
-                <v-col>
+                <v-col cols="5">
                   <v-text-field
                     id="PEN"
                     v-model="newStudentDetail.pen"
@@ -72,10 +63,21 @@
                     variant="underlined"
                     maxlength="9"
                     density="compact"
+                    :error="hasPENError"
+                    :error-messages="penErrorMessage"
                     :rules="[rules.required(), rules.penIsValid()]"
+                    @keyup="searchStudentIfLengthIsCorrect"
                   />
                 </v-col>
-                <v-col>
+                <v-col v-if="loading" cols="1">
+                  <v-progress-circular
+                    :size="30"
+                    :width="7"
+                    color="primary"
+                    indeterminate
+                  />
+                </v-col>
+                <v-col cols="4" :offset="loading ? 0 : 1">
                   <v-text-field
                     id="LocalID"
                     v-model="newStudentDetail.localID"
@@ -93,6 +95,7 @@
                     v-model="newStudentDetail.givenName"
                     label="Student's Legal First Name"
                     variant="underlined"
+                    disabled
                     density="compact"
                     :rules="[rules.required()]"
                   />
@@ -103,6 +106,7 @@
                     v-model="newStudentDetail.surname"
                     label="Student's Legal Last Name"
                     variant="underlined"
+                    disabled
                     density="compact"
                     :rules="[rules.required()]"
                   />
@@ -304,6 +308,8 @@ export default {
       addStudentRegistrationFormValid: false,
       hasError: false,
       school: null,
+      hasPENError: false,
+      penErrorMessage: null,
       newStudentDetail: {
         assessmentID: null,
         schoolOfRecordSchoolID: null,
@@ -318,7 +324,7 @@ export default {
       },
       selectedSessionID: null,
       studentRegistrationValidationIssues: [],
-      loadingCount: 0,
+      loading: false,
       isActive: false,
       isDistrictUser: false
     };
@@ -365,9 +371,6 @@ export default {
     }
   },
   methods: {
-    isLoading(){
-      return this.loadingCount > 0;
-    },
     showLTP12BannerForNonCSF() {
       const filteredAssessmentTypes = this.assessmentTypeSearchNames.filter((at) => at.assessmentCodeValue === this.newStudentDetail.assessmentID);
       return !this.isSchoolCSF() && filteredAssessmentTypes.length > 0 && filteredAssessmentTypes[0].assessmentCodeName === 'LTP12';
@@ -376,6 +379,40 @@ export default {
       if(this.newStudentDetail.schoolOfRecordSchoolID) {
         this.school = this.activeSchoolsMap.get(this.newStudentDetail.schoolOfRecordSchoolID);
       }
+    },
+    searchStudentIfLengthIsCorrect(){
+      if(this.newStudentDetail.pen !== null && this.newStudentDetail.pen.length === 9){
+        this.searchStudentForGivenPEN();
+      }
+    },
+    searchStudentForGivenPEN() {
+      this.loading = true;
+      this.hasPENError = false;
+      this.penErrorMessage = null;
+      
+      ApiService.apiAxios.get(ApiRoutes.studentRequest.SEARCH_URL + 'search-assessment-pen', {
+        params: {
+          pen: this.newStudentDetail.pen
+        }
+      })
+        .then(response => {
+          this.newStudentDetail.givenName = response.data.firstName;
+          this.newStudentDetail.surname = response.data.lastName;
+        })
+        .catch(error => {
+          console.log(error);
+          this.newStudentDetail.givenName = null;
+          this.newStudentDetail.surname = null;
+          if (error?.response?.data?.message) {
+            this.hasPENError = true;
+            this.penErrorMessage = error?.response?.data?.message;
+          } else {
+            this.hasPENError = true;
+            this.penErrorMessage = 'PEN must be valid';
+          }
+        }).finally(() => {
+          this.loading = false;  
+        });
     },
     isSchoolCSF(){
       return this.school?.schoolReportingRequirementCode === 'CSF';
@@ -468,9 +505,9 @@ export default {
         )
         .then((res) => {
           this.newStudentDetail = res.data;
-          if(this.newStudentDetail.assessmentStudentValidationIssues){
+          if(this.newStudentDetail?.assessmentStudentValidationIssues){
             this.hasError = true;
-          } else if(!this.newStudentDetail.assessmentStudentValidationIssues) {
+          } else {
             this.hasError = false;
             setSuccessAlert('Success! The new student registration has been created.');
             this.$emit('close-new-student-registration');
