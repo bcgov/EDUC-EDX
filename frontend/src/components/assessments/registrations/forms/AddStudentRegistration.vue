@@ -265,16 +265,12 @@ import {appStore} from '../../../../store/modules/app';
 import {ApiRoutes} from '../../../../utils/constants';
 import {setFailureAlert, setSuccessAlert} from '../../../composable/alertComposable';
 import ApiService from '../../../../common/apiService';
-import Spinner from '../../../common/Spinner.vue';
 import * as Rules from '../../../../utils/institute/formRules';
 import {authStore} from '../../../../store/modules/auth';
 
 
 export default {
   name: 'AddStudentRegistration',
-  components: {
-    Spinner
-  },
   props: {
     schoolYearSessions: {
       type: Object,
