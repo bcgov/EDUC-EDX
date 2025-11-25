@@ -152,7 +152,7 @@ async function getStudentFilesetByPenFilesetId(req, res) {
     let data = await getDataWithParams(`${config.get('grad:filesetURL')}/get-student`, params, req.session?.correlationID);
 
     data.courseStudents.forEach(cs => {
-      cs.session = cs.courseYear + '/' + cs.courseMonth;
+      cs.session = cs.courseYear !== null ? cs.courseYear + '/' + cs.courseMonth : '';
       if(cs.courseCode && cs.courseLevel){
         cs.course = cs.courseCode + cs.courseLevel;
       }else if(cs.courseCode){
@@ -169,8 +169,9 @@ async function getStudentFilesetByPenFilesetId(req, res) {
       }
     });
 
+    
     data.assessmentStudents.forEach(as => {
-      as.session = as.courseYear + '/' + as.courseMonth;
+      as.session = as.courseYear !== null ? as.courseYear + '/' + as.courseMonth : '';
     });
     
     return res.status(HttpStatus.OK).json(data);
