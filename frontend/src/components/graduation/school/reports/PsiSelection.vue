@@ -1,8 +1,120 @@
 <template>
   <v-container fluid>
-    <v-row class="mb-1">
+    <v-row>
       <v-col>
-        The report shows all students in the final (grade 12 or AD) of an active program and any transcript orders sent by the student to a PSI during the current reporting period (October 1st to September 30th).
+        Lists all students in their final year (Grade 12 or Adult Dogwood) of a current graduation or SCCP program who have made PSI selections in the StudentTranscripts Service in the current reporting period.
+      </v-col>
+    </v-row>
+    <v-row class="mb-1">
+      <v-col cols="10">
+        Note: Students are listed in random order; use filters to sort by any column. Students with multiple selections will have multiple rows.
+      </v-col>
+      <v-col class="d-flex justify-end mr-8">
+        <v-menu
+          location="bottom"
+        >
+          <template #activator="{ props }">
+            <a
+              class="mt-n1 mr-1"
+              style="font-weight: bold"
+              v-bind="props"
+              @click="toggleMoreInfoTooltip"
+            >...</a>
+            <a
+              v-bind="props"
+              @click="toggleMoreInfoTooltip"
+            >
+              More Info
+            </a>
+          </template>
+          <v-card
+            style="max-width: 40em;"
+            border="sm"
+            class="pa-2"
+          >
+            <div style="font-weight: bold">
+              Report Description
+            </div>
+            <div
+              style="font-weight: bold"
+              class="mt-4"
+            >
+              Surname, First Name, and Middle Name
+            </div>
+            <div>
+              The student's Legal Names, as reported to the ministry
+            </div>
+            <div
+              style="font-weight: bold"
+              class="mt-4"
+            >
+              Local ID
+            </div>
+            <div>
+              The student’s Local ID, as reported through GRAD Data Collection
+            </div>
+            <div
+                style="font-weight: bold"
+                class="mt-4"
+            >
+              Order Placed
+            </div>
+            <div>
+              Indicates if PSI Selection(s) was made by the student
+              </div>
+            <div class="mt-1">
+              •Yes = Selection(s) made
+              </div>
+            <div class="mt-1">
+              •No = no selection made
+            </div>
+            <div
+                style="font-weight: bold"
+                class="mt-4"
+            >
+              PSI Name
+            </div>
+            <div>
+              Name of the Post Secondary Institution selected by the student
+            </div>
+            <div
+                style="font-weight: bold"
+                class="mt-4"
+            >
+              Transmission Mode
+            </div>
+            <div>
+              How the transcript is sent to the PSI
+            </div>
+            <div class="mt-1">
+              •Paper = regular mail
+            </div>
+            <div class="mt-1">
+              •XML = electronic data transfer
+            </div>
+            <div
+                style="font-weight: bold"
+                class="mt-4"
+            >
+              Order Type
+            </div>
+            <div>
+              Timing and update rules for transcript delivery
+            </div>
+            <div class="mt-1">
+              •End of July = paper transcript mailed after all final marks available (end of July)
+            </div>
+            <div class="mt-1">
+              •Send Now = paper transcript mailed at the time of order (subject to processing and delivery time)
+            </div>
+            <div class="mt-1">
+              •One-Time = transcript data sent as single transmission at the time of the order; future updates cannot be requested by the PSI
+            </div>
+            <div class="mt-1">
+              •Ongoing = transcript data and updates may be requested by the PSI until the specified end date
+            </div>
+          </v-card>
+        </v-menu>
       </v-col>
     </v-row>
     <DownloadLink
@@ -125,11 +237,6 @@ ul {
 
 li {
   padding-top: 1em;
-}
-
-p {
-  padding-top: 1em;
-  font-style: italic;
 }
 
 i {
