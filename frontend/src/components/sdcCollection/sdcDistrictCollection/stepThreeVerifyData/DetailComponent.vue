@@ -98,6 +98,19 @@
       @close="closeAndLoadStudents"
     />
   </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="historySheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <StudentHistoryDialog
+      v-if="studentForHistory"
+      :sdc-school-collection-student-i-d="studentForHistory"
+      @close="closeHistory"
+    />
+  </v-bottom-sheet>
   <v-dialog
     v-model="showExportDialog"
     :max-width="443"
