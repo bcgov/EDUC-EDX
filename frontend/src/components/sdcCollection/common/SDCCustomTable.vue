@@ -148,6 +148,15 @@
                   <template v-else>-</template>
                 </slot>
               </span>
+              <span v-else-if="column.key === 'history'">
+                <v-btn
+                  icon="mid-history"
+                  size="small"
+                  @click.stop="viewHistory(props.item)"
+                >
+                  <v-icon>mdi-history</v-icon>
+                </v-btn>
+              </span>
               <span v-else-if="props.item[column.key]" :class="shouldShowDiff(props.index, [column.key])">{{ props.item[column.key] }}</span>
               <span v-else-if="column.title !== 'select'">-</span>
 
@@ -233,7 +242,7 @@ export default {
       default: false
     }
   },
-  emits: ['reload', 'editSelectedRow', 'selections'],
+  emits: ['reload', 'editSelectedRow', 'selections', 'viewHistory'],
   data() {
     return {
       selected: [],
@@ -349,6 +358,9 @@ export default {
       } else {
         return 'Under Review';
       }
+    },
+    viewHistory(student) {
+      this.$emit('viewHistory', student);
     },
     displayName
   }

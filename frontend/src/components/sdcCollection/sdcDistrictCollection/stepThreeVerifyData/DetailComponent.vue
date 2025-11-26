@@ -59,6 +59,7 @@
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
+            @viewHistory="viewHistory"
           />
         </v-col>
       </v-row>
@@ -140,10 +141,12 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
 import Filters from '../../../common/Filters.vue';
 import {mapState} from 'pinia';
+import StudentHistoryDialog from '../../common/StudentHistoryDialog.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
+    StudentHistoryDialog,
     Filters,
     CustomTable,
     ViewStudentDetailsComponent
@@ -210,6 +213,8 @@ export default {
       editStudentSheet: false,
       resetFlag: false,
       reloadStudentsFlag: false,
+      historySheet: false,
+      studentForHistory: null
     };
   },
   computed: {
@@ -238,6 +243,15 @@ export default {
         this.loadStudents();
       }
       this.reloadStudentsFlag = false;
+    },
+    viewHistory($event) {
+      const selectedStudent = cloneDeep($event);
+      this.studentForHistory = selectedStudent?.sdcSchoolCollectionStudentID;
+      this.historySheet = true;
+    },
+    closeHistory() {
+      this.historySheet = false;
+      this.studentForHistory = null;
     },
     downloadStudentProgramReport(){
       const routeData = this.$router.resolve({path: downloadStudentProgramReportURL(this.$route, this.exportType)});

@@ -87,6 +87,7 @@
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
+            @viewHistory="viewHistory"
           />
         </v-col>
       </v-row>
@@ -138,6 +139,19 @@
       @open-edit="closeAddStudentWindow"
     />
   </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="historySheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <StudentHistoryDialog
+      v-if="studentForHistory"
+      :sdc-school-collection-student-i-d="studentForHistory"
+      @close="closeHistory"
+    />
+  </v-bottom-sheet>
   <ConfirmationDialog ref="confirmRemovalOfStudentRecord">
     <template #message>
       <p>Are you sure that you would like to remove the selected student(s) from the 1701 submission?</p>
@@ -160,10 +174,12 @@ import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsCompo
 import AddStudentDetails from './AddStudentDetails.vue';
 import {PERMISSION} from '../../../../utils/constants/Permission';
 import {authStore} from '../../../../store/modules/auth';
+import StudentHistoryDialog from '../../common/StudentHistoryDialog.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
+    StudentHistoryDialog,
     ConfirmationDialog,
     CustomTable,
     Filters,
@@ -232,7 +248,9 @@ export default {
       addStudentSheet: false,
       resetFlag: false,
       reloadStudentsFlag: false,
-      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED']
+      submittedStatuses: ['SUBMITTED', 'P_DUP_POST', 'P_DUP_VRFD', 'COMPLETED'],
+      historySheet: false,
+      studentForHistory: null
     };
   },
   computed: {
@@ -282,6 +300,15 @@ export default {
     closeAddStudentWindow($event) {
       this.addStudentSheet = !this.addStudentSheet; 
       this.editStudent($event);
+    },
+    viewHistory($event) {
+      const selectedStudent = cloneDeep($event);
+      this.studentForHistory = selectedStudent?.sdcSchoolCollectionStudentID;
+      this.historySheet = true;
+    },
+    closeHistory() {
+      this.historySheet = false;
+      this.studentForHistory = null;
     },
     addStudent() {
       this.addStudentSheet = true;
