@@ -371,6 +371,8 @@ export default {
         if(session.completionDate !== null && parseInt(session.courseYear) >= sessionYearMinusTwo){
           this.sessions.push({
             sessionCodeName: session.courseYear + '/' + session.courseMonth,
+            sessionCourseYear: session.courseYear,
+            sessionCourseMonth: session.courseMonth,
             sessionCode: session.courseYear + '' + session.courseMonth,
             sessionCodeValue: session.sessionID
           });
