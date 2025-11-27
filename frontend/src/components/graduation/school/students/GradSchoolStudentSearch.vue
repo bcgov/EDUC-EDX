@@ -307,7 +307,8 @@ export default {
       showSubmissionSelector: false,
       courseHeaders: [
         { key: 'status', align: 'start', sortable: true },
-        { title: 'Course', key: 'course', align: 'start', sortable: true },
+        { title: 'Course Code', key: 'courseCode', align: 'start', sortable: true },
+        { title: 'Course Level', key: 'courseLevel', align: 'start', sortable: true },
         { title: 'Session', key: 'session', align: 'start', sortable: true },
         { title: 'Status', key: 'courseStatus', align: 'start', sortable: true },
         { title: 'Interim Percentage', key: 'interimPercentage', align: 'start', sortable: true },

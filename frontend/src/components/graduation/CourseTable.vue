@@ -22,7 +22,7 @@
           @click="column.sortable && toggleSort(column)"
         >
           <div class="v-data-table-header__content d-flex align-center">
-            <span class="header-text mr-12">{{ column.title }}</span>
+            <span class="header-text">{{ column.title }}</span>
             <v-icon
               v-if="column.sortable"
               class="v-data-table-header__sort-icon ml-1"
