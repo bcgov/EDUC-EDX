@@ -22,14 +22,15 @@
       </v-row>
     </v-card-title>
     <v-divider />
-    <v-card-text class="pa-0">
+    <v-card-text class="pa-0 content-area">
       <v-progress-linear
         v-if="loading"
         indeterminate
         color="primary"
+        class="loading-bar"
       />
       <v-row
-        v-else-if="historyData.length === 0"
+        v-if="!loading && historyData.length === 0"
         no-gutters
         class="pa-4"
       >
@@ -43,26 +44,35 @@
         </v-col>
       </v-row>
       <v-row
-        v-else
+        v-show="historyData.length > 0"
         no-gutters
-        cllass="history-container"
+        class="history-container"
+        :class="{ 'loading-overlay': loading }"
       >
         <v-col
           :cols="showRecordDetail ? 6 : 12"
           class="table-column"
         >
-          <v-data-table
+          <v-data-table-server
             v-model="selectedHistory"
+            v-model:page="currentPage"
+            v-model:items-per-page="pageSize"
             :headers="getHeaders()"
             :items="historyData"
-            :items-per-page="25"
-            :items-per-page-options="[{ value: 25, title: '25' }]"
+            :items-length="totalElements"
+            :items-per-page-options="[
+              { value: 15, title: '15' },
+              { value: 25, title: '25' },
+              { value: 50, title: '50' },
+              { value: 100, title: '100' }
+            ]"
             :sort-by="[{ key: 'updateDate', order: 'desc' }]"
             :item-class="tableRowClass"
             class="history-table"
             density="compact"
             fixed-header
             height="100%"
+            @update:options="handlePageChange"
             @click:row="selectHistoryItem"
           >
             <template #no-data>
@@ -86,7 +96,7 @@
                 {{ item.sdcSchoolCollectionStudentStatusCode }}
               </v-chip>
             </template>
-          </v-data-table>
+          </v-data-table-server>
         </v-col>
         <v-col
           v-if="showRecordDetail"
@@ -132,6 +142,12 @@ export default {
       selectedStudentHistory: null,
       studentPen: '',
       studentName: '',
+      currentPage: 1,
+      pageNumber: 0,
+      pageSize: 15,
+      totalElements: 0,
+      previousPage: 1,
+      previousPageSize: 15,
       fullHeaders: [
         { title: 'Updated Date', key: 'updateDate', value: 'updateDate' },
         { title: 'Updated By', key: 'updateUser', value: 'updateUser' },
@@ -149,13 +165,13 @@ export default {
     this.loadHistory();
   },
   methods: {
-    async loadHistory() {
+    async loadHistory(page = 0, itemsPerPage = 15) {
       this.loading = true;
       try {
         const params = {
           params: {
-            pageNumber: 0,
-            pageSize: 100,
+            pageNumber: page,
+            pageSize: itemsPerPage,
             sort: { updateDate: 'DESC' },
             sdcSchoolCollectionStudentID: this.sdcSchoolCollectionStudentID
           }
@@ -170,15 +186,23 @@ export default {
           ...item,
           isSelected: false
         }));
+        this.totalElements = response.data.totalElements || 0;
+        this.pageNumber = response.data.number || 0;
+        this.pageSize = response.data.size || 15;
+        this.currentPage = (response.data.number || 0) + 1; // Convert to 1-based for UI
 
-        if (this.historyData.length > 0) {
+        // Update previous values to current loaded state
+        this.previousPage = this.currentPage;
+        this.previousPageSize = this.pageSize;
+
+        // Only set student info and select first item on initial load
+        if (this.historyData.length > 0 && page === 0 && !this.studentPen) {
           this.studentPen = this.historyData[0].studentPen || 'Unknown';
           this.studentName = displayName(
             this.historyData[0].legalFirstName,
             this.historyData[0].legalMiddleNames,
             this.historyData[0].legalLastName
           ) || 'Unknown';
-          // Auto-select first item
           this.selectHistoryItem(null, { item: this.historyData[0] });
         }
 
@@ -186,8 +210,17 @@ export default {
         console.error('Error fetching student history:', error);
         this.setFailureAlert('An error occurred while loading student history. Please try again later.');
         this.historyData = [];
+        this.totalElements = 0;
       } finally {
         this.loading = false;
+      }
+    },
+    handlePageChange({ page, itemsPerPage }) {
+      // v-data-table uses 1-based page numbers, backend uses 0-based
+      const backendPage = page - 1;
+      // Only load if page or itemsPerPage actually changed from the last loaded state
+      if (page !== this.previousPage || itemsPerPage !== this.previousPageSize) {
+        this.loadHistory(backendPage, itemsPerPage);
       }
     },
     getHeaders() {
@@ -236,8 +269,7 @@ export default {
 <style scoped>
 #studentHistoryCard {
   background-color: #f1f1f1;
-  min-height: 70vh;
-  max-height: 85vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
 }
@@ -255,6 +287,27 @@ export default {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+}
+
+.content-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.loading-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.loading-overlay {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .history-container {
@@ -280,11 +333,11 @@ export default {
 }
 
 .history-table {
-  height: 100%;
+  height: 80vh;
 }
 
 .history-table :deep(.v-table__wrapper) {
-  max-height: calc(70vh - 100px);
+  height: 80vh;
   overflow-y: auto;
 }
 </style>
