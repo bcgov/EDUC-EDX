@@ -283,7 +283,7 @@ import ApiService from '../../../common/apiService';
 import { ApiRoutes } from '../../../utils/constants';
 import { sortBy } from 'lodash';
 import * as Rules from '../../../utils/institute/formRules';
-import {orderBy} from "lodash/collection";
+import {orderBy} from 'lodash/collection';
 
 export default {
   name: 'AssessmentReports',
@@ -381,8 +381,15 @@ export default {
       });
       this.sessionSearchNames = orderBy(this.sessions, ['sessionCourseYear','sessionCourseMonth'], ['desc']);
 
-      if (this.sessionSearchNames.length > 0) {
-        const mostRecentApprovedSession = this.sessionSearchNames[0];
+      let approvedSessions = this.schoolYearSessions.filter(session =>
+        session.completionDate !== null && parseInt(session.courseYear) >= sessionYearMinusTwo
+      );
+
+      console.log(approvedSessions);
+      approvedSessions = orderBy(approvedSessions, ['completionDate'], ['desc']);
+
+      if (approvedSessions.length > 0) {
+        const mostRecentApprovedSession = approvedSessions[0];
         this.selectedSessionID = mostRecentApprovedSession.sessionID;
         this.getAssessmentsForSelectedSession(this.selectedSessionID);
       }
