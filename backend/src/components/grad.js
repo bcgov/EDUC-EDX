@@ -246,6 +246,7 @@ async function getFilesetsPaginated(req, res) {
             fileset.updateUser = user.displayName;
           }
         }
+        fileset.uploadDate = fileset.createDate.substring(0, 19).replaceAll('T',' ');
         return fileset;
       });
     }
@@ -307,6 +308,7 @@ async function getSubmissionMetrics(req, res){
         resData.updateUser = user.displayName;
       }
     }
+    resData.uploadDate = resData.createDate.substring(0, 19).replaceAll('T',' ');
     return res.status(HttpStatus.OK).send(resData);
   } catch (e) {
     log.error('getSubmissionMetrics Error', e.stack);

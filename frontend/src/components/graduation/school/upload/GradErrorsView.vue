@@ -479,7 +479,7 @@ export default {
       ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/filesetErrors/${this.$route.params.activeIncomingFilesetID}/submission-summary`).then(response => {
         let summaryResponse = response.data;
         this.schoolID = summaryResponse.schoolID;
-        this.lastUploadDateTime = this.formatDate(summaryResponse.updateDate);
+        this.lastUploadDateTime = summaryResponse.uploadDate;
         this.lastUploadUser = summaryResponse.updateUser;
         this.demFileName = summaryResponse.demFileName;
         this.crsFileName = summaryResponse.crsFileName;

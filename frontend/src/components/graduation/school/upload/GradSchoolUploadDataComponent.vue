@@ -752,7 +752,7 @@ export default {
         {title: 'DEM File', key: 'demFileName', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
         {title: 'CRS File', key: 'crsFileName', sortable: false},
-        {title: 'Upload Date', key: 'updateDate', sortable: false},
+        {title: 'Upload Date', key: 'uploadDate', sortable: false},
         {title: 'Upload User', key: 'updateUser', sortable: false},
         {title: 'Errors/Warnings', key: 'errorLink', sortable: false},
       ],

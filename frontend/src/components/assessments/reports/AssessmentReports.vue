@@ -385,7 +385,6 @@ export default {
         session.completionDate !== null && parseInt(session.courseYear) >= sessionYearMinusTwo
       );
 
-      console.log(approvedSessions);
       approvedSessions = orderBy(approvedSessions, ['completionDate'], ['desc']);
 
       if (approvedSessions.length > 0) {
