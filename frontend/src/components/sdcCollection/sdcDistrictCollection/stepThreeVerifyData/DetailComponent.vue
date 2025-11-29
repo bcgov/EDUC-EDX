@@ -59,6 +59,7 @@
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
+            @viewHistory="viewHistory"
           />
         </v-col>
       </v-row>
@@ -95,6 +96,19 @@
       :is-final-sign-off="isFinalSignOff"
       @reload-students="reloadStudentsFlag = true"
       @close="closeAndLoadStudents"
+    />
+  </v-bottom-sheet>
+  <v-bottom-sheet
+    v-model="historySheet"
+    :inset="true"
+    :no-click-animation="true"
+    :scrollable="true"
+    :persistent="true"
+  >
+    <StudentHistoryDialog
+      v-if="studentForHistory"
+      :sdc-school-collection-student-i-d="studentForHistory"
+      @close="closeHistory"
     />
   </v-bottom-sheet>
   <v-dialog
@@ -140,10 +154,12 @@ import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
 import ViewStudentDetailsComponent from '../../../common/ViewStudentDetailsComponent.vue';
 import Filters from '../../../common/Filters.vue';
 import {mapState} from 'pinia';
+import StudentHistoryDialog from '../../common/StudentHistoryDialog.vue';
 
 export default {
   name: 'DetailComponent',
   components: {
+    StudentHistoryDialog,
     Filters,
     CustomTable,
     ViewStudentDetailsComponent
@@ -210,6 +226,8 @@ export default {
       editStudentSheet: false,
       resetFlag: false,
       reloadStudentsFlag: false,
+      historySheet: false,
+      studentForHistory: null
     };
   },
   computed: {
@@ -238,6 +256,15 @@ export default {
         this.loadStudents();
       }
       this.reloadStudentsFlag = false;
+    },
+    viewHistory($event) {
+      const selectedStudent = cloneDeep($event);
+      this.studentForHistory = selectedStudent?.sdcSchoolCollectionStudentID;
+      this.historySheet = true;
+    },
+    closeHistory() {
+      this.historySheet = false;
+      this.studentForHistory = null;
     },
     downloadStudentProgramReport(){
       const routeData = this.$router.resolve({path: downloadStudentProgramReportURL(this.$route, this.exportType)});

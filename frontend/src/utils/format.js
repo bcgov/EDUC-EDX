@@ -22,6 +22,20 @@ export function formatDateTime(datetime, from='uuuuMMdd', to='uuuu/MM/dd', hasTi
   return result;
 }
 
+export function formatIsoDateTime(isoString, to='uuuu-MM-dd HH:mm:ss') {
+  if (!isoString) return '-';
+
+  const normalizedDate = isoString.split('.')[0];
+
+  return formatDateTime(normalizedDate, 'uuuu-MM-dd\'T\'HH:mm:ss', to, true);
+}
+
+export function formatDisplayDate(date) {
+  if (!date) return null;
+  const [year, month, day] = date.split('-');
+  return `${year}/${month}/${day}`;
+}
+
 export function displayName(first, middle, last) {
   let name = '';
   if (last) {

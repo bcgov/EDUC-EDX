@@ -271,6 +271,14 @@ const getBySdcSchoolCollectionStudentSchema = object({
   query: baseQuerySchema
 }).noUnknown();
 
+const getBySdcSchoolCollectionStudentHistorySchema = object({
+  body: object().noUnknown(),
+  params: object().noUnknown(),
+  query: baseQuerySchema.concat(object({
+    sdcSchoolCollectionStudentID: string().required()
+  }))
+}).noUnknown();
+
 const getBySdcDistrictCollectionPaginatedSchema = object({
   body: object().noUnknown(),
   params: object({
@@ -504,5 +512,6 @@ module.exports = {
   markDiffSchema: postMarKDiffSchema,
   startFromPriorCollectionSchema: postStartFromPriorCollectionSchema,
   getSdcDistrictUsersSchema,
-  baseSdcSchoolStudent
+  baseSdcSchoolStudent,
+  getBySdcSchoolCollectionStudentHistorySchema
 };

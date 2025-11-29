@@ -89,6 +89,7 @@ export const ApiRoutes = Object.freeze({
     SDC_ZERO_FTE_REASON_CODES: sdcRoot + '/zero-fte-reason-codes',
     SDC_DUPLICATE_RESOLVE: sdcRoot + '/resolve-duplicates',
     COLLECTION_TYPE_CODES_URL: sdcRoot + '/collection-type-codes',
+    SDC_SCHOOL_COLLECTION_STUDENT_HISTORY_PAGINATED: sdcRoot + '/sdcSchoolCollectionStudent/studentHistoryPaginated',
   },
   district: {
     BASE_URL: districtRoot,
