@@ -56,6 +56,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
   }).catch((e) => {
     log.error('Error loading EDX Users during boot.', e);
   });
+  cacheService.loadAllIdirUsersToMap().then(() => {
+    log.info('Loaded IDIR Users to memory.');
+  }).catch((e) => {
+    log.error('Error loading IDIR Users during boot.', e);
+  });
   cacheService.loadDataToCache( constants.CACHE_KEYS.SCHOOL_FACILITY_TYPES, 'institute:facilityTypeURL').then(() => {
     log.info('Loaded FACILITY_TYPES data to memory');
   }).catch((e) => {

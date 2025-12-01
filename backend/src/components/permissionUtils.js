@@ -465,6 +465,11 @@ function findSdcSchoolCollectionStudentID_params(req, res, next) {
   return next();
 }
 
+function findSdcSchoolCollectionStudentID_query(req, res, next) {
+  res.locals.requestedSdcSchoolCollectionStudentID = req.query.sdcSchoolCollectionStudentID;
+  return next();
+}
+
 function findSdcSchoolCollectionStudentID_body(req, res, next) {
   res.locals.requestedSdcSchoolCollectionStudentID = req.body.sdcSchoolCollectionStudentID;
   return next();
@@ -898,6 +903,7 @@ const permUtils = {
   loadSdcDistrictCollection,
   findDistrictContactId_body,
   findSdcSchoolCollectionStudentID_params,
+  findSdcSchoolCollectionStudentID_query,
   loadSdcSchoolCollectionStudent,
   checkInstituteCollectionAccess,
   findSInstituteTypeCollectionID_body,
