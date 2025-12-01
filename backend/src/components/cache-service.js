@@ -40,6 +40,7 @@ let assessmentTypeCodesMap = new Map();
 let assessmentSpecialCaseTypeCodesMap = new Map();
 let documentTypeCodes = [];
 let edxUsers = new Map();
+let idirUsers = new Map();
 let gradSchoolsMap = new Map();
 let gradSchools = [];
 const cachedData = {};
@@ -314,6 +315,26 @@ const cacheService = {
   },
   getEdxUserByID(edxUserID) {
     return edxUsers.get(edxUserID);
+  },
+  async loadAllIdirUsersToMap() {
+    log.debug('Loading all IDIR Users to cache.');
+    await retry(async () => {
+      const idirUsersResponse = await getData(config.get('idirUsersURL'));
+      if (idirUsersResponse && idirUsersResponse.length > 0) {
+        idirUsers.clear();
+        idirUsersResponse.forEach(user => {
+          if (user.id && user.attributes?.idir_username?.[0]) {
+            idirUsers.set(user.id, user.attributes.idir_username[0]);
+          }
+        });
+      }
+      log.info(`Loaded ${idirUsers.size} IDIR Users to cache.`);
+    }, {
+      retries: 50
+    });
+  },
+  getIdirUserById(userId) {
+    return idirUsers.get(userId);
   },
   isActiveRecord(record) {
     const currentTime = LocalDate.now();

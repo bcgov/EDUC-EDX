@@ -26,6 +26,7 @@ nconf.overrides({
 nconf.defaults({
   environment: env,
   logoutEndpoint: process.env.SOAM_URL + '/auth/realms/master/protocol/openid-connect/logout',
+  idirUsersURL: process.env.SOAM_URL + '/auth/admin/realms/master/users?q=account_type:idir',
   siteMinder_logout_endpoint: process.env.SITEMINDER_LOGOUT_ENDPOINT,
   server: {
     frontend: process.env.SERVER_FRONTEND,

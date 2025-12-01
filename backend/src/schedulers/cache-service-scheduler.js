@@ -13,6 +13,7 @@ try {
       await cacheService.loadAllRolePermissionsToMap();
       await cacheService.loadAllDocumentTypeCodesToMap();
       await cacheService.loadAllEdxUsersToMap();
+      await cacheService.loadAllIdirUsersToMap();
       await cacheService.loadAllAssessmentTypeCodesToMap();
       await cacheService.loadAllSpecialCaseTypeCodesToMap();
       await cacheService.loadAllGradProgramCodesToMap();

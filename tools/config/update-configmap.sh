@@ -102,6 +102,38 @@ if [[ ("$edxServiceAccClientSecret" != "" && "$edxServiceAccClientSecret" != "nu
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $TKN" \
     -d "{ \"clientId\" : \"edx-service\",\"secret\" : \"$edxServiceAccClientSecret\", \"name\" : \"EDX Service Client\", \"description\" : \"EDX user which logs into SOAM\", \"surrogateAuthRequired\" : false, \"enabled\" : true, \"clientAuthenticatorType\" : \"client-secret\", \"redirectUris\" : [ ], \"webOrigins\" : [ ], \"notBefore\" : 0, \"bearerOnly\" : false, \"consentRequired\" : false, \"standardFlowEnabled\" : false, \"implicitFlowEnabled\" : false, \"directAccessGrantsEnabled\" : false, \"serviceAccountsEnabled\" : true, \"publicClient\" : false, \"frontchannelLogout\" : false, \"protocol\" : \"openid-connect\", \"attributes\" : { \"saml.assertion.signature\" : \"false\", \"saml.multivalued.roles\" : \"false\", \"saml.force.post.binding\" : \"false\", \"saml.encrypt\" : \"false\", \"saml.server.signature\" : \"false\", \"saml.server.signature.keyinfo.ext\" : \"false\", \"exclude.session.state.from.auth.response\" : \"false\", \"saml_force_name_id_format\" : \"false\", \"saml.client.signature\" : \"false\", \"tls.client.certificate.bound.access.tokens\" : \"false\", \"saml.authnstatement\" : \"false\", \"display.on.consent.screen\" : \"false\", \"saml.onetimeuse.condition\" : \"false\" }, \"authenticationFlowBindingOverrides\" : { }, \"fullScopeAllowed\" : true, \"nodeReRegistrationTimeout\" : -1, \"protocolMappers\" : [ ], \"defaultClientScopes\" : [ \"web-origins\", \"role_list\", \"profile\", \"roles\", \"email\", \"READ_DIGITALID\", \"READ_DIGITALID_CODETABLE\", \"READ_SECURE_EXCHANGE\", \"WRITE_SECURE_EXCHANGE\", \"READ_SECURE_EXCHANGE_CODES\", \"READ_MINISTRY_TEAMS\", \"READ_EDX_USERS\", \"READ_SCHOOL\", \"DELETE_EDX_USER_SCHOOL_ROLE\", \"WRITE_EDX_USER_SCHOOL_ROLE\", \"WRITE_EDX_USER_SCHOOL\", \"VALIDATE_STUDENT_DEMOGRAPHICS\", \"READ_VALIDATION_CODES\", \"DELETE_EDX_USER_SCHOOL\", \"WRITE_EDX_USER_DISTRICT\", \"DELETE_EDX_USER_DISTRICT\", \"DELETE_EDX_USER_DISTRICT_ROLE\", \"GET_NEXT_PEN_NUMBER\", \"WRITE_STUDENT\", \"DELETE_EDX_USER\", \"WRITE_EDX_USER\", \"READ_EDX_USER_SCHOOLS\", \"ACTIVATE_EDX_USER\", \"WRITE_ACTIVATION_CODE\", \"READ_PRIMARY_ACTIVATION_CODE\", \"DISTRICT_USER_ACTIVATION_INVITE_SAGA\", \"SCHOOL_USER_ACTIVATION_INVITE_SAGA\", \"CREATE_SECURE_EXCHANGE_COMMENT_SAGA\", \"READ_SECURE_EXCHANGE_DOCUMENT\", \"WRITE_SECURE_EXCHANGE_DOCUMENT\", \"DELETE_SECURE_EXCHANGE_DOCUMENT\", \"READ_SECURE_EXCHANGE_DOCUMENT_TYPES\", \"READ_SECURE_EXCHANGE_DOCUMENT_REQUIREMENTS\", \"READ_STUDENT\", \"DELETE_SECURE_EXCHANGE_COMMENT\", \"WRITE_SECURE_EXCHANGE_COMMENT\", \"READ_SECURE_EXCHANGE_COMMENT\", \"DELETE_SECURE_EXCHANGE_STUDENT\", \"WRITE_SECURE_EXCHANGE_STUDENT\", \"READ_SECURE_EXCHANGE_STUDENT\", \"READ_DISTRICT\", \"READ_SCHOOL\", \"READ_INSTITUTE_CODES\", \"WRITE_DISTRICT\", \"WRITE_SCHOOL\", \"WRITE_SCHOOL_CONTACT\", \"WRITE_DISTRICT_CONTACT\", \"WRITE_SDC_SCHOOL_COLLECTION\", \"READ_SDC_COLLECTION\", \"WRITE_SDC_COLLECTION\", \"WRITE_PRIMARY_ACTIVATION_CODE\",\"READ_INDEPENDENT_AUTHORITY\", \"READ_SDC_SCHOOL_COLLECTION_STUDENT\", \"READ_COLLECTION_CODES\", \"READ_SCHOOL_CONTACT\", \"READ_DISTRICT_CONTACT\", \"WRITE_SDC_SCHOOL_COLLECTION_STUDENT\", \"DELETE_SDC_SCHOOL_COLLECTION_STUDENT\", \"READ_SDC_DISTRICT_COLLECTION\", \"WRITE_SDC_DISTRICT_COLLECTION\", \"WRITE_GRAD_COLLECTION\", \"READ_GRAD_COLLECTION\", \"READ_ASSESSMENT_SESSIONS\", \"READ_ASSESSMENT_STUDENT\", \"WRITE_ASSESSMENT_STUDENT\", \"READ_FILESET_STUDENT_ERROR\", \"READ_GRAD_COLLECTION_CODES\", \"READ_INCOMING_FILESET\", \"GET_GRADUATION_DATA\", \"GRAD_BUSINESS_R\", \"READ_GRAD_STUDENT_DATA\", \"READ_GRAD_STUDENT_REPORT_DATA\", \"READ_GRAD_STUDENT_CERTIFICATE_DATA\", \"GET_GRADUATION_TRANSCRIPT\", \"GET_GRADUATION_CERTIFICATE\", \"GET_GRADUATION_ACHIEVEMENT\", \"READ_GRAD_GRADUATION_STATUS\", \"CREATE_STUDENT_TRANSCRIPT_REPORT\", \"READ_REPORTING_PERIOD\", \"READ_GRAD_SCHOOL\", \"READ_CHALLENGE_REPORTS\", \"WRITE_CHALLENGE_REPORTS\", \"READ_CHALLENGE_REPORTS_CODES\", \"READ_ASSESSMENT_REPORT\", \"READ_GRAD_STUDENT_REPORT\" , \"READ_PSI_SELECTION\"], \"optionalClientScopes\" : [ \"address\", \"phone\" ], \"access\" : { \"view\" : true, \"configure\" : true, \"manage\" : true } }"
+
+  echo
+  echo "Retrieving edx-service client ID (post-create)"
+  edxServiceClientID=$(curl -s \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients?clientId=edx-service" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    | jq -r '.[0].id')
+
+  echo
+  echo "Retrieving service account user for edx-service"
+  edxServiceSAUserID=$(curl -s \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients/$edxServiceClientID/service-account-user" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    | jq -r '.id')
+
+  echo
+  echo "Assigning realm-management client roles to edx-service service account"
+  curl -sX POST \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/users/$edxServiceSAUserID/role-mappings/clients/$realmMgmtClientID" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    -d "[$viewUsersRole,$queryUsersRole]"
+
+  echo
+  echo "Assigning default-roles-master realm role to edx-service service account"
+  curl -sX POST \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/users/$edxServiceSAUserID/role-mappings/realm" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    -d "[$defaultRolesMasterRole]"
 else
   echo
   echo Creating client edx-service without secret
@@ -109,6 +141,38 @@ else
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $TKN" \
     -d "{ \"clientId\" : \"edx-service\", \"name\" : \"EDX Service Client\", \"description\" : \"EDX user which logs into SOAM\", \"surrogateAuthRequired\" : false, \"enabled\" : true, \"clientAuthenticatorType\" : \"client-secret\", \"redirectUris\" : [ ], \"webOrigins\" : [ ], \"notBefore\" : 0, \"bearerOnly\" : false, \"consentRequired\" : false, \"standardFlowEnabled\" : false, \"implicitFlowEnabled\" : false, \"directAccessGrantsEnabled\" : false, \"serviceAccountsEnabled\" : true, \"publicClient\" : false, \"frontchannelLogout\" : false, \"protocol\" : \"openid-connect\", \"attributes\" : { \"saml.assertion.signature\" : \"false\", \"saml.multivalued.roles\" : \"false\", \"saml.force.post.binding\" : \"false\", \"saml.encrypt\" : \"false\", \"saml.server.signature\" : \"false\", \"saml.server.signature.keyinfo.ext\" : \"false\", \"exclude.session.state.from.auth.response\" : \"false\", \"saml_force_name_id_format\" : \"false\", \"saml.client.signature\" : \"false\", \"tls.client.certificate.bound.access.tokens\" : \"false\", \"saml.authnstatement\" : \"false\", \"display.on.consent.screen\" : \"false\", \"saml.onetimeuse.condition\" : \"false\" }, \"authenticationFlowBindingOverrides\" : { }, \"fullScopeAllowed\" : true, \"nodeReRegistrationTimeout\" : -1, \"protocolMappers\" : [ ], \"defaultClientScopes\" : [ \"web-origins\", \"role_list\", \"profile\", \"roles\", \"email\", \"READ_DIGITALID\", \"READ_DIGITALID_CODETABLE\", \"READ_SECURE_EXCHANGE\", \"WRITE_SECURE_EXCHANGE\", \"READ_SECURE_EXCHANGE_CODES\", \"READ_MINISTRY_TEAMS\", \"READ_EDX_USERS\", \"READ_SCHOOL\", \"DELETE_EDX_USER_SCHOOL_ROLE\", \"WRITE_EDX_USER_SCHOOL_ROLE\", \"WRITE_EDX_USER_SCHOOL\", \"VALIDATE_STUDENT_DEMOGRAPHICS\", \"READ_VALIDATION_CODES\", \"DELETE_EDX_USER_SCHOOL\", \"WRITE_EDX_USER_DISTRICT\", \"DELETE_EDX_USER_DISTRICT\", \"DELETE_EDX_USER_DISTRICT_ROLE\", \"GET_NEXT_PEN_NUMBER\", \"WRITE_STUDENT\", \"DELETE_EDX_USER\", \"WRITE_EDX_USER\", \"READ_EDX_USER_SCHOOLS\", \"ACTIVATE_EDX_USER\", \"WRITE_ACTIVATION_CODE\", \"READ_PRIMARY_ACTIVATION_CODE\", \"DISTRICT_USER_ACTIVATION_INVITE_SAGA\", \"SCHOOL_USER_ACTIVATION_INVITE_SAGA\", \"CREATE_SECURE_EXCHANGE_COMMENT_SAGA\", \"READ_SECURE_EXCHANGE_DOCUMENT\", \"WRITE_SECURE_EXCHANGE_DOCUMENT\", \"DELETE_SECURE_EXCHANGE_DOCUMENT\", \"READ_SECURE_EXCHANGE_DOCUMENT_TYPES\", \"READ_SECURE_EXCHANGE_DOCUMENT_REQUIREMENTS\", \"READ_STUDENT\", \"DELETE_SECURE_EXCHANGE_COMMENT\", \"WRITE_SECURE_EXCHANGE_COMMENT\", \"READ_SECURE_EXCHANGE_COMMENT\", \"DELETE_SECURE_EXCHANGE_STUDENT\", \"WRITE_SECURE_EXCHANGE_STUDENT\", \"READ_SECURE_EXCHANGE_STUDENT\", \"READ_DISTRICT\", \"READ_SCHOOL\", \"READ_INSTITUTE_CODES\", \"WRITE_DISTRICT\", \"WRITE_SCHOOL\", \"WRITE_SCHOOL_CONTACT\", \"WRITE_DISTRICT_CONTACT\", \"WRITE_SDC_SCHOOL_COLLECTION\", \"READ_SDC_COLLECTION\", \"WRITE_SDC_COLLECTION\", \"WRITE_PRIMARY_ACTIVATION_CODE\",\"READ_INDEPENDENT_AUTHORITY\", \"READ_SDC_SCHOOL_COLLECTION_STUDENT\", \"READ_COLLECTION_CODES\", \"READ_SCHOOL_CONTACT\", \"READ_DISTRICT_CONTACT\", \"WRITE_SDC_SCHOOL_COLLECTION_STUDENT\", \"DELETE_SDC_SCHOOL_COLLECTION_STUDENT\", \"READ_SDC_DISTRICT_COLLECTION\", \"WRITE_SDC_DISTRICT_COLLECTION\", \"WRITE_GRAD_COLLECTION\", \"READ_GRAD_COLLECTION\", \"READ_ASSESSMENT_SESSIONS\", \"READ_ASSESSMENT_STUDENT\", \"WRITE_ASSESSMENT_STUDENT\", \"READ_FILESET_STUDENT_ERROR\", \"READ_GRAD_COLLECTION_CODES\", \"READ_INCOMING_FILESET\", \"GET_GRADUATION_DATA\", \"GRAD_BUSINESS_R\", \"READ_GRAD_STUDENT_DATA\", \"READ_GRAD_STUDENT_REPORT_DATA\", \"READ_GRAD_STUDENT_CERTIFICATE_DATA\", \"GET_GRADUATION_TRANSCRIPT\", \"GET_GRADUATION_CERTIFICATE\", \"GET_GRADUATION_ACHIEVEMENT\", \"READ_GRAD_GRADUATION_STATUS\", \"CREATE_STUDENT_TRANSCRIPT_REPORT\", \"READ_REPORTING_PERIOD\", \"READ_GRAD_SCHOOL\", \"READ_CHALLENGE_REPORTS\", \"WRITE_CHALLENGE_REPORTS\", \"READ_CHALLENGE_REPORTS_CODES\", \"READ_ASSESSMENT_REPORT\", \"READ_GRAD_STUDENT_REPORT\" , \"READ_PSI_SELECTION\"], \"optionalClientScopes\" : [ \"address\", \"phone\" ], \"access\" : { \"view\" : true, \"configure\" : true, \"manage\" : true } }"
+
+  echo
+  echo "Retrieving edx-service client ID (post-create)"
+  edxServiceClientID=$(curl -s \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients?clientId=edx-service" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    | jq -r '.[0].id')
+
+  echo
+  echo "Retrieving service account user for edx-service"
+  edxServiceSAUserID=$(curl -s \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/clients/$edxServiceClientID/service-account-user" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    | jq -r '.id')
+
+  echo
+  echo "Assigning realm-management client roles to edx-service service account"
+  curl -sX POST \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/users/$edxServiceSAUserID/role-mappings/clients/$realmMgmtClientID" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    -d "[$viewUsersRole,$queryUsersRole]"
+
+  echo
+  echo "Assigning default-roles-master realm role to edx-service service account"
+  curl -sX POST \
+    "https://$SOAM_KC/auth/admin/realms/$SOAM_KC_REALM_ID/users/$edxServiceSAUserID/role-mappings/realm" \
+    -H "Authorization: Bearer $TKN" \
+    -H "Content-Type: application/json" \
+    -d "[$defaultRolesMasterRole]"
 fi
 
 echo Fetching public key from SOAM
