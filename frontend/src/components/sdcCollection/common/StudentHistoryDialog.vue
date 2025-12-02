@@ -179,7 +179,8 @@ export default {
             pageNumber: page,
             pageSize: itemsPerPage,
             sort: sortObj,
-            sdcSchoolCollectionStudentID: this.sdcSchoolCollectionStudentID
+            sdcSchoolCollectionStudentID: this.sdcSchoolCollectionStudentID,
+            tableFormat: true
           }
         };
 
