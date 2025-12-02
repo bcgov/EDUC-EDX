@@ -36,6 +36,7 @@ async function getUserInfo(req, res) {
   }
   let activeInstituteTitle;
   let activeInstituteCode;
+  let districtRegionCode;
   switch (req.session.activeInstituteType) {
   case 'SCHOOL': {
     const school = cacheService.getSchoolBySchoolID(req.session.activeInstituteIdentifier);
@@ -48,6 +49,7 @@ async function getUserInfo(req, res) {
     const district = cacheService.getDistrictJSONByDistrictID(req.session.activeInstituteIdentifier);
     activeInstituteTitle = district?.name;
     activeInstituteCode = district?.districtNumber;
+    districtRegionCode = district?.districtRegionCode;
     break;
   }
   default:
@@ -66,6 +68,7 @@ async function getUserInfo(req, res) {
       identityTypeLabel: 'IDIR',
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       activeInstituteCode: activeInstituteCode,
+      districtRegionCode: districtRegionCode
     };
     return res.status(HttpStatus.OK).json(resData);
   }
@@ -83,6 +86,7 @@ async function getUserInfo(req, res) {
       activeInstitutePermissions: req.session.activeInstitutePermissions,
       edxUserID: req.session.edxUserData?.edxUserID,
       activeInstituteCode: activeInstituteCode,
+      districtRegionCode: districtRegionCode
     };
     return res.status(HttpStatus.OK).json(resData);
   }
