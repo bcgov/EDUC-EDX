@@ -143,6 +143,7 @@ import {LocalDate} from '@js-joda/core';
 import { ApiRoutes } from '../../../../utils/constants';
 import { mapState } from 'pinia';
 import { authStore } from '../../../../store/modules/auth';
+import moment from 'moment';
         
 export default {
   name: 'YukonReports',
@@ -168,13 +169,20 @@ export default {
     ...mapState(authStore, ['userInfo']),
     calcFromDate() {
       if(this.fromDate) {
-        return (this.fromDate + "/01").replaceAll('/', '-');
+        // Parse the date (assuming format like 'YYYY/MM')
+        const momentDate = moment(this.fromDate, 'YYYY/MM');
+        // Get the last day of the month
+        return momentDate.startOf('month').format('YYYY-MM-DD');
       }
       return null;
     },
+
     calcToDate() {
       if(this.toDate) {
-        return (this.toDate + "/01").replaceAll('/', '-');
+        // Parse the date (assuming format like 'YYYY/MM')
+        const momentDate = moment(this.toDate, 'YYYY/MM');
+        // Get the last day of the month
+        return momentDate.endOf('month').format('YYYY-MM-DD');
       }
       return null;
     }
