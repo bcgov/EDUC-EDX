@@ -13,14 +13,17 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
 
   for (const [key, filter] of Object.entries(searchFilter)) {
     let pValue = filter ? filter.map(filter => filter.value) : null;
-    
-    //Default Filter Begin
+
     if (key === 'schoolYear' && pValue) {
       searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.schoolYear', value: pValue[0].replace('-', '/'), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.completionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-    }  
-    //Default Filter End
+    }
     
+    if (key === 'openSessions' && pValue) {
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.sessionID', value: pValue.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'assessmentEntity.assessmentSessionEntity.completionDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+    }
+
     if (key === 'transfer' && pValue) {
       if(pValue.toString() === 'transfered') {
         searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });

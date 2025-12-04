@@ -174,7 +174,7 @@
                 <v-btn
                   :id="option?.id"
                   :value="option"
-                  :class="selected['session']?.find(entry => entry.id === option.id) ? 'filter-button-active' : 'filter-button'"
+                  class="filter-button"
                   rounded="lg"
                 >
                   {{ option?.title }}
@@ -310,7 +310,9 @@ export default {
     this.selected = {...this.initialFilterSelection};
     if (this.schoolsMap.size === 0) {
       await appStore().getInstitutesData();
-    }    
+    }
+    // Auto-select first items after data is loaded
+    this.autoSelectFirstItems();
   },
   created() {
     authStore()
@@ -336,6 +338,12 @@ export default {
   methods: {  
     close() {
       this.$emit('close-assessment-filter');
+    },
+    autoSelectFirstItems() {
+      // For sessionTypeCode
+      if (this.sessionSearchNames.length > 0 && !this.selected['sessionTypeCode']) {
+        this.selected['session'] = this.sessionSearchNames[0];
+      }
     },
     setupAssessmentSessions() {
       this.sessionSearchNames = [];
