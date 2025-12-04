@@ -347,16 +347,19 @@ export default {
     applyDefaultFilters() {
       if (this.activeSession) {
         this.filterSearchParams.moreFilters.session = [
-          { title: capitalize(Month.of(this.activeSession.courseMonth).toString()) , id: this.activeSession.sessionID, value: this.activeSession.sessionID }
-        ];
-        this.filterSearchParams.moreFilters.schoolYear = [
-          { title: 'schoolYear', id: 'schoolYear', value: this.schoolYear },
+          { title: capitalize(Month.of(this.activeSession.courseMonth).toString()), courseMonth: this.activeSession.courseMonth, courseYear: this.activeSession.courseYear, id: this.activeSession.sessionID, value: this.activeSession.sessionID }
         ];
       }
     },
     getAssessmentStudents() {
       this.isLoading = true;
       let sort = {assessmentStudentID: 'ASC',};
+      
+      if(!this.filterSearchParams.moreFilters.session){
+        this.filterSearchParams.moreFilters.openSessions = [
+          { value: this.activeSessionsList.map(session => session.sessionID) }
+        ];
+      }
       let assessmentSearchParams = cloneDeep(this.filterSearchParams);
       ApiService.apiAxios
         .get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/paginated`, {
@@ -407,7 +410,6 @@ export default {
     clearFilters() {
       this.filterSearchParams.moreFilters = {};
       this.pageNumber = 1;
-      this.applyDefaultFilters();
       this.getAssessmentStudents();
     },
     toggleFilters() {

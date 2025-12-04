@@ -47,7 +47,7 @@
       <template #item="props">
         <tr
           class="hoverTable"
-          :style="{background: activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null ? 'lightgoldenrodyellow' : 'white'}"
+          :style="{background: activeSession.sessionID === props.item['sessionID'] && activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null ? 'lightgoldenrodyellow' : 'white'}"
           @click="rowClicked(props.item)"
         >
           <td
@@ -63,17 +63,17 @@
               @click.stop
             />
             <span v-if="column.key === 'alert'">
-              <span v-if="activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null">
-                  <v-tooltip text="Registration not transferred to e-Assessments System.">
-                    <template #activator="{ props: tooltipProps }">
-                      <v-icon
-                        icon="mdi-alert-outline"
-                        v-bind="tooltipProps"
-                        color="warning"
-                      />
-                    </template>
-                  </v-tooltip>
-                </span>
+              <span v-if="activeSession.sessionID === props.item['sessionID'] && activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null">
+                <v-tooltip text="Registration not transferred to e-Assessments System.">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-icon
+                      icon="mdi-alert-outline"
+                      v-bind="tooltipProps"
+                      color="warning"
+                    />
+                  </template>
+                </v-tooltip>
+              </span>
             </span>
             <span v-else-if="column.key === 'session'">
               {{ props.item['courseYear'] }}/{{ props.item['courseMonth'] }}
@@ -82,7 +82,7 @@
               {{ props.item['surname'] }}, {{ props.item['givenName'] }}
             </span>
             <span v-else-if="props.item[column.key]">{{ props.item[column.key] }}</span>
-            <span v-else-if="column.key === 'select'"></span>
+            <span v-else-if="column.key === 'select'" />
             <span v-else>-</span>
           </td>
         </tr>
