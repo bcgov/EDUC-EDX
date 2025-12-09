@@ -263,6 +263,9 @@ async function downloadAssessmentReport(req, res) {
     return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
     log.error('downloadAssessmentReport Error', e.stack);
+    if (e.status === 428) {
+      return res.status(HttpStatus.PRECONDITION_REQUIRED).json('Results are not available for the selected session.');
+    }
     return handleExceptionResponse(e, res);
   }
 }
@@ -313,6 +316,9 @@ async function downloadAssessmentStudentReport(req, res) {
     return res.status(HttpStatus.OK).send(buffer);
   } catch (e) {
     log.error('downloadAssessmentReport Error', e.stack);
+    if (e.status === 428) {
+      return res.status(HttpStatus.PRECONDITION_REQUIRED).json('Results are not available for the selected session.');
+    }
     return handleExceptionResponse(e, res);
   }
 }
