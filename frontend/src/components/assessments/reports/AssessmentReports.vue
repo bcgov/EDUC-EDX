@@ -476,11 +476,12 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/doar-summary/download`;
-        window.open(url);
+        const response = await ApiService.apiAxios.get(url);
+        window.open(response);
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+          error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
         );
       } finally {
         this.isLoading = false;
@@ -495,7 +496,7 @@ export default {
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+          error?.response?.data?.message ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
         );
       } finally {
         this.isLoading = false;
@@ -511,7 +512,7 @@ export default {
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve the student\'s report.'
+          error?.response?.data?.message ? error?.response?.data : 'An error occurred while trying to retrieve the student\'s report.'
         );
       } finally {
         this.isLoading = false;
@@ -521,11 +522,12 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/${reportType}/download`;
-        window.open(url);
+        const response = await ApiService.apiAxios.get(url);
+        window.open(response);
       } catch (error) {
         console.error(error);
         this.setFailureAlert(
-          error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+          error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
         );
       } finally {
         this.isLoading = false;
