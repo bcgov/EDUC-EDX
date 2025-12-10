@@ -560,13 +560,22 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/${reportType}/download`;
-        const response = await ApiService.apiAxios.get(url);
-        window.open(response);
+        const response = await ApiService.apiAxios.get(url, {
+          responseType: 'blob'
+        });
+        const blobURL = window.URL.createObjectURL(response.data);
+        window.open(blobURL, '_blank');
       } catch (error) {
         console.error(error);
-        this.setFailureAlert(
-          error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
-        );
+        if(error?.response?.status === 428) {
+          this.setFailureAlert(
+            'Results are not available for the selected session.'
+          );
+        } else {
+          this.setFailureAlert(
+            error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
+          );
+        }
       } finally {
         this.isLoading = false;
       }
