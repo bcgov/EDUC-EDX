@@ -94,7 +94,7 @@ export const SPECIAL_CASE_FILTER = Object.freeze(
 
 export const REGISTRATIONS_TRANSFER_FILTER = Object.freeze(
   {
-    heading: 'Registrations Transferred to e-Assessments System',
+    heading: 'Registrations Transferred to e-Assessment System',
     id: 'transfer',
     multiple: false,
     key: 'transfer',

@@ -64,7 +64,7 @@
             />
             <span v-if="column.key === 'alert'">
               <span v-if="activeSession.sessionID === props.item['sessionID'] && activeSession.assessmentRegistrationsExportDate !== null && props.item['downloadDate'] === null">
-                <v-tooltip text="Registration not transferred to e-Assessments System.">
+                <v-tooltip text="Registration not transferred to e-Assessment System.">
                   <template #activator="{ props: tooltipProps }">
                     <v-icon
                       icon="mdi-alert-outline"
