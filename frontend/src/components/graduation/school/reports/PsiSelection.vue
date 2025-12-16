@@ -6,6 +6,12 @@
       </v-col>
     </v-row>
     <v-row class="mb-1">
+      <v-col cols="12">
+        <DownloadLink
+          :label="'PSI Selections Report ' + currentYearRange"
+          :download-action="() => downloadPsiReport()"
+        />
+      </v-col>
       <v-col cols="10">
         Note: Students are listed in random order; use filters to sort by any column. Students with multiple selections will have multiple rows.
       </v-col>
@@ -33,7 +39,7 @@
             class="pa-2"
           >
             <div style="font-weight: bold">
-              Report Description
+              Understanding the PSI Selections Report
             </div>
             <div
               style="font-weight: bold"
@@ -51,26 +57,26 @@
               Local ID
             </div>
             <div>
-              The student’s Local ID, as reported through GRAD Data Collection
+              The student’s Local ID, as last reported to the PEN Registry
             </div>
             <div
-                style="font-weight: bold"
-                class="mt-4"
+              style="font-weight: bold"
+              class="mt-4"
             >
               Order Placed
             </div>
             <div>
               Indicates if PSI Selection(s) was made by the student
-              </div>
-            <div class="mt-1">
-              •Yes = Selection(s) made
-              </div>
-            <div class="mt-1">
-              •No = no selection made
+            </div>
+            <div class="mt-1 ml-3">
+              <b>Yes</b> = Selection(s) made
+            </div>
+            <div class="mt-1 ml-3">
+              <b>No</b> = no selection made
             </div>
             <div
-                style="font-weight: bold"
-                class="mt-4"
+              style="font-weight: bold"
+              class="mt-4"
             >
               PSI Name
             </div>
@@ -78,49 +84,48 @@
               Name of the Post Secondary Institution selected by the student
             </div>
             <div
-                style="font-weight: bold"
-                class="mt-4"
+              style="font-weight: bold"
+              class="mt-4"
             >
               Transmission Mode
             </div>
             <div>
               How the transcript is sent to the PSI
             </div>
-            <div class="mt-1">
-              •Paper = regular mail
+            <div class="mt-1 ml-3">
+              <b>Paper</b> = regular mail
             </div>
-            <div class="mt-1">
-              •XML = electronic data transfer
+            <div class="mt-1 ml-3">
+              <b>XML</b> = electronic data transfer
             </div>
             <div
-                style="font-weight: bold"
-                class="mt-4"
+              style="font-weight: bold"
+              class="mt-4"
             >
               Order Type
             </div>
             <div>
               Timing and update rules for transcript delivery
             </div>
-            <div class="mt-1">
-              •End of July = paper transcript mailed after all final marks available (end of July)
+            <div class="mt-1 ml-3">
+              <b>End of July</b> = paper transcript mailed after all final marks available (end of July)
             </div>
-            <div class="mt-1">
-              •Send Now = paper transcript mailed at the time of order (subject to processing and delivery time)
+            <div class="mt-1 ml-3">
+              <b>Send Now</b> = paper transcript mailed at the time of order (subject to processing and delivery time)
             </div>
-            <div class="mt-1">
-              •One-Time = transcript data sent as single transmission at the time of the order; future updates cannot be requested by the PSI
+            <div class="mt-1 ml-3">
+              <b>One-Time</b> = transcript data sent as single transmission at the time of the order; future updates cannot be requested by the PSI
             </div>
-            <div class="mt-1">
-              •Ongoing = transcript data and updates may be requested by the PSI until the specified end date
+            <div class="mt-1 ml-3">
+              <b>Ongoing</b> = transcript data and updates may be requested by the PSI until the specified end date
+            </div>
+            <div class="mt-2">
+              <b>Note:</b> Only student PSI selection orders are included. Third-party orders placed by students in the system (including PDFs) are not reflected in this report.
             </div>
           </v-card>
         </v-menu>
       </v-col>
     </v-row>
-    <DownloadLink
-      :label="'PSI Selections Report ' + currentYearRange"
-      :download-action="() => downloadPsiReport()"
-    />
   </v-container>
 </template>
 
