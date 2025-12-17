@@ -18,13 +18,14 @@
           style="color: #38598a"
         >
           <v-tab 
-            :value="1"
+            v-if="isSchoolUser"
+            value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
             Registrations
           </v-tab>
           <v-tab 
-            :value="2"
+            value="2"
             prepend-icon="mdi-finance"
           >
             Reports & Results
@@ -32,7 +33,8 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
-            :value="1"
+            v-if="isSchoolUser"
+            value="1"
             transition="false"
             reverse-transition="false"
           >
@@ -55,7 +57,7 @@
             </v-row>
           </v-window-item>
           <v-window-item
-            :value="2"
+            value="2"
             transition="false"
             reverse-transition="false"
           >
@@ -96,6 +98,7 @@ export default {
     return {
       assessmentStudents: [],
       schoolYearSessions: [],
+      isSchoolUser: false,
       isLoading: false,
       tab: '',
       session: ''
@@ -110,6 +113,14 @@ export default {
     easStore().getActiveSchoolYear(this.userInfo.activeInstituteType).then(() => {
       if(this.schoolYear.length > 0) {
         this.getAllSessionsforYear();
+      }
+    });
+    authStore().getUserInfo().then(() => {
+      if(this.userInfo.activeInstituteType === 'SCHOOL') {
+        this.isSchoolUser = true;
+        this.tab = '1';
+      }else{
+        this.isSchoolUser = false;
       }
     });
   },
