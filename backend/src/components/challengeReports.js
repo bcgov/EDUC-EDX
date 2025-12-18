@@ -106,7 +106,7 @@ function formatCompletionDate(rawDate) {
 function getFileDetails(reportType, district, session) {
   const mappings = {
     'PRELIM_DISTRICT_REPORT': { filename: `SD ${district} Preliminary District Level Funding Report For Course Challenges ${session}.csv`, contentType: 'text/csv' },
-    'FINAL_DISTRICT_REPORT': { filename: `SD ${district} District Level Funding Report For Course Challenges ${session}.csv`, contentType: 'text/csv' },
+    'FINAL_DISTRICT_REPORT': { filename: `SD ${district} Final District Level Funding Report For Course Challenges ${session}.csv`, contentType: 'text/csv' },
     'DEFAULT': { filename: 'download.pdf', contentType: 'application/pdf' }
   };
   return mappings[reportType] || mappings['DEFAULT'];
