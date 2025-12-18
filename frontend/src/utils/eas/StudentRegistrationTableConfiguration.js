@@ -113,6 +113,37 @@ export const REGISTRATIONS_TRANSFER_FILTER = Object.freeze(
   }
 );
 
+export const WRITING_SITE_AND_SCHOOL_FILTER = Object.freeze(
+  {
+    heading: 'Writing Site and School of Record Status',
+    id: 'writingSite',
+    multiple: false,
+    key: 'writingSite',
+    filterOptions: [
+      {
+        title: 'Any Students Writing at My School',
+        id: 'anyWritingAtMySchool',
+        value: 'anyWritingAtMySchool'
+      },
+      {
+        title: 'My Students Writing at My School',
+        id: 'writingAtMySchool',
+        value: 'writingAtMySchool'
+      },
+      {
+        title: 'My Students Writing at Another School',
+        id: 'writingAtAnotherSchool',
+        value: 'writingAtAnotherSchool'
+      },
+      {
+        title: 'Non-SOR Students Writing at My School',
+        id: 'nonSORStudents',
+        value: 'nonSORStudents'
+      },
+    ]
+  }
+);
+
 
 export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
   {
@@ -125,6 +156,7 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_DISTRICT = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
+      { title: 'School of Record', key: 'schoolName_desc' },
       { title: 'Assessment Centre', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
@@ -144,12 +176,14 @@ export const SCHOOL_YEAR_REGISTRATIONS_VIEW_SCHOOL = Object.freeze(
       { title: 'PEN', key: 'pen' },
       { title: 'Local ID', key: 'localID' },
       { title: 'Surname, Given Name', key: 'name' },
+      { title: 'School of Record', key: 'schoolName_desc' },
       { title: 'Assessment Centre', key: 'assessmentCenterName_desc' }
     ],
     allowedFilters: {
       session: SESSION_CODE_FILTER,
       assessmentTypeCode: ASSESSMENT_TYPE_CODE_FILTER,
-      transfer: REGISTRATIONS_TRANSFER_FILTER
+      transfer: REGISTRATIONS_TRANSFER_FILTER,
+      writingSite: WRITING_SITE_AND_SCHOOL_FILTER
     }
   });
 

@@ -2,9 +2,10 @@
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
 const cacheService = require('../cache-service');
 
-function createMoreFiltersSearchCriteria(searchFilter = []) {
+function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
   let searchCriteriaList = [];
 
+  let writingSiteFilter = [];
   let schoolNameNumberFilter = [];
   let assessmentCenterNameNumberFilter = [];
 
@@ -29,6 +30,23 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
         searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
       } else if(pValue.toString() === 'notTransfered') {
         searchCriteriaList.push({ key: 'downloadDate', value: null, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      }
+    }
+
+    if (key === 'writingSite' && pValue) {
+      if(pValue.toString() === 'anyWritingAtMySchool') {
+        const searchWriteCriteria = [];
+        searchWriteCriteria.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        searchWriteCriteria.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        writingSiteFilter = [...searchWriteCriteria];
+      } else if(pValue.toString() === 'writingAtMySchool') {
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+      } else if(pValue.toString() === 'writingAtAnotherSchool') {
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+      } else if(pValue.toString() === 'nonSORStudents') {
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       }
     }
 
@@ -98,7 +116,6 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
       } else {
         searchCriteriaList.push({ key: 'proficiencyScore', value: pValue.toString(), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
       }
-      
     }
 
   }
@@ -107,6 +124,12 @@ function createMoreFiltersSearchCriteria(searchFilter = []) {
     search.push({
       condition: CONDITION.AND,
       searchCriteriaList: schoolNameNumberFilter
+    });
+  }
+  if (writingSiteFilter.length > 0) {
+    search.push({
+      condition: CONDITION.AND,
+      searchCriteriaList: writingSiteFilter
     });
   }
   if (assessmentCenterNameNumberFilter.length > 0) {

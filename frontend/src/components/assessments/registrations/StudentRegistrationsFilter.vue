@@ -2,7 +2,9 @@
   <v-card class="filter-card">
     <v-card-title class="sheetHeader pt-1 pb-1">
       <v-row no-gutters>
-        <v-col class="d-flex justify-start"> Filters </v-col>
+        <v-col class="d-flex justify-start">
+          Filters
+        </v-col>
         <v-col class="d-flex justify-end">
           <v-btn
             id="cancel"
@@ -39,9 +41,12 @@
           />
         </v-col>
       </v-row>
-      <div >
+      <div>
         <v-row class="d-flex justify-space-around">
-          <v-col id="searchFiltering" class="filter-heading pb-0">
+          <v-col
+            id="searchFiltering"
+            class="filter-heading pb-0"
+          >
             <span>Name and ID</span>
             <v-tooltip content-class="customTooltip">
               <template #activator="{ props: tooltipProps }">
@@ -63,7 +68,10 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="py-0" cols="6">
+          <v-col
+            class="py-0"
+            cols="6"
+          >
             <v-text-field
               id="pen"
               v-model="pen"
@@ -73,7 +81,10 @@
               variant="underlined"
             />
           </v-col>
-          <v-col class="py-0" cols="6">
+          <v-col
+            class="py-0"
+            cols="6"
+          >
             <v-text-field
               id="localID"
               v-model="localID"
@@ -84,7 +95,10 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="py-0" cols="6">
+          <v-col
+            class="py-0"
+            cols="6"
+          >
             <v-text-field
               id="givenName"
               v-model="givenName"
@@ -93,7 +107,10 @@
               variant="underlined"
             />
           </v-col>
-          <v-col class="py-0" cols="6">
+          <v-col
+            class="py-0"
+            cols="6"
+          >
             <v-text-field
               id="surName"
               v-model="surName"
@@ -106,8 +123,11 @@
       </div>
       <div>
         <v-row v-if="userInfo.activeInstituteType === 'DISTRICT'">
-          <v-col cols="12" class="pt-0">
-            <slot name="text-search">              
+          <v-col
+            cols="12"
+            class="pt-0"
+          >
+            <slot name="text-search">
               <v-autocomplete
                 id="selectSchool"
                 v-model="schoolNameNumberFilter"
@@ -129,7 +149,7 @@
         </v-row>
         <v-row>
           <v-col cols="12">
-            <slot name="text-search">              
+            <slot name="text-search">
               <v-autocomplete
                 id="selectSchool"
                 v-model="assessmentCenterNameNumberFilter"
@@ -150,13 +170,22 @@
           </v-col>
         </v-row>
       </div>
-      <div v-for="(filter, key) in filters" :key="key">
+      <div
+        v-for="(filter, key) in filters"
+        :key="key"
+      >
         <v-row v-if="filter?.heading">
-          <v-col :id="filter.id" class="filter-heading">
+          <v-col
+            :id="filter.id"
+            class="filter-heading"
+          >
             {{ filter?.heading }}
           </v-col>
         </v-row>
-        <v-row v-else class="filter-heading"/>
+        <v-row
+          v-else
+          class="filter-heading"
+        />
         <v-row>
           <v-btn-toggle
             v-model="selected[key]"
@@ -164,11 +193,11 @@
             rounded="0"
             :multiple="filter?.multiple"
             class="filter-toggle"
-            @update:model-value="setFilter(selected[key], key)"            
+            @update:model-value="!isInitializing && filter?.id !== 'writingSite' ? setFilter(selected[key], key) : null"
           >
             <div v-if="filter?.id === 'sessionTypeCode'">
-              <span 
-                v-for="(option, i) in sessionSearchNames" 
+              <span
+                v-for="(option, i) in sessionSearchNames"
                 :key="option.value"
               >
                 <v-btn
@@ -182,7 +211,7 @@
               </span>
             </div>
             <div v-else-if="filter?.id === 'assessmentTypeCode'">
-              <span 
+              <span
                 v-for="(option, i) in assessmentTypeSearchNames"
                 :key="option.value"
               >
@@ -195,11 +224,10 @@
                   {{ option?.title }}
                 </v-btn>
               </span>
-            </div>     
+            </div>
             <div v-else-if="filter?.id === 'proficiencyScoreValue'">
-
-              <span 
-                v-for="(option, i) in filter?.filterOptions" 
+              <span
+                v-for="(option, i) in filter?.filterOptions"
                 :key="option.value"
               >
                 <v-btn
@@ -212,7 +240,7 @@
                 </v-btn>
               </span>
 
-              <span 
+              <span
                 v-for="(option, i) in specialCaseSearchNames"
                 :key="option.value"
               >
@@ -225,10 +253,26 @@
                   {{ option?.title }}
                 </v-btn>
               </span>
-            </div>        
+            </div>
+            <div v-else-if="filter?.id === 'writingSite'">
+              <span
+                v-for="(option, i) in filter?.filterOptions"
+                :key="option.value"
+              >
+                <v-btn
+                  :id="option?.id"
+                  :value="option"
+                  class="filter-button"
+                  rounded="lg"
+                  @click.prevent="selectOption(option, key)"
+                >
+                  {{ option?.title }}
+                </v-btn>
+              </span>
+            </div>
             <div v-else>
-              <span 
-                v-for="(option, i) in filter?.filterOptions" 
+              <span
+                v-for="(option, i) in filter?.filterOptions"
                 :key="option.value"
               >
                 <v-btn
@@ -240,7 +284,7 @@
                   {{ option?.title }}
                 </v-btn>
               </span>
-            </div>   
+            </div>
           </v-btn-toggle>
         </v-row>
       </div>
@@ -285,6 +329,7 @@ export default {
   data() {
     return {
       selected: {},
+      isInitializing: true,
       scoreRangeDefault: [0, 4],
       scoreRange: [0, 4],
       givenName: null,
@@ -294,7 +339,7 @@ export default {
       schoolSearchNames: [],
       assessmentCenterSearchNames: [],
       sessionSearchNames: [],
-      assessmentTypeSearchNames: [],      
+      assessmentTypeSearchNames: [],
       specialCaseSearchNames: [],
       schoolNameNumberFilter: null,
       assessmentCenterNameNumberFilter: null,
@@ -302,10 +347,11 @@ export default {
   },
   computed: {
     ...mapState(appStore, ['schoolsMap', 'config']),
-    ...mapState(authStore, ['userInfo']),   
-    ...mapState(easStore, ['specialCaseCodes']) 
+    ...mapState(authStore, ['userInfo']),
+    ...mapState(easStore, ['specialCaseCodes'])
   },
-  watch: {},
+  watch: {
+  },
   async beforeMount() {
     this.selected = {...this.initialFilterSelection};
     if (this.schoolsMap.size === 0) {
@@ -313,6 +359,10 @@ export default {
     }
     // Auto-select first items after data is loaded
     this.autoSelectFirstItems();
+    // Apply the initial filters once
+    this.apply();
+    // Mark initialization as complete - now v-btn-toggle updates will trigger queries
+    this.isInitializing = false;
   },
   created() {
     authStore()
@@ -332,17 +382,16 @@ export default {
       });
     Object.keys(this.filters).forEach((key) => {
       this.selected[key] = [];
-    });   
-    this.setupAssessmentSessions(); 
+    });
+    this.setupAssessmentSessions();
   },
-  methods: {  
+  methods: {
     close() {
       this.$emit('close-assessment-filter');
     },
     autoSelectFirstItems() {
-      // For sessionTypeCode
       if (this.sessionSearchNames.length > 0 && !this.selected['sessionTypeCode']) {
-        this.selected['session'] = this.sessionSearchNames[0];
+        this.selected['session'][0] = this.sessionSearchNames[0];
       }
     },
     setupAssessmentSessions() {
@@ -366,8 +415,8 @@ export default {
           }
         });
       });
-      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['courseYear','courseMonth']); 
-      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']); 
+      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['courseYear','courseMonth']);
+      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']);
     },
     setupSchoolLists() {
       this.schoolSearchNames = [];
@@ -398,7 +447,7 @@ export default {
       if ($event && val === 'click') {
         this.apply();
       }
-    },    
+    },
     setSchoolNameNumberFilter(key, $event) {
       this.setPenLocalIdNameFilter($event, null);
       if ($event) {
@@ -430,7 +479,9 @@ export default {
       }
     },
     clear() {
-      this.selected = {};
+      delete this.selected['session'];
+      delete this.selected['transfer'];
+      delete this.selected['assessmentTypeCode'];
       this.penLocalIdNameFilter = null;
       this.schoolNameNumberFilter = null;
       this.assessmentCenterNameNumberFilter = null;
@@ -440,6 +491,19 @@ export default {
       this.localID = null;
       this.scoreRange = [...this.scoreRangeDefault];
       this.$emit('clear-assessment-filters');
+    },
+    selectOption(option, key) {
+      // Only allow changing selection if clicking a different button
+      const currentSelection = this.selected[key];
+
+      // If it's the same option, don't deselect (do nothing)
+      if (currentSelection && currentSelection[0]?.value === option.value) {
+        return;
+      }
+
+      // Update the filter selection and apply
+      this.selected[key] = [option];
+      this.apply();
     },
     apply() {
       this.$emit('apply-assessment-filters', this.selected);
@@ -465,9 +529,9 @@ export default {
   margin-top: 1em;
 }
 .filter-card {
-      height: 100%;
-      overflow-y: auto;
-    }
+  height: 100%;
+  overflow-y: auto;
+}
 .filter-button {
   color: #003366;
   padding: 5px;
@@ -476,11 +540,11 @@ export default {
 }
 
 .filter-button-active {
-padding: 5px;
-margin: 0 8px 8px 8px; 
-background-color: rgb(0, 51, 102); 
-color: rgb(255, 255, 255); 
-caret-color: rgb(255, 255, 255);
+  padding: 5px;
+  margin: 0 8px 8px 8px;
+  background-color: rgb(0, 51, 102);
+  color: rgb(255, 255, 255);
+  caret-color: rgb(255, 255, 255);
 }
 
 .filter-toggle {

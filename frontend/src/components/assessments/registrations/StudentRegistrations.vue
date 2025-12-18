@@ -350,6 +350,9 @@ export default {
           { title: capitalize(Month.of(this.activeSession.courseMonth).toString()), courseMonth: this.activeSession.courseMonth, courseYear: this.activeSession.courseYear, id: this.activeSession.sessionID, value: this.activeSession.sessionID }
         ];
       }
+      this.filterSearchParams.moreFilters.writingSite = [
+        { title: 'Any Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+      ];
     },
     getAssessmentStudents() {
       this.isLoading = true;
@@ -409,6 +412,9 @@ export default {
     },
     clearFilters() {
       this.filterSearchParams.moreFilters = {};
+      this.filterSearchParams.moreFilters.writingSite = [
+        { title: 'Any Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+      ];
       this.pageNumber = 1;
       this.getAssessmentStudents();
     },
