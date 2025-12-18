@@ -121,7 +121,7 @@ export const WRITING_SITE_AND_SCHOOL_FILTER = Object.freeze(
     key: 'writingSite',
     filterOptions: [
       {
-        title: 'Any Students Writing at My School',
+        title: 'My Students and Students Writing at My School',
         id: 'anyWritingAtMySchool',
         value: 'anyWritingAtMySchool'
       },
