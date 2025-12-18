@@ -310,7 +310,7 @@ export default {
     ...mapState(authStore, ['userInfo']),
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => {
-        return filter[0].id !== 'schoolYear';
+        return !!filter[0].id;
       } ).reduce((total, filter) => total.concat(filter), []).length;
     },
     hasEditPermission(){
