@@ -61,7 +61,6 @@
     <h1>Notes</h1>
     <ul>
       <li>The numbers in this report may differ from previous reports for a particular session, due to updates of the data.</li>
-      <li>If the report is for public use, a line of N/S means that less than 10 students were counted, or 100% of the students achieved the same assessment score.</li>
     </ul>
 
     <h1>Explanations</h1>
