@@ -474,7 +474,7 @@ export default {
           );
         } else {
           this.setFailureAlert(
-            error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to retrieve your school\'s report.'
+            'An error occurred while trying to retrieve your school\'s report.'
           );
         }
       } finally {
@@ -499,7 +499,7 @@ export default {
           );
         } else {
           this.setFailureAlert(
-            error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
+            'An error occurred while trying to retrieve your school\'s report.'
           );
         }
       } finally {
@@ -524,7 +524,7 @@ export default {
           );
         } else {
           this.setFailureAlert(
-            error?.response?.data?.message ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
+            'An error occurred while trying to retrieve your school\'s report.'
           );
         }
       } finally {
@@ -536,7 +536,7 @@ export default {
       this.isLoading = true;
       try {
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/student/${this.studentForSearch.studentID}/ISR/download`;
-         const response = await ApiService.apiAxios.get(url, {
+        const response = await ApiService.apiAxios.get(url, {
           responseType: 'blob'
         });
         const blobURL = window.URL.createObjectURL(response.data);
@@ -549,7 +549,7 @@ export default {
           );
         } else {
           this.setFailureAlert(
-            error?.response?.data?.message ? error?.response?.data : 'An error occurred while trying to retrieve the student\'s report.'
+            'An error occurred while trying to retrieve the student\'s report.'
           );
         }
       } finally {
@@ -573,7 +573,7 @@ export default {
           );
         } else {
           this.setFailureAlert(
-            error?.response?.data ? error?.response?.data : 'An error occurred while trying to retrieve your school\'s report.'
+            'An error occurred while trying to retrieve your school\'s report.'
           );
         }
       } finally {
