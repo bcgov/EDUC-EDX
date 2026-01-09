@@ -84,7 +84,7 @@ async function getStudentByPENForAssessment(req, res){
         return errorResponse(res, 'Student is not found in the Graduation system', HttpStatus.CONFLICT);
       }
     }else if(result && result[0] && result[0].studentID && result[0].statusCode === 'M'){
-      return errorResponse(res, 'Student is merged to another student', HttpStatus.CONFLICT);
+      return errorResponse(res, 'Reports cannot be retrieved, as this student has been merged', HttpStatus.CONFLICT);
     } else {
       const message = 'PEN must be a valid PEN associated with a student at the Ministry of Education and Childcare';
       log.error(message);
