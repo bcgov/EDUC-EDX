@@ -49,7 +49,7 @@ async function getStudentByPEN(req, res) {
 async function getStudentByPENForAssessment(req, res){
   try {
     const result = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
-    if (result && result[0] && result[0].studentID) {
+    if (result && result[0] && result[0].studentID && result[0].statusCode !== 'M') {
       let misMatchError = 'Your school is not currently the student\'s School of Record for Graduation; the student’s reports cannot be accessed.';
       let gradStudent = await getData(`${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
       if(gradStudent.schoolOfRecordId){
@@ -83,6 +83,8 @@ async function getStudentByPENForAssessment(req, res){
       }else{
         return errorResponse(res, 'Student is not found in the Graduation system', HttpStatus.CONFLICT);
       }
+    }else if(result && result[0] && result[0].studentID && result[0].statusCode === 'M'){
+      return errorResponse(res, 'Student is merged to another student', HttpStatus.CONFLICT);
     } else {
       const message = 'PEN must be a valid PEN associated with a student at the Ministry of Education and Childcare';
       log.error(message);
