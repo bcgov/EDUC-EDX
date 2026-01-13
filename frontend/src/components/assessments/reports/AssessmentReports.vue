@@ -284,6 +284,7 @@ import { ApiRoutes } from '../../../utils/constants';
 import { sortBy } from 'lodash';
 import * as Rules from '../../../utils/institute/formRules';
 import {orderBy} from 'lodash/collection';
+import {edxStore} from "../../../store/modules/edx";
 
 export default {
   name: 'AssessmentReports',
@@ -340,10 +341,12 @@ export default {
       return LocalDateTime.parse(this.selectedSession?.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE));
     }
   },
-  async created() {
+  async beforeMount() {
     authStore().getUserInfo();
+    await appStore().getInstitutesData().then(() => {
+      this.setupSchoolLists();
+    });
     await this.getAllSessions();
-    this.setupSchoolLists();
   },
   methods: {
     getAssessmentsForSelectedSession(selectedSessionID) {
@@ -397,7 +400,7 @@ export default {
       this.schoolSearchNames = [];
       this.schoolsMap?.forEach((school) => {
         let schoolCodeName = school.schoolName + ' - ' + school.mincode;
-        if(school.districtID === this.userInfo.activeInstituteIdentifier) {
+        if(school.districtID === this.userInfo.activeInstituteIdentifier && school.schoolCategoryCode !== 'INDEPEND') {
           this.schoolSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
         }
       });
