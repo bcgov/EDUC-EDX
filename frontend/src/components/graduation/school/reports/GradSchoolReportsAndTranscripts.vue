@@ -83,6 +83,12 @@
             <v-col cols="9">
               {{ studentForSearch.dob }}
             </v-col>
+            <v-col cols="12">
+              <DownloadLink
+                label="TVR"
+                :download-action="downloadTVRReport"
+              />
+            </v-col>
             <v-col
               cols="12"
               class="mt-n2"
