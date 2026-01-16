@@ -69,13 +69,13 @@ router.get('/fileset/district/:districtID/paginated/final', passport.authenticat
   checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFinalFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFinalFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetByPenSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);
 
 router.get('/fileset/district/:districtID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
-  checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictPenFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictPenFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFinalFilesetsPaginated);
 
 router.get('/fileset/district/:districtID/pen/:pen', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetByPenSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getStudentFilesetByPenFilesetId);

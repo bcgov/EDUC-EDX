@@ -387,7 +387,7 @@ export default {
     },
     async getStudentSubmissions() {
       this.requestCount += 1;
-      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
+      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated/final`, {
         params: {
           pageNumber: 0,
           pageSize: 1000,

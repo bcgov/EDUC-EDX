@@ -403,7 +403,7 @@ export default {
     },
     async getStudentSubmissions() {
       this.requestCount += 1;
-      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.$route.params.districtID}/paginated`, {
+      await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.$route.params.districtID}/paginated/final`, {
         params: {
           pageNumber: 0,
           pageSize: 1000,
