@@ -181,6 +181,83 @@ async function getStudentFilesetByPenFilesetId(req, res) {
   }
 }
 
+async function getFinalFilesetsPaginated(req, res) {
+  try {
+    const search = [];
+    if(req.params.schoolID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'schoolID', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+    } else if(req.params.districtID) {
+      search.push({
+        condition: null,
+        searchCriteriaList: [{ key: 'districtID', value: req.params.districtID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+      });
+      if (req.query?.searchParams?.schoolID) {
+        search.push({
+          condition: 'AND',
+          searchCriteriaList: [{ key: 'schoolID', value: req.query.searchParams.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
+        });
+      }
+    }
+
+    if (req.query?.searchParams?.pen) {
+      search.push({
+        condition: 'AND',
+        searchCriteriaList: [
+          { key: 'demographicStudentEntities.pen', value: req.query?.searchParams?.pen, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.STRING },
+        ]
+      });
+    }
+
+    if (req.query.searchParams?.collectionObject) {
+      search.push({
+        condition: 'AND',
+        searchCriteriaList: [{
+          key: 'reportingPeriod.reportingPeriodID',
+          value: req.query.searchParams.collectionObject.reportingPeriodID,
+          operation: FILTER_OPERATION.EQUAL,
+          valueType: VALUE_TYPE.UUID
+        }]
+      });
+    }
+
+    const params = {
+      params: {
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+        sort: JSON.stringify(req.query.sort),
+        searchCriteriaList: JSON.stringify(search),
+      }
+    };
+    let data = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated/final`, params, req.session?.correlationID);
+
+    if (data.content && data.content.length > 0) {
+      data.content = data.content.map(fileset => {
+        if (req?.params?.districtID) {
+          const school = cacheService.getSchoolBySchoolID(fileset.schoolID);
+          fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
+        }
+        if (fileset.updateUser && fileset.updateUser.startsWith('EDX/')) {
+          const userID = fileset.updateUser.slice(4);
+          const user = cacheService.getEdxUserByID(userID);
+          if (user) {
+            fileset.updateUser = user.displayName;
+          }
+        }
+        fileset.uploadDate = fileset.createDate.substring(0, 19).replaceAll('T',' ');
+        return fileset;
+      });
+    }
+
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    log.error('Error getting error fileset paginated list', e.stack);
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getFilesetsPaginated(req, res) {
   try {
     const search = [];
@@ -232,18 +309,9 @@ async function getFilesetsPaginated(req, res) {
       }
     };
     let data = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
-    let dataFinal = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated/final`, params, req.session?.correlationID);
 
-    if(data?.content && data?.content.length > 0) {
-      if(dataFinal.content){
-        dataFinal.content.push(...data.content);
-      }else{
-        dataFinal.content = data.content;
-      }
-    }
-    
-    if (dataFinal.content && dataFinal.content.length > 0) {
-      dataFinal.content = dataFinal.content.map(fileset => {
+    if (data.content && data.content.length > 0) {
+      data.content = data.content.map(fileset => {
         if (req?.params?.districtID) {
           const school = cacheService.getSchoolBySchoolID(fileset.schoolID);
           fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
@@ -257,10 +325,10 @@ async function getFilesetsPaginated(req, res) {
         }
         fileset.uploadDate = fileset.createDate.substring(0, 19).replaceAll('T',' ');
         return fileset;
-      }).sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+      });
     }
 
-    return res.status(HttpStatus.OK).json(dataFinal);
+    return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     log.error('Error getting error fileset paginated list', e.stack);
     return handleExceptionResponse(e, res);
@@ -645,6 +713,7 @@ module.exports = {
   getErrorMetrics,
   uploadFileXLS,
   getActiveReportingPeriod,
+  getFinalFilesetsPaginated,
   getPreviousReportingPeriod,
   processSummerStudents,
   getGradSchoolDetails,
