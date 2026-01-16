@@ -360,7 +360,7 @@
       </v-row>
       <v-row
         v-if="totalElements > 0"
-        class="mt-5 mb-1"
+        class="mt-5 mb-0"
       >
         <v-col
           cols="6"
@@ -819,6 +819,7 @@ export default {
       nextYear: null,
       initialLoad: true,
       interval: null,
+      intervalFinal: null,
       inputKey: 0,
       inputKeyXLS: 0,
       validForm: false,
@@ -932,6 +933,7 @@ export default {
   },
   beforeUnmount() {
     clearInterval(this.interval);
+    clearInterval(this.intervalFinal);
   },
   methods: {
     openFileDialogAfterConfirm(){
@@ -998,7 +1000,7 @@ export default {
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFilesetPaginated, 30000);  // polling the api every 30 seconds
-      this.interval = setInterval(this.getFinalFilesetPaginated, 30000);  // polling the api every 30 seconds
+      this.intervalFinal = setInterval(this.getFinalFilesetPaginated, 30000);  // polling the api every 30 seconds
     },
     async validateForm() {
       await this.$nextTick();
@@ -1222,9 +1224,11 @@ export default {
         this.filesetList = response.data.content;
         this.totalElements = response.data.totalElements;
         clearInterval(this.interval);
+        clearInterval(this.intervalFinal);
         this.startPollingStatus();
       }).catch(error => {
         clearInterval(this.interval);
+        clearInterval(this.intervalFinal);
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {
