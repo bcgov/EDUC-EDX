@@ -1217,17 +1217,19 @@ export default {
       }).then(response => {
         this.filesetList = response.data.content;
         this.totalElements = response.data.totalElements;
-        clearInterval(this.interval);
-        clearInterval(this.intervalFinal);
+        this.clearAllIntervals();
         this.startPollingStatus();
       }).catch(error => {
-        clearInterval(this.interval);
-        clearInterval(this.intervalFinal);
+        this.clearAllIntervals();
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {
         this.isLoading = false;
       });
+    },
+    clearAllIntervals(){
+      clearInterval(this.interval);
+      clearInterval(this.intervalFinal);
     },
     async getFinalFilesetPaginated() {
       this.isLoading= true;
