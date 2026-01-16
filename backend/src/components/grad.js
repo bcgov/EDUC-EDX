@@ -232,9 +232,18 @@ async function getFilesetsPaginated(req, res) {
       }
     };
     let data = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated`, params, req.session?.correlationID);
+    let dataFinal = await getDataWithParams(`${config.get('grad:filesetURL')}/paginated/final`, params, req.session?.correlationID);
 
-    if (data.content && data.content.length > 0) {
-      data.content = data.content.map(fileset => {
+    if(data?.content && data?.content.length > 0) {
+      if(dataFinal.content){
+        dataFinal.content.push(...data.content);
+      }else{
+        dataFinal.content = data.content;
+      }
+    }
+    
+    if (dataFinal.content && dataFinal.content.length > 0) {
+      dataFinal.content = dataFinal.content.map(fileset => {
         if (req?.params?.districtID) {
           const school = cacheService.getSchoolBySchoolID(fileset.schoolID);
           fileset.schoolName = `${school.mincode} - ${school.schoolName}`.trim();
@@ -248,10 +257,10 @@ async function getFilesetsPaginated(req, res) {
         }
         fileset.uploadDate = fileset.createDate.substring(0, 19).replaceAll('T',' ');
         return fileset;
-      });
+      }).sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
     }
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(dataFinal);
   } catch (e) {
     log.error('Error getting error fileset paginated list', e.stack);
     return handleExceptionResponse(e, res);
