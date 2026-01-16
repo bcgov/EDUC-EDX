@@ -805,6 +805,7 @@ export default {
       progress: 0,
       initialLoad: true,
       interval: null,
+      intervalFinal: null,
       inputKey: 0,
       uploadConfirmCheck: false,
       showUploadConfirmationDialog: false,
@@ -931,6 +932,7 @@ export default {
   },
   beforeUnmount() {
     clearInterval(this.interval);
+    clearInterval(this.intervalFinal);
   },
   methods: {
     openFileDialogAfterConfirm(){
@@ -967,7 +969,7 @@ export default {
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFinalFilesetPaginated, 30000);  // polling the api every 30 seconds
-      this.interval = setInterval(this.getFilesetPaginated, 30000);  
+      this.intervalFinal = setInterval(this.getFilesetPaginated, 30000);  
     },
     async validateForm() {
       await this.$nextTick();
@@ -1216,9 +1218,11 @@ export default {
         this.filesetList = response.data.content;
         this.totalElements = response.data.totalElements;
         clearInterval(this.interval);
+        clearInterval(this.intervalFinal);
         this.startPollingStatus();
       }).catch(error => {
         clearInterval(this.interval);
+        clearInterval(this.intervalFinal);
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {
