@@ -358,7 +358,21 @@
           </span>
         </v-col>
       </v-row>
+      <v-row
+        v-if="totalElements > 0"
+        class="mt-5 mb-1"
+      >
+        <v-col
+          cols="6"
+          class="pb-0 d-flex justify-start"
+        >
+          <p class="schools-in-progress-header mb-0">
+            Processing
+          </p>
+        </v-col>
+      </v-row>
       <v-data-table-server
+        v-if="totalElements > 0"
         v-model:page.sync="pageNumber"
         v-model:items-per-page.sync="pageSize"
         :items-length="totalElements"
@@ -371,6 +385,88 @@
           <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
             <td
               v-for="column in headers"
+              :key="column.key"
+            >
+              <span v-if="column.key === 'errorLink'">
+                <a
+                  v-if="isFilesetComplete(props.item)"
+                  class="ml-1"
+                  @click="navigateToErrors(props.item)"
+                >View Report</a>
+              </span>
+              <span v-else-if="column.key ==='alert'">
+                <span v-if="props.item.filesetStatusCode === 'COMPLETED'">
+                  <v-tooltip text="Files processed. Error report available.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-check-circle-outline"
+                        v-bind="tooltipProps"
+                        color="success"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+                <span v-else-if="isFilesetInProgress(props.item)">
+                  <v-tooltip text="Your files are in the processing queue. The number indicates your position. Processing will begin automatically — you don't need to stay on this screen.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-progress-circular
+                        :width="4"
+                        color="primary"
+                        v-bind="tooltipProps"
+                        indeterminate
+                      >
+                        <span style="color: rgb(0, 51, 102);">{{ props.item.positionInQueue ==='0' ? '' : props.item.positionInQueue }}</span>
+                      </v-progress-circular>
+                    </template>
+                  </v-tooltip>
+                </span>
+                <span v-else>
+                  <v-tooltip text="Missing files. Upload missing files to continue processing.">
+                    <template #activator="{ props: tooltipProps }">
+                      <v-icon
+                        icon="mdi-clock-alert-outline"
+                        v-bind="tooltipProps"
+                        color="warning"
+                      />
+                    </template>
+                  </v-tooltip>
+                </span>
+                
+              </span>
+              <span v-else-if="column.key === 'updateDate'">
+                {{ props.item[column.key] ? props.item[column.key].substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') : '-' }}
+              </span>
+              <span v-else-if="props.item[column.key]">
+                {{ props.item[column.key] }}
+              </span>
+              <span v-else>-</span>
+            </td>
+          </tr>
+        </template>
+      </v-data-table-server>
+      <v-row class="mt-0 mb-1" v-if="totalElements > 0">
+        <v-col
+          cols="6"
+          class="pb-0 d-flex justify-start"
+        >
+          <p class="schools-in-progress-header mb-0">
+            Processed Files
+          </p>
+        </v-col>
+      </v-row>
+      <v-data-table-server
+        v-model:page.sync="pageNumberFinal"
+        v-model:items-per-page.sync="pageSizeFinal"
+        :items-length="totalElementsFinal"
+        :items="finalFilesetList"
+        :headers="headersFinal"
+        mobile-breakpoint="0"
+        @update:page="getFinalFilesetPaginated"
+      >
+        <template #item="props">
+          <tr :style="{background: isFilesetComplete(props.item) ? 'white' : 'lightgoldenrodyellow'}">
+            <td
+              v-for="column in headersFinal"
               :key="column.key"
             >
               <span v-if="column.key === 'errorLink'">
@@ -520,7 +616,9 @@
                     </v-col>
                     <v-col>
                       <span><b>{{ file.name }}</b> - Upload Successful</span>
-                      <div style="font-style: italic">{{file.message}}</div>
+                      <div style="font-style: italic">
+                        {{ file.message }}
+                      </div>
                     </v-col>
                   </v-row>
                   <v-row
@@ -739,8 +837,12 @@ export default {
       isBetweenSummerSchoolPeriod: false,
       filesetList: [],
       totalElements: 0,
+      finalFilesetList: [],
+      totalElementsFinal: 0,
       pageNumber: 1,
-      pageSize: 15,
+      pageSize: 5,
+      pageNumberFinal: 1,
+      pageSizeFinal: 10,
       showMoreInfoTooltip: false,
       isLoading: false,
       submissionModeCode: '',
@@ -748,6 +850,14 @@ export default {
         moreFilters: {}
       },
       headers: [
+        {key: 'alert', sortable: false},
+        {title: 'DEM File', key: 'demFileName', sortable: false},
+        {title: 'XAM File', key: 'xamFileName', sortable: false},
+        {title: 'CRS File', key: 'crsFileName', sortable: false},
+        {title: 'Upload Date', key: 'uploadDate', sortable: false},
+        {title: 'Upload User', key: 'updateUser', sortable: false}
+      ],
+      headersFinal: [
         {key: 'alert', sortable: false},
         {title: 'DEM File', key: 'demFileName', sortable: false},
         {title: 'XAM File', key: 'xamFileName', sortable: false},
@@ -813,6 +923,7 @@ export default {
   },
   async created() {
     await this.getFilesetPaginated();
+    await this.getFinalFilesetPaginated();
     appStore().getInstitutesData().finally(() => {
       this.schoolsMap = this.activeSchoolsMap;
     });
@@ -887,6 +998,7 @@ export default {
     },
     async startPollingStatus() {
       this.interval = setInterval(this.getFilesetPaginated, 30000);  // polling the api every 30 seconds
+      this.interval = setInterval(this.getFinalFilesetPaginated, 30000);  // polling the api every 30 seconds
     },
     async validateForm() {
       await this.$nextTick();
@@ -1113,6 +1225,28 @@ export default {
         this.startPollingStatus();
       }).catch(error => {
         clearInterval(this.interval);
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
+      }).finally(() => {
+        this.isLoading = false;
+      });
+    },
+    async getFinalFilesetPaginated() {
+      this.isLoading= true;
+      this.filterSearchParams.collectionObject = this.collectionObject;
+      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated/final`, {
+        params: {
+          pageNumber: this.pageNumberFinal - 1,
+          pageSize: this.pageSizeFinal,
+          searchParams: omitBy(this.filterSearchParams, isEmpty),
+          sort: {
+            updateDate: 'DESC'
+          },
+        }
+      }).then(response => {
+        this.finalFilesetList = response.data.content;
+        this.totalElementsFinal = response.data.totalElements;
+      }).catch(error => {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {

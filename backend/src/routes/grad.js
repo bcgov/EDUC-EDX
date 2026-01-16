@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, uploadFileXLS, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, getPreviousReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
+  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId,getFinalFilesetsPaginated, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, getPreviousReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
@@ -41,6 +41,9 @@ router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {s
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 
+router.get('/fileset/:schoolID/paginated/final', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFinalFilesetsPaginated);
+
 router.get('/filesetErrors/:activeIncomingFilesetID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_ERR_RPT_VIEW), validate(gradErrorFilesetStudentPaginatedSchema), findInstituteInformation_query, checkEDXUserAccessToRequestedInstitute, getErrorFilesetStudentPaginated);
 
@@ -61,6 +64,9 @@ router.post('/district/:districtID/upload-file-xls', passport.authenticate('jwt'
 
 router.get('/fileset/district/:districtID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
+
+router.get('/fileset/district/:districtID/paginated/final', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_DIS_RPT_VIEW), validate(gradDistrictFilesetPaginatedSchema), findDistrictID_params, checkEDXUserAccessToRequestedInstitute, getFinalFilesetsPaginated);
 
 router.get('/fileset/:schoolID/pen/:pen/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolPenFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
