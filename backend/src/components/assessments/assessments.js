@@ -15,7 +15,7 @@ const {createMoreFiltersSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {doesSchoolBelongToDistrict} = require('../institute-cache');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
-const {FILTER_OPERATION, VALUE_TYPE, CONDITION, ASSESSMENTS_REPORT_TYPE_CODE_MAP,
+const {ASSESSMENTS_REPORT_TYPE_CODE_MAP,
   ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP
 } = require('../../util/constants');
 const log = require('../logger');
