@@ -223,6 +223,16 @@ async function getFinalFilesetsPaginated(req, res) {
       });
     }
 
+    search.push({
+      condition: 'AND',
+      searchCriteriaList: [{
+        key: 'filesetStatusCode',
+        value: 'COMPLETED',
+        operation: FILTER_OPERATION.EQUAL,
+        valueType: VALUE_TYPE.STRING
+      }]
+    });
+
     const params = {
       params: {
         pageNumber: req.query.pageNumber,
@@ -299,6 +309,16 @@ async function getFilesetsPaginated(req, res) {
         }]
       });
     }
+
+    search.push({
+      condition: 'AND',
+      searchCriteriaList: [{
+        key: 'filesetStatusCode',
+        value: 'COMPLETED',
+        operation: FILTER_OPERATION.NOT_EQUAL,
+        valueType: VALUE_TYPE.STRING
+      }]
+    });
 
     const params = {
       params: {
