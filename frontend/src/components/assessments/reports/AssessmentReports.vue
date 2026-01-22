@@ -284,7 +284,6 @@ import { ApiRoutes } from '../../../utils/constants';
 import { sortBy } from 'lodash';
 import * as Rules from '../../../utils/institute/formRules';
 import {orderBy} from 'lodash/collection';
-import {edxStore} from "../../../store/modules/edx";
 
 export default {
   name: 'AssessmentReports',
