@@ -96,6 +96,7 @@
                   variant="text"
                   v-bind="tooltipProps"
                   :to="getSubmissionRoute(props.item['pen'])"
+                  :disabled="getSubmissionRouteDisabled(props.item)"
                   target="_blank"
                 />
               </template>
@@ -198,6 +199,14 @@ export default {
         return '#d90606';
       }
     },
+    getSubmissionRouteDisabled(item) {
+      if (item && item['errorFilesetStudentValidationIssues']) {
+        return item['errorFilesetStudentValidationIssues'].some(issue =>
+          issue.validationIssueCode === 'DEM_DATA_MISSING'
+        );
+      }
+      return false;
+    }
   }
 };
 </script>
