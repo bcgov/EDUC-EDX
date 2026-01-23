@@ -38,6 +38,7 @@
               ref="transcriptField"
               v-model="studentPENTranscript"
               placeholder="Enter PEN"
+              maxlength="9"
               :rules="penRules"
               variant="underlined"
             />

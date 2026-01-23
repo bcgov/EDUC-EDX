@@ -39,6 +39,7 @@
               v-model="studentPENTranscript"
               placeholder="Enter PEN"
               :rules="penRules"
+              maxlength="9"
               variant="underlined"
             />
           </v-col>
