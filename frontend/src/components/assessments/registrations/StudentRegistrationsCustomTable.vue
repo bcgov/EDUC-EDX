@@ -227,7 +227,7 @@ export default {
   methods: {
     rowClicked(props) {
       if(this.user?.activeInstituteIdentifier !== props.schoolOfRecordSchoolID){
-        setFailureAlert('Your school is not the school of record for this student');
+        setFailureAlert('Contact the student\'s school of record to have this registration edited');
       }else{
         this.$emit('editSelectedRow', props);
       }
