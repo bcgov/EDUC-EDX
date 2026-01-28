@@ -23,13 +23,6 @@
             id="header"
             :key="column.key"
           >
-            <div v-if="column.title === 'select'">
-              <v-checkbox
-                v-model="allSelected"
-                :indeterminate="!allSelected && selected.length > 0"
-                hide-details="true"
-              />
-            </div>
             <div v-if="column.title !== 'select'">
               <div class="header-text">
                 {{ column.title }}
@@ -60,6 +53,7 @@
               v-model="selected"
               :value="props.item"
               hide-details="true"
+              :disabled="studentIsAtSchoolOfRecord(props.item)"
               @click.stop
             />
             <span v-if="column.key === 'alert'">
@@ -115,6 +109,7 @@ import { mapState } from 'pinia';
 import {authStore} from '../../../store/modules/auth';
 import {appStore} from '../../../store/modules/app';
 import {displayName} from '../../../utils/format';
+import {setFailureAlert} from '../../composable/alertComposable';
 
 export default {
   name: 'StudentRegistrationsCustomTable',
@@ -231,7 +226,14 @@ export default {
   },
   methods: {
     rowClicked(props) {
-      this.$emit('editSelectedRow', props);
+      if(this.user?.activeInstituteIdentifier !== props.schoolOfRecordSchoolID){
+        setFailureAlert('Your school is not the school of record for this student');
+      }else{
+        this.$emit('editSelectedRow', props);
+      }
+    },
+    studentIsAtSchoolOfRecord(student){
+      return !(this.user?.activeInstituteIdentifier === student.schoolOfRecordSchoolID);
     },
     displayName,
   },
