@@ -40,7 +40,7 @@
             </div>
             <div v-else-if="activePeriod.challengeReportsSessionStatus === REPORT_STATUS_PRELIMINARY">
               Data corrections can be made through <strong>GRAD File Upload</strong> or a <a
-                href="https://forms.gov.bc.ca/education-training/trax-change-form"
+                href="https://forms.gov.bc.ca/education-training/grad-change-form"
                 target="_blank"
                 rel="noopener noreferrer"
               >GRAD Change Form</a>.
