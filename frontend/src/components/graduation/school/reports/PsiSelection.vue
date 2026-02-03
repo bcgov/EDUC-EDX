@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        Lists all students in their final year (Grade 12 or Adult Dogwood) of a current graduation or SCCP program who have made PSI selections in the StudentTranscripts Service in the current reporting period.
+        Lists all current students in their final year (Grade 12 or AD) and includes any PSI selections made in the StudentTranscripts Service within the current reporting period.
       </v-col>
     </v-row>
     <v-row class="mb-1">
