@@ -203,6 +203,7 @@ export default {
       if (item && item['errorFilesetStudentValidationIssues']) {
         return item['errorFilesetStudentValidationIssues'].some(issue =>
           issue.validationIssueCode === 'DEM_DATA_MISSING'
+          || issue.validationIssueCode === 'STUDENTPENNOTFOUND'
         );
       }
       return false;
