@@ -3,135 +3,141 @@
     class="containerSetup"
     fluid
   >
-  <div>
-    <v-row>
-      <v-col>
-        <h3>
-          Student Graduation Data
-        </h3>
-      </v-col>
-    </v-row>
-    <v-row class="mt-n6">
-      <v-col>
-        <h4 style="font-weight: normal; color:gray">
+    <div>
+      <v-row>
+        <v-col>
+          <h3>
+            Student Graduation Data
+          </h3>
+        </v-col>
+      </v-row>
+      <v-row class="mt-n6">
+        <v-col>
+          <h4 style="font-weight: normal; color:gray">
             Select a graduation date range to download a list of graduates from your district within that period.
-        </h4>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col style="font-weight: bold;">
-        Graduation Date
-      </v-col>
-    </v-row>
+          </h4>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col style="font-weight: bold;">
+          Graduation Date
+        </v-col>
+      </v-row>
 
-    <v-row style="height: 60vh;">
-      <v-col>
-        <v-form
-          id="yukonDateForm"
-          ref="yukonDateForm"
-          v-model="isValid"
-        >
-          <v-row>
-            <v-col cols="4">
-              <VueDatePicker
-                v-model="fromDate"
-                model-type="yyyy/MM"
-                month-picker
-                position="left"
-                :clearable="false"
-                :year-range="[minYear, maxYear]"
-                :text-input="{
-                  enterSubmit: true,
-                  tabSubmit: true,
-                  openMenu: true,
-                  format: 'yyyy/MM'
-                }"
-                auto-apply
-                format="yyyy/MM"
-                preview-format="yyyy/MM"
-                @update:model-value="validateForm"
-              >
-                <template #dp-input="{ value, onInput, onEnter, onTab }">
-                  <v-text-field
-                    type="text"
-                    :model-value="value"
-                    :rules="[rules.required()]"
-                    prepend-inner-icon="mdi-calendar"
-                    label="From"
-                    variant="underlined"
-                    density="compact"
-                    placeholder="yyyy/mm"
-                    clearable
-                    hide-details="auto"
-                    :error-messages="null"
-                    @input="onInput"
-                    @keydown.enter.prevent="onEnter"
-                    @keydown.tab.prevent="onTab"
-                  />
-                </template>
-              </VueDatePicker>
-            </v-col>
-          </v-row>
+      <v-row style="height: 60vh;">
+        <v-col>
+          <v-form
+            id="yukonDateForm"
+            ref="yukonDateForm"
+            v-model="isValid"
+          >
+            <v-row>
+              <v-col cols="4">
+                <VueDatePicker
+                  v-model="fromDate"
+                  model-type="yyyy/MM"
+                  month-picker
+                  position="left"
+                  :clearable="false"
+                  :min-date="minDate"
+                  :max-date="maxDate"
+                  :year-range="[minYear, maxYear]"
+                  :prevent-min-max-navigation="true"
+                  :text-input="{
+                    enterSubmit: true,
+                    tabSubmit: true,
+                    openMenu: true,
+                    format: 'yyyy/MM'
+                  }"
+                  auto-apply
+                  format="yyyy/MM"
+                  preview-format="yyyy/MM"
+                  @update:model-value="validateForm"
+                >
+                  <template #dp-input="{ value, onInput, onEnter, onTab }">
+                    <v-text-field
+                      type="text"
+                      :model-value="value"
+                      :rules="[rules.required()]"
+                      prepend-inner-icon="mdi-calendar"
+                      label="From"
+                      variant="underlined"
+                      density="compact"
+                      placeholder="yyyy/mm"
+                      clearable
+                      hide-details="auto"
+                      :error-messages="null"
+                      @input="onInput"
+                      @keydown.enter.prevent="onEnter"
+                      @keydown.tab.prevent="onTab"
+                    />
+                  </template>
+                </VueDatePicker>
+              </v-col>
+            </v-row>
 
-          <v-row>
-            <v-col cols="4">
-             <VueDatePicker
-                v-model="toDate"
-                model-type="yyyy/MM"
-                month-picker
-                position="left"
-                :clearable="false"
-                :year-range="[minYear, maxYear]"
-                :text-input="{
-                  enterSubmit: true,
-                  tabSubmit: true,
-                  openMenu: true,
-                  format: 'yyyy/MM'
-                }"
-                auto-apply
-                format="yyyy/MM"
-                preview-format="yyyy/MM"
-                @update:model-value="validateForm"
-              >
-                <template #dp-input="{ value, onInput, onEnter, onTab }">
-                  <v-text-field
-                    type="text"
-                    :model-value="value"
-                    :rules="[rules.required(), rules.endDateRule(calcFromDate, calcToDate)]"
-                    prepend-inner-icon="mdi-calendar"
-                    label="To"
-                    variant="underlined"
-                    density="compact"
-                    placeholder="yyyy/mm"
-                    clearable
-                    hide-details="auto"
-                    :error-messages="null"
-                    @input="onInput"
-                    @keydown.enter.prevent="onEnter"
-                    @keydown.tab.prevent="onTab"
-                  />
-                </template>
-              </VueDatePicker>
-            </v-col>
-          </v-row>
+            <v-row>
+              <v-col cols="4">
+                <VueDatePicker
+                  v-model="toDate"
+                  model-type="yyyy/MM"
+                  month-picker
+                  position="left"
+                  :clearable="false"
+                  :min-date="minDate"
+                  :max-date="maxDate"
+                  :year-range="[minYear, maxYear]"
+                  :prevent-min-max-navigation="true"
+                  :text-input="{
+                    enterSubmit: true,
+                    tabSubmit: true,
+                    openMenu: true,
+                    format: 'yyyy/MM'
+                  }"
+                  auto-apply
+                  format="yyyy/MM"
+                  preview-format="yyyy/MM"
+                  @update:model-value="validateForm"
+                >
+                  <template #dp-input="{ value, onInput, onEnter, onTab }">
+                    <v-text-field
+                      type="text"
+                      :model-value="value"
+                      :rules="[rules.required(), rules.endDateRule(calcFromDate, calcToDate)]"
+                      prepend-inner-icon="mdi-calendar"
+                      label="To"
+                      variant="underlined"
+                      density="compact"
+                      placeholder="yyyy/mm"
+                      clearable
+                      hide-details="auto"
+                      :error-messages="null"
+                      @input="onInput"
+                      @keydown.enter.prevent="onEnter"
+                      @keydown.tab.prevent="onTab"
+                    />
+                  </template>
+                </VueDatePicker>
+              </v-col>
+            </v-row>
           
-          <v-row>
-            <v-col>
-              <v-btn
-                id="gradData"
-                color="#003366"
-                text="Graduation Data"
-                class="mr-1 mt-2"
-                prepend-icon="mdi-download"
-                :disabled="!isValid"
-                @click="downloadGradData"
-              />
-            </v-col>
-          </v-row>
-        </v-form>
-      </v-col>
-    </v-row>
-  </div>
+            <v-row>
+              <v-col>
+                <v-btn
+                  id="gradData"
+                  color="#003366"
+                  text="Graduation Data"
+                  class="mr-1 mt-2"
+                  prepend-icon="mdi-download"
+                  :disabled="!isValid"
+                  @click="downloadGradData"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
         
@@ -161,6 +167,8 @@ export default {
       fromDate: null,
       toDate: null,
       rules: Rules,
+      minDate: new Date(LocalDate.now().year() - 5, 0, 1),
+      maxDate: new Date(LocalDate.now().year(), 11, 31),
       minYear: LocalDate.now().year() - 5,
       maxYear: LocalDate.now().year(),
     };
@@ -198,7 +206,7 @@ export default {
   },
   methods: {
     downloadGradData() {
-     this.isLoading = true;
+      this.isLoading = true;
       try {
         const url = `${ApiRoutes.gradReports.BASE_URL}/district/${this.userInfo.activeInstituteIdentifier}/yukon-report/${this.calcFromDate}/${this.calcToDate}`;
         window.open(url);
