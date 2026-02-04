@@ -41,6 +41,7 @@
                   :clearable="false"
                   :min-date="minDate"
                   :max-date="maxDate"
+                  :year-range="[minYear, maxYear]"
                   :prevent-min-max-navigation="true"
                   :text-input="{
                     enterSubmit: true,
@@ -85,6 +86,7 @@
                   :clearable="false"
                   :min-date="minDate"
                   :max-date="maxDate"
+                  :year-range="[minYear, maxYear]"
                   :prevent-min-max-navigation="true"
                   :text-input="{
                     enterSubmit: true,
@@ -167,6 +169,8 @@ export default {
       rules: Rules,
       minDate: new Date(LocalDate.now().year() - 5, 0, 1),
       maxDate: new Date(LocalDate.now().year(), 11, 31),
+      minYear: LocalDate.now().year() - 5,
+      maxYear: LocalDate.now().year(),
     };
   },
   computed: {
