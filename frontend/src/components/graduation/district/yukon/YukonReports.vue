@@ -145,7 +145,6 @@
 import alertMixin from '../../../../mixins/alertMixin';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import * as Rules from '../../../../utils/institute/formRules';
-import {LocalDate} from '@js-joda/core';
 import { ApiRoutes } from '../../../../utils/constants';
 import { mapState } from 'pinia';
 import { authStore } from '../../../../store/modules/auth';
@@ -162,15 +161,23 @@ export default {
   },
   emits: [],
   data() {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    const fiveYearsAgo = new Date(currentYear - 5, currentMonth + 1, 1);
+    // 0 is last day of previous month
+    const maxDate = new Date(currentYear, currentMonth + 1, 0);
+
     return {
       isValid: false,
       fromDate: null,
       toDate: null,
       rules: Rules,
-      minDate: new Date(LocalDate.now().year() - 5, 0, 1),
-      maxDate: new Date(LocalDate.now().year(), 11, 31),
-      minYear: LocalDate.now().year() - 5,
-      maxYear: LocalDate.now().year(),
+      minDate: fiveYearsAgo,
+      maxDate: maxDate,
+      minYear: fiveYearsAgo.getFullYear(),
+      maxYear: currentYear,
     };
   },
   computed: {
