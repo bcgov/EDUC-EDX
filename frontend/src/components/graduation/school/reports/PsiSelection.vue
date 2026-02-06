@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        Lists all current students in their final year (Grade 12 or AD) and includes any PSI selections made in the StudentTranscripts Service within the current reporting period.
+        Lists all current students in their final year (Grade 12 or AD), in an active program, and includes any PSI selections made in the StudentTranscripts Service within the current reporting period.
       </v-col>
     </v-row>
     <v-row class="mb-1">
