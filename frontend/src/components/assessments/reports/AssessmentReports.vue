@@ -338,7 +338,7 @@ export default {
         return false;
       }
       const initialSessionDate = LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE);
-      const sessionDate = LocalDate.of(parseInt(this.selectedSession?.courseYear), parseInt(this.selectedSession?.courseMonth), 1);
+      const sessionDate = LocalDate.of(Number.parseInt(this.selectedSession?.courseYear), Number.parseInt(this.selectedSession?.courseMonth), 1);
       return sessionDate.isBefore(initialSessionDate);
     }
   },
