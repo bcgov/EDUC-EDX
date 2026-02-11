@@ -659,6 +659,103 @@ async function downloadSdcReport(req, res) {
   }
 }
 
+async function streamAllDistrictReports(req, res) {
+  const axios = require('axios');
+  const auth = require('./auth');
+  const cacheService = require('./cache-service');
+  const { pipeline } = require('stream/promises');
+
+  const sdcDistrictCollectionID = req.params.sdcDistrictCollectionID;
+
+  // Only allow district 036 for now
+  const districtID = res.locals.requestedSdcDistrictCollection.districtID;
+  const district = cacheService.getDistrictByDistrictID(districtID);
+
+  if (!district || district.districtNumber !== '036') {
+    log.warn(`Streaming all district reports not available for district ${district?.districtNumber || 'unknown'}`);
+    return res.status(HttpStatus.FORBIDDEN).json({
+      message: 'This feature is currently only available for district 036'
+    });
+  }
+
+  log.debug(`[STREAM-START] Streaming all district reports for collection: ${sdcDistrictCollectionID}`);
+
+  // Track if frontend disconnects
+  let frontendDisconnected = false;
+  let javaApiStream = null;
+  let bytesTransferred = 0;
+  let messageCount = 0;
+
+  // Listen for frontend disconnect
+  req.on('close', () => {
+    if (!frontendDisconnected) {
+      frontendDisconnected = true;
+      log.debug(`[CANCEL] Frontend disconnected (req.on close), aborting Java API stream for collection: ${sdcDistrictCollectionID}`);
+      if (javaApiStream) {
+        javaApiStream.destroy(); // Force close the connection to Java API
+      }
+    }
+  });
+
+  try {
+    const url = `${config.get('sdc:rootURL')}/ministryHeadcounts/allReports/${sdcDistrictCollectionID}/streamChunked`;
+    log.debug(`[STREAM-START] Calling Java API: ${url}`);
+
+    const token = await auth.getBackendServiceToken();
+    const response = await axios({
+      method: 'post',
+      url: url,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'correlationID': req.session?.correlationID || 'no-correlation-id'
+      },
+      responseType: 'stream'
+    });
+
+    log.debug('[STREAM-START] Java API responded, setting up stream pipeline');
+
+    // Store the stream so we can destroy it if frontend disconnects
+    javaApiStream = response.data;
+
+    res.setHeader('Content-Type', 'application/x-ndjson');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.setHeader('Connection', 'keep-alive');
+
+    response.data.on('data', (chunk) => {
+      bytesTransferred += chunk.length;
+      messageCount += chunk.toString().split('\n').filter(line => line.trim()).length;
+
+      // Check if frontend disconnected during transfer
+      if (frontendDisconnected) {
+        log.debug('[CANCEL] Frontend disconnected detected during data transfer, destroying Java API stream');
+        response.data.destroy();
+      }
+    });
+
+    log.debug(`[STREAM-PIPE] Starting pipeline from Java API to client for collection: ${sdcDistrictCollectionID}`);
+
+    await pipeline(response.data, res);
+
+    log.debug(`[STREAM-END] Stream pipeline complete for collection: ${sdcDistrictCollectionID}, bytes: ${bytesTransferred}, messages: ${messageCount}`);
+
+
+
+  } catch (error) {
+    if (frontendDisconnected) {
+      log.debug(`[CANCEL] Request ended due to frontend disconnect for collection: ${sdcDistrictCollectionID}`);
+    } else {
+      log.error(`[ERROR] Error streaming reports for collection ${sdcDistrictCollectionID}:`, error.message);
+      if (!res.headersSent) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          error: 'Error generating reports',
+          message: error.message
+        });
+      }
+    }
+  }
+}
+
 function getFileDetails(reportType, mincode) {
   const mappings = {
     'ALL_STUDENT_ERRORS_WARNS_SCHOOL_CSV': { filename: `AllSchoolStudentsWithErrorsWarns_${mincode}.csv`, contentType: 'text/csv' },
@@ -1364,6 +1461,7 @@ module.exports = {
   getSchoolCollectionById,
   getCollectionByDistrictId,
   downloadSdcReport,
+  streamAllDistrictReports,
   getSDCSchoolCollectionStudentPaginated,
   getSDCSchoolCollectionStudentSummaryCounts,
   getSDCSchoolCollectionStudentDetail,

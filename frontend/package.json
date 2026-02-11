@@ -22,6 +22,7 @@
     "dotenv": "^16.0.3",
     "glob-all": "^3.3.1",
     "http-status-codes": "^2.2.0",
+    "jszip": "^3.10.1",
     "minimist": "^1.2.8",
     "moment": "^2.29.4",
     "nconf": "^0.12.0",
