@@ -703,7 +703,7 @@ async function streamAllDistrictReports(req, res) {
 
     const token = await auth.getBackendServiceToken();
     const response = await axios({
-      method: 'post',
+      method: 'get',
       url: url,
       headers: {
         'Authorization': `Bearer ${token}`,

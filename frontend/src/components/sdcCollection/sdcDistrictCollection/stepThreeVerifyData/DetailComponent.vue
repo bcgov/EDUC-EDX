@@ -708,6 +708,7 @@ export default {
 
         const response = await fetch(url, {
           method: 'GET',
+          credentials: 'include',
           signal: this.abortController.signal
         });
 
