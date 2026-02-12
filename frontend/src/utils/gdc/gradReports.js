@@ -98,7 +98,17 @@ export async function downloadDocument(context, studenPEN, downloadType) {
     console.error('Error downloading file:', error);
     let errorMsg;
 
-    if(error.code === 'ERR_BAD_REQUEST'){
+    if (error?.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const errorData = JSON.parse(text);
+        errorMsg = errorData.message || 'Error encountered while attempting to retrieve document';
+      } catch (e) {
+        errorMsg = 'Error encountered while attempting to retrieve document';
+      }
+    } else if (error?.response?.data?.message) {
+      errorMsg = error.response.data.message;
+    } else if(error.code === 'ERR_BAD_REQUEST'){
       errorMsg = `${docTypeFilename(downloadType)} not found for student`;
     } else {
       errorMsg = 'Error encountered while attempting to retrieve document';
