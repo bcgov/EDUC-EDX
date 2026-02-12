@@ -284,7 +284,7 @@ then
   disableGradFunctionality=false
   disableAssessmentFunctionality=false
   sldMigrationDate="2021-07-30"
-  doarReportsAvailableDate="2025-10-15"
+  doarReportsAvailableDate="2026-04-01"
 elif [ "$envValue" = "test" ]
 then
   bannerEnvironment="TEST"
@@ -293,14 +293,14 @@ then
   disableGradFunctionality=false
   disableAssessmentFunctionality=false
   sldMigrationDate="2021-07-30"
-  doarReportsAvailableDate="2025-10-15"
+  doarReportsAvailableDate="2026-04-01"
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=false
   disableGradFunctionality=true
   disableAssessmentFunctionality=true
   sldMigrationDate="2025-01-17"
-  doarReportsAvailableDate="2026-03-01"
+  doarReportsAvailableDate="2026-01-01"
 fi
 
 IS_RATE_LIMIT_ENABLED=true
