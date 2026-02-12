@@ -75,7 +75,8 @@
     "globals": {
       "Atomics": "readonly",
       "SharedArrayBuffer": "readonly",
-      "_": false
+      "_": false,
+      "globalThis": "readonly"
     },
     "parser": "vue-eslint-parser",
     "parserOptions": {

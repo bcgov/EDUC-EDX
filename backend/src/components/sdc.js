@@ -663,7 +663,7 @@ async function streamAllDistrictReports(req, res) {
   const axios = require('axios');
   const auth = require('./auth');
   const cacheService = require('./cache-service');
-  const { pipeline } = require('stream/promises');
+  const { pipeline } = require('node:stream/promises');
 
   const sdcDistrictCollectionID = req.params.sdcDistrictCollectionID;
 

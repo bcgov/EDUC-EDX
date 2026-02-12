@@ -428,7 +428,7 @@ export default {
   mixins: [alertMixin],
   beforeRouteLeave(to, from, next) {
     if (this.isGeneratingReports && !this.isComplete) {
-      const answer = window.confirm(
+      const answer = globalThis.confirm(
         'District reports are still being generated. Leaving this page will cancel the generation. Do you want to continue?'
       );
       if (answer) {
@@ -756,19 +756,28 @@ export default {
           const lines = buffer.split('\n');
           buffer = lines.pop();
 
-          for (const line of lines) {
-            if (line.trim()) {
-              try {
-                const message = JSON.parse(line);
-                await this.handleReportMessage(message);
-              } catch (e) {
-                console.error('Error parsing message:', line, e);
-              }
-            }
-          }
+          await this.processStreamLines(lines);
         }
       }
 
+      await this.processRemainingBuffer(buffer);
+    },
+    async processStreamLines(lines) {
+      for (const line of lines) {
+        if (line.trim()) {
+          await this.parseAndHandleLine(line);
+        }
+      }
+    },
+    async parseAndHandleLine(line) {
+      try {
+        const message = JSON.parse(line);
+        await this.handleReportMessage(message);
+      } catch (e) {
+        console.error('Error parsing message:', line, e);
+      }
+    },
+    async processRemainingBuffer(buffer) {
       if (buffer.trim()) {
         try {
           const message = JSON.parse(buffer);
@@ -824,7 +833,7 @@ export default {
       const binaryString = atob(base64);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+        bytes[i] = binaryString.codePointAt(i);
       }
       return bytes;
     },
@@ -847,15 +856,15 @@ export default {
           compressionOptions: { level: 6 }
         });
 
-        const url = window.URL.createObjectURL(blob);
+        const url = globalThis.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
 
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        globalThis.URL.revokeObjectURL(url);
+        a.remove();
 
         this.setSuccessAlert('ZIP file downloaded successfully!');
 
