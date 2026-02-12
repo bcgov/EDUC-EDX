@@ -667,14 +667,13 @@ async function streamAllDistrictReports(req, res) {
 
   const sdcDistrictCollectionID = req.params.sdcDistrictCollectionID;
 
-  // Only allow district 036 for now
   const districtID = res.locals.requestedSdcDistrictCollection.districtID;
   const district = cacheService.getDistrictByDistrictID(districtID);
 
-  if (!district || district.districtNumber !== '036') {
+  if (!district) {
     log.warn(`Streaming all district reports not available for district ${district?.districtNumber || 'unknown'}`);
     return res.status(HttpStatus.FORBIDDEN).json({
-      message: 'This feature is currently only available for district 036'
+      message: 'An error has occurred, please try again later.'
     });
   }
 

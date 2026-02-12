@@ -138,7 +138,6 @@
           All Students with Data Issues
         </v-btn>
         <v-btn
-          v-if="isDistrict036"
           color="#003366"
           variant="elevated"
           style="white-space: pre-wrap;"
@@ -533,9 +532,6 @@ export default {
     collectionId() {
       return this.$route?.params?.sdcDistrictCollectionID;
     },
-    isDistrict036() {
-      return this.district?.districtNumber === '036';
-    }
   },
   watch: {
     showExportDialog(newVal) {
@@ -679,13 +675,6 @@ export default {
       this.startDistrictReportsGeneration();
     },
     async startDistrictReportsGeneration() {
-      // Double-check district 036 restriction
-      if (!this.isDistrict036) {
-        this.reportError = 'This feature is currently only available for district 036';
-        this.setFailureAlert('This feature is currently only available for district 036');
-        return;
-      }
-
       this.isGeneratingReports = true;
       this.isComplete = false;
       this.schoolsProcessed = 0;
