@@ -1,5 +1,5 @@
 'use strict';
-const { handleExceptionResponse, getBinaryData, getData, getDataWithParams } = require('./utils');
+const { handleExceptionResponse, getBinaryData, getData } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
 const config = require('../config');
@@ -45,25 +45,6 @@ async function handleReportDownload(req, res, reportType) {
       const pen = req.query.pen;
       if (!isValidPEN(pen)) {
         return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid PEN format.' });
-      }
-
-      const studentResult = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: pen}}, req.session?.correlationID);
-
-      if (!studentResult || !studentResult[0] || !studentResult[0].studentID) {
-        const message = 'PEN must be a valid PEN associated with a student';
-        log.error(message);
-        return res.status(HttpStatus.NOT_FOUND).json({ message });
-      }
-
-      const studentID = studentResult[0].studentID;
-
-      let student = await getData(`${config.get('gradCurrentStudents:rootURL')}/stdid/${studentID}`);
-
-      if(student.studentStatus === 'MER'){
-        return res.status(HttpStatus.CONFLICT).json({
-          status: HttpStatus.CONFLICT,
-          message: 'Student was merged to another student. You must specify an active student PEN.'
-        });
       }
 
       switch (docType) {

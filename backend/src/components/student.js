@@ -101,6 +101,12 @@ async function getStudentByPENForGrad(req, res){
   try {
     const result = await getDataWithParams(config.get('student:apiEndpoint'), {params: {pen: req.query.pen}}, req.session?.correlationID);
     if (result && result[0] && result[0].studentID) {
+      let gradStudent = await getData(`${config.get('gradCurrentStudents:rootURL')}/stdid/${result[0].studentID}`);
+
+      if (gradStudent && gradStudent.studentStatus === 'MER') {
+        return errorResponse(res, 'Reports cannot be retrieved, as this student has been merged', HttpStatus.CONFLICT);
+      }
+
       const body = {
         studentID: result[0].studentID,
         pen:result[0].pen,
