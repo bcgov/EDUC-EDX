@@ -284,7 +284,7 @@ then
   disableGradFunctionality=false
   disableAssessmentFunctionality=false
   sldMigrationDate="2021-07-30"
-  doarReportsAvailableDate="2026-04-01"
+  doarReportsAvailableDate="2026-01-01"
 elif [ "$envValue" = "test" ]
 then
   bannerEnvironment="TEST"
@@ -293,7 +293,7 @@ then
   disableGradFunctionality=false
   disableAssessmentFunctionality=false
   sldMigrationDate="2021-07-30"
-  doarReportsAvailableDate="2026-04-01"
+  doarReportsAvailableDate="2026-01-01"
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=false
