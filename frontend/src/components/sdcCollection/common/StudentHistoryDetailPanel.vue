@@ -282,7 +282,7 @@
               cols="4"
               class="pb-0 pt-0 field-label"
             >
-              Special Education:
+              Inclusive Education:
             </v-col>
             <v-col
               cols="8"

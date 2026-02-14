@@ -168,7 +168,7 @@
             </div>
             <ul class="text-body-2 mt-2 ml-4">
               <li>Grade enrollment headcounts for all schools</li>
-              <li>Program headcounts (Career, French, Indigenous, ELL, Special Education)</li>
+              <li>Program headcounts (Career, French, Indigenous, ELL, Inclusive Education)</li>
               <li>District-level summary reports</li>
               <li>Per-school headcount comparisons</li>
             </ul>
