@@ -297,8 +297,8 @@ then
 elif [ "$envValue" = "prod" ]
 then
   disableSdcFunctionality=false
-  disableGradFunctionality=true
-  disableAssessmentFunctionality=true
+  disableGradFunctionality=false
+  disableAssessmentFunctionality=false
   sldMigrationDate="2025-01-17"
   doarReportsAvailableDate="2026-01-01"
 fi
