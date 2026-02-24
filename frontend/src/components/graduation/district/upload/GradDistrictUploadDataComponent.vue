@@ -968,8 +968,8 @@ export default {
       fileJSON.error = failMessage;
     },
     async startPollingStatus() {
-      this.interval = setInterval(this.getFinalFilesetPaginated, 30000);  // polling the api every 30 seconds
-      this.intervalFinal = setInterval(this.getFilesetPaginated, 30000);  
+      this.interval = setInterval(this.getFinalFilesetPaginated, 180000);  // polling the api every 3 mins
+      this.intervalFinal = setInterval(this.getFilesetPaginated, 180000);  
     },
     async validateForm() {
       await this.$nextTick();
