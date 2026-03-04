@@ -51,7 +51,7 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
     }
 
     if (key === 'surName' && pValue) {
-      searchCriteriaList.push({ key: 'surName', value: pValue.toString(), operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
+      searchCriteriaList.push({ key: 'surname', value: pValue.toString(), operation: FILTER_OPERATION.CONTAINS_IGNORE_CASE, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
     }
 
     if (key === 'givenName' && pValue) {
