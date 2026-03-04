@@ -74,24 +74,15 @@ async function updateSchool(req, res){
       }
     }
 
-    for (const gradeCode of payload.grades) {
-      //when there is an update in frontend to grades system adds array of codes to the payload
-      if (_.isString(gradeCode)) {
-        gradesObjectArray.push({
-          schoolGradeCode: gradeCode,
-          schoolId: payload.schoolId,
-          createUser: createUpdateUser,
-          updateUser: createUpdateUser
-        });
-      } else {
-        //if grades was not changed as part of edit , it will be passed as an array of objects from frontend.
-        gradesObjectArray.push({
-          schoolGradeCode: gradeCode.schoolGradeCode,
-          schoolId: payload.schoolId,
-          createUser: createUpdateUser,
-          updateUser: createUpdateUser
-        });
-      }
+    // Always use grades from the server-side record to prevent grade changes via the frontend.
+    // reference HD-34057, editing grades is now not allowed.
+    for (const gradeCode of returnSchool.grades) {
+      gradesObjectArray.push({
+        schoolGradeCode: gradeCode.schoolGradeCode,
+        schoolId: payload.schoolId,
+        createUser: createUpdateUser,
+        updateUser: createUpdateUser
+      });
     }
 
     payload.neighborhoodLearning = nlcObjectsArray;
