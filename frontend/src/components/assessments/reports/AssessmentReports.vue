@@ -401,7 +401,7 @@ export default {
       this.schoolSearchNames = [];
       this.schoolsMap?.forEach((school) => {
         let schoolCodeName = school.schoolName + ' - ' + school.mincode;
-        if(school.districtID === this.userInfo.activeInstituteIdentifier && school.schoolCategoryCode !== 'INDEPEND') {
+        if(school.districtID === this.userInfo.activeInstituteIdentifier && school.schoolCategoryCode !== 'INDEPEND' && school.schoolCategoryCode !== 'FED_BAND' && school.schoolCategoryCode !== 'INDP_FNS' && school.schoolCategoryCode !== 'OFFSHORE') {
           this.schoolSearchNames.push({schoolCodeName: schoolCodeName, schoolCodeValue: school.schoolID});
         }
       });
