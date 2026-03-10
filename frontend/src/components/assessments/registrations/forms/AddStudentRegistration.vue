@@ -416,7 +416,7 @@ export default {
     setupSchoolList() {
       this.activeSchoolsMap?.forEach((school) => {
         if(this.isDistrictUser) {
-          if (school.districtID === this.userInfo.activeInstituteIdentifier && !['OFFSHORE', 'INDEPEND', 'INDP_FNS'].includes(school.schoolCategoryCode)) {
+          if (school.districtID === this.userInfo.activeInstituteIdentifier && !['OFFSHORE', 'INDEPEND', 'INDP_FNS', 'FED_BAND'].includes(school.schoolCategoryCode)) {
             this.schoolSearchNames.push({
               schoolCodeName: school.mincode + ' - ' + school.schoolName,
               schoolID: school.schoolID,
