@@ -260,7 +260,7 @@
                 >
                   <DownloadLink
                     :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
-                    :download-action="() => downloadDetailedDOARReport(getReportName(assessment?.assessmentTypeCode))"
+                    :download-action="() => downloadDetailedDOARReport(assessment?.assessmentTypeCode)"
                   />
                 </v-col>
               </v-row>
@@ -569,23 +569,17 @@ export default {
     async downloadSummaryDOARReport() {
       this.isLoading = true;
       try {
+        const availUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/results/available`;
+        const { data: available } = await ApiService.apiAxios.get(availUrl);
+        if (!available) {
+          this.setFailureAlert('Results are not available for the selected session.');
+          return;
+        }
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/doar-summary/download`;
-        const response = await ApiService.apiAxios.get(url, {
-          responseType: 'blob'
-        });
-        const blobURL = window.URL.createObjectURL(response.data);
-        window.open(blobURL, '_blank');
+        window.open(url, '_blank');
       } catch (error) {
         console.error(error);
-        if(error?.response?.status === 428) {
-          this.setFailureAlert(
-            'Results are not available for the selected session.'
-          );
-        } else {
-          this.setFailureAlert(
-            'An error occurred while trying to retrieve your school\'s report.'
-          );
-        }
+        this.setFailureAlert('An error occurred while trying to retrieve your school\'s report.');
       } finally {
         this.isLoading = false;
       }
@@ -640,26 +634,23 @@ export default {
         this.isLoading = false;
       }
     },
-    async downloadDetailedDOARReport(reportType) {
+    async downloadDetailedDOARReport(assessmentTypeCode) {
       this.isLoading = true;
+
+      const reportType = this.getReportName(assessmentTypeCode);
+
       try {
+        const availUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/results/available?assessmentTypeCode=${assessmentTypeCode}`;
+        const { data: available } = await ApiService.apiAxios.get(availUrl);
+        if (!available) {
+          this.setFailureAlert('Results are not available for the selected session.');
+          return;
+        }
         const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${this.userInfo.activeInstituteType.toLowerCase()}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}/${reportType}/download`;
-        const response = await ApiService.apiAxios.get(url, {
-          responseType: 'blob'
-        });
-        const blobURL = window.URL.createObjectURL(response.data);
-        window.open(blobURL, '_blank');
+        window.open(url, '_blank');
       } catch (error) {
         console.error(error);
-        if(error?.response?.status === 428) {
-          this.setFailureAlert(
-            'Results are not available for the selected session.'
-          );
-        } else {
-          this.setFailureAlert(
-            'An error occurred while trying to retrieve your school\'s report.'
-          );
-        }
+        this.setFailureAlert('An error occurred while trying to retrieve your school\'s report.');
       } finally {
         this.isLoading = false;
       }

@@ -295,6 +295,20 @@ async function downloadAssessmentStudentReport(req, res) {
   }
 }
 
+async function checkSchoolReportAvailability(req, res) {
+  try {
+    const params = { params: {} };
+    if (req.query.assessmentTypeCode) {
+      params.params.assessmentTypeCode = req.query.assessmentTypeCode;
+    }
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/results/available`;
+    const data = await getDataWithParams(url, params);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function setResponseHeaders(res, { filename, contentType }) {
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
@@ -352,6 +366,7 @@ module.exports = {
   postAssessmentStudent,
   downloadXamFile,
   downloadAssessmentReport,
-  downloadAssessmentStudentReport
+  downloadAssessmentStudentReport,
+  checkSchoolReportAvailability
 };
 
