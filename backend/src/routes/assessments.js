@@ -1,13 +1,13 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentReport, downloadAssessmentStudentReport} = require('../components/assessments/assessments');
+const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadAssessmentReport, downloadAssessmentStudentReport, checkSchoolReportAvailability } = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
 const { isValidUUIDParam, validateAccessToken, checkEdxUserPermission, findAssessmentStudentID_params, findAssessmentStudentIDs_body, loadRequestedAssessmentStudent, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudents, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, findSchoolID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
-const {putStudentAssessmentSchema, postAssessmentStudentSchema} = require('../validations/assessments');
+const {putStudentAssessmentSchema, postAssessmentStudentSchema, checkSchoolReportAvailabilitySchema} = require('../validations/assessments');
 
 router.get('/assessment-sessions/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getAssessmentSessions);
 router.get('/assessment-sessions/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), getAssessmentSessions);
@@ -34,5 +34,7 @@ router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refr
 router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
 router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
 router.get('/reports/student/:studentID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, isValidUUIDParam('studentID'), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentStudentReport);
+router.get('/reports/district/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
+router.get('/reports/school/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
 
 module.exports = router;

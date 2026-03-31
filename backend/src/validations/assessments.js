@@ -1,5 +1,6 @@
 const { object, string, boolean, number, array } = require('yup');
 const { baseRequestSchema } = require('./base');
+const { uuidGeneric } = require('./custom-validations');
 
 
 const putStudentAssessmentSchema = object({
@@ -99,7 +100,19 @@ const postAssessmentStudentSchema = object({
   }).noUnknown(),
 }).noUnknown();
 
+const checkSchoolReportAvailabilitySchema = object({
+  params: object({
+    sessionID: uuidGeneric().required(),
+    schoolID: uuidGeneric().required(),
+  }).noUnknown(),
+  query: object({
+    assessmentTypeCode: string().optional(),
+  }).noUnknown(),
+  body: object().noUnknown(),
+}).noUnknown();
+
 module.exports = {
   putStudentAssessmentSchema,
-  postAssessmentStudentSchema
+  postAssessmentStudentSchema,
+  checkSchoolReportAvailabilitySchema
 };
