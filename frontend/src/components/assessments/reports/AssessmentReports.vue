@@ -154,115 +154,198 @@
     <div :class="{ 'disabled-section': disableCondition }">
       <v-row
         no-gutters
+        align="stretch"
         class="d-flex"
       >
-        <v-card
-          class="mt-2 mr-4"
-          width="30em"
-          border="sm"
-          style="border: 1px solid black;border-radius: 10px;"
-        >
-          <v-card-title style="font-size: medium;">
-            Assessment Results
-          </v-card-title>
+        <v-col>
+          <v-card
+            class="mt-2 mr-4"
+            width="30em"
+            height="100%"
+            border="sm"
+            style="border: 1px solid black;border-radius: 10px;"
+          >
+            <v-card-title style="font-size: medium;">
+              Assessment Results
+            </v-card-title>
 
-          <v-row class="pl-3 pb-3">
-            <v-col cols="12">
-              <DownloadLink
-                label="Session Results.csv"
-                :download-action="() => downloadAssessmentResultCSV()"
-              />
-            </v-col>
-          </v-row>
-          <v-row class="pl-3 pb-3 mt-n6">
-            <v-col cols="12">
-              <DownloadLink
-                label="Session Results.xam"
-                :download-action="() => downloadXamFile()"
-              />
-            </v-col>
-          </v-row>
-          <v-row class="pl-3 pb-3 mt-n6">
-            <v-col cols="12">
-              <DownloadLink
-                label="Session Results by Student.pdf"
-                :download-action="() => downloadSessionResultsByStudentPDF()"
-              />
-            </v-col>
-          </v-row>
-          <v-row class="pl-3 pb-3 mt-n6">
-            <v-col cols="12">
-              <DownloadLink
-                label="Session Results by Assessment.pdf"
-                :download-action="() => downloadSessionResultsByAssessmentPDF()"
-              />
-            </v-col>
-          </v-row>
-        </v-card>
-
-        <v-card
-          class="mt-2"
-          width="30em"
-          border="sm"
-          style="border: 1px solid black;border-radius: 10px;"
-        >
-          <v-card-title style="font-size: medium;">
-            <v-row>
-              <v-col class="d-flex justify-start">
-                Distribution of Assessment Results (DOAR)
-              </v-col>
-              <v-col class="d-flex justify-end mt-1">
-                <v-icon
-                  aria-hidden="false"
-                  color="rgb(0, 51, 102)"
-                  style="cursor: pointer;"
-                  size="24"
-                  @click="openDOARSummaryHelp"
-                >
-                  mdi-help-circle-outline
-                </v-icon>
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <DownloadLink
+                  label="Session Results.csv"
+                  :download-action="() => downloadAssessmentResultCSV()"
+                />
               </v-col>
             </v-row>
-          </v-card-title>
-          <v-row
-            v-if="!isSessionAvailableForDOAR"
-            class="pl-3 pb-3"
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <DownloadLink
+                  label="Session Results.xam"
+                  :download-action="() => downloadXamFile()"
+                />
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <DownloadLink
+                  label="Session Results by Student.pdf"
+                  :download-action="() => downloadSessionResultsByStudentPDF()"
+                />
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <DownloadLink
+                  label="Session Results by Assessment.pdf"
+                  :download-action="() => downloadSessionResultsByAssessmentPDF()"
+                />
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+        <v-col>
+          <v-card
+            class="mt-2"
+            width="30em"
+            height="100%"
+            border="sm"
+            style="border: 1px solid black;border-radius: 10px;"
           >
-            <v-col 
-              cols="12"
-            >
-              <DownloadLink
-                label="DOAR Summary.pdf"
-                :download-action="() => downloadSummaryDOARReport()"
-              />
-            </v-col>
-          </v-row>
-          <v-card-text
-            v-else
-            style="color: gray;font-size: small"
-            class="mt-n3"
-          >
-            Historic DOAR Reports are not available through EDX.
-          </v-card-text>
-          <div
-            v-for="(assessment, index) in selectedAssessments"
-            :key="index"
-          >
+            <v-card-title style="font-size: medium;">
+              <v-row>
+                <v-col class="d-flex justify-start">
+                  Distribution of Assessment Results (DOAR)
+                </v-col>
+                <v-col class="d-flex justify-end mt-1">
+                  <v-icon
+                    aria-hidden="false"
+                    color="rgb(0, 51, 102)"
+                    style="cursor: pointer;"
+                    size="24"
+                    @click="openDOARSummaryHelp"
+                  >
+                    mdi-help-circle-outline
+                  </v-icon>
+                </v-col>
+              </v-row>
+            </v-card-title>
             <v-row
               v-if="!isSessionAvailableForDOAR"
               class="pl-3 pb-3"
             >
-              <v-col 
+              <v-col
                 cols="12"
               >
                 <DownloadLink
-                  :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
-                  :download-action="() => downloadDetailedDOARReport(getReportName(assessment?.assessmentTypeCode))"
+                  label="DOAR Summary.pdf"
+                  :download-action="() => downloadSummaryDOARReport()"
                 />
               </v-col>
             </v-row>
-          </div>
-        </v-card>
+            <v-card-text
+              v-else
+              style="color: gray;font-size: small"
+              class="mt-n3"
+            >
+              Historic DOAR Reports are not available through EDX.
+            </v-card-text>
+            <div
+              v-for="(assessment, index) in selectedAssessments"
+              :key="index"
+            >
+              <v-row
+                v-if="!isSessionAvailableForDOAR"
+                class="pl-3 pb-3"
+              >
+                <v-col
+                  cols="12"
+                >
+                  <DownloadLink
+                    :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
+                    :download-action="() => downloadDetailedDOARReport(getReportName(assessment?.assessmentTypeCode))"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
+        </v-col>
+        <v-col>
+          <v-card
+            class="mt-2 pr-4"
+            width="30em"
+            height="100%"
+            border="sm"
+            style="border: 1px solid black;border-radius: 10px;"
+          >
+            <v-card-title style="font-size: medium;">
+              <v-row>
+                <v-col class="d-flex justify-start">
+                  Graduation Assessment Specifications
+                </v-col>
+              </v-row>
+            </v-card-title>
+            <v-row class="pl-3 pb-3">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  Numeracy 10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/GLA_10_Specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  Literacy 10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/grade-12-literacy-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  Literacy 12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTP10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp12_specs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTP12
+                </a>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
       </v-row>
     </div>
 
@@ -647,10 +730,6 @@ li {
 p {
   padding-top: 1em;
   font-style: italic;
-}
-
-i {
-  font-size: 1.25em;
 }
 
 .disabled-section {
