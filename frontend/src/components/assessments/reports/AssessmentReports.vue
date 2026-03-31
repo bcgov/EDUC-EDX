@@ -155,12 +155,11 @@
       <v-row
         no-gutters
         align="stretch"
-        class="d-flex"
+        class="d-flex ga-4"
       >
         <v-col>
           <v-card
-            class="mt-2 mr-4"
-            width="30em"
+            class="mt-2"
             height="100%"
             border="sm"
             style="border: 1px solid black;border-radius: 10px;"
@@ -206,7 +205,6 @@
         <v-col>
           <v-card
             class="mt-2"
-            width="30em"
             height="100%"
             border="sm"
             style="border: 1px solid black;border-radius: 10px;"
@@ -215,9 +213,9 @@
               <v-row>
                 <v-col class="d-flex justify-start">
                   Distribution of Assessment Results (DOAR)
-                </v-col>
-                <v-col class="d-flex justify-end mt-1">
+                  <v-spacer />
                   <v-icon
+                    class="mt-1"
                     aria-hidden="false"
                     color="rgb(0, 51, 102)"
                     style="cursor: pointer;"
@@ -272,7 +270,6 @@
         <v-col>
           <v-card
             class="mt-2 pr-4"
-            width="30em"
             height="100%"
             border="sm"
             style="border: 1px solid black;border-radius: 10px;"
