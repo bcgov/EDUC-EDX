@@ -297,9 +297,12 @@ async function downloadAssessmentStudentReport(req, res) {
 
 async function checkSchoolReportAvailability(req, res) {
   try {
-    const assessmentTypeCode = req.query.assessmentTypeCode ? `?assessmentTypeCode=${req.query.assessmentTypeCode}` : '';
-    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/results/available${assessmentTypeCode}`;
-    const data = await getData(url);
+    const params = { params: {} };
+    if (req.query.assessmentTypeCode) {
+      params.params.assessmentTypeCode = req.query.assessmentTypeCode;
+    }
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/results/available`;
+    const data = await getDataWithParams(url, params);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     return handleExceptionResponse(e, res);
