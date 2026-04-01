@@ -69,7 +69,10 @@
                     @keyup="searchStudentIfLengthIsCorrect"
                   />
                 </v-col>
-                <v-col v-if="loading" cols="1">
+                <v-col
+                  v-if="loading"
+                  cols="1"
+                >
                   <v-progress-circular
                     :size="30"
                     :width="7"
@@ -77,7 +80,10 @@
                     indeterminate
                   />
                 </v-col>
-                <v-col cols="4" :offset="loading ? 0 : 1">
+                <v-col
+                  cols="4"
+                  :offset="loading ? 0 : 1"
+                >
                   <v-text-field
                     id="LocalID"
                     v-model="newStudentDetail.localID"
@@ -97,7 +103,6 @@
                     variant="underlined"
                     disabled
                     density="compact"
-                    :rules="[rules.required()]"
                   />
                 </v-col>
                 <v-col>
