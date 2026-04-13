@@ -40,7 +40,7 @@
           </v-row>
           <v-row no-gutters>
             <v-col class="mt-1">
-              <span style="font-size: small; color: gray">.XLSX files accepted</span>
+              <span style="font-size: small; color: gray">.CSV and .XLSX files accepted</span>
             </v-col>
           </v-row>
           <v-row
@@ -797,7 +797,7 @@ export default {
   data() {
     return {
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
-      acceptableXLSFileExtensions: ['.xlsx'],
+      acceptableXLSFileExtensions: ['.xlsx', '.csv'],
       requiredRules: [v => !!v || 'Required'],
       uploadFileValue: null,
       hasFileAttached: false,
@@ -959,7 +959,7 @@ export default {
     },
     validateFileExtensionXLS(fileJSON) {
       const extension = `.${fileJSON.name.split('.').slice(-1)}`;
-      const failMessage = 'File extension is invalid. Extension must be ".xlsx".';
+      const failMessage = 'File extension is invalid. Extension must be ".csv" or ".xlsx".';
 
       if(extension && (this.acceptableXLSFileExtensions.find(ext => ext.toUpperCase() === extension.toUpperCase())) !== undefined) {
         return true;
