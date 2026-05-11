@@ -281,20 +281,87 @@
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-row
-              v-for="(specification, index) in graduationAssessmentSpecLinks"
-              :key="`${specification.label}-${index}`"
-              class="pl-3 pb-3"
-              :class="{ 'mt-n6': index !== 0 }"
-            >
+            <v-row class="pl-3 pb-3">
               <v-col cols="12">
                 <a
-                  :href="specification.href"
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/GLA_10_Specifications.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
-                  {{ specification.label }}
+                  LTE10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTP10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  NME10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/grade-12-literacy-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTE12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp12_specs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTP12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTF10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTF12
                 </a>
               </v-col>
             </v-row>
@@ -377,56 +444,6 @@ export default {
       const initialSessionDate = LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE);
       const sessionDate = LocalDate.of(Number.parseInt(this.selectedSession?.courseYear), Number.parseInt(this.selectedSession?.courseMonth), 1);
       return sessionDate.isBefore(initialSessionDate);
-    },
-    graduationAssessmentSpecLinks() {
-      const assessmentSpecificationLinks = {
-        LTE10: {
-          label: 'LTE10',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/GLA_10_Specifications.pdf'
-        },
-        LTP10: {
-          label: 'LTP10',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp10-specifications.pdf'
-        },
-        NME10: {
-          label: 'NME10',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf'
-        },
-        LTE12: {
-          label: 'LTE12',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/grade-12-literacy-specifications.pdf'
-        },
-        LTP12: {
-          label: 'LTP12',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp12_specs.pdf'
-        },
-        LTF10: {
-          label: 'LTF10',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf'
-        },
-        LTF12: {
-          label: 'LTF12',
-          href: 'https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf'
-        }
-      };
-
-      const fallbackDisplayOrder = ['LTE10', 'LTP10', 'NME10', 'LTE12', 'LTP12', 'LTF10', 'LTF12'];
-      const orderedAssessmentCodes = this.selectedAssessments?.length
-        ? this.selectedAssessments.map(assessment => assessment?.assessmentTypeCode)
-        : fallbackDisplayOrder;
-
-      // Keep LTF10 and LTF12 both visible, even though they share the same target URL.
-      if (orderedAssessmentCodes.includes('LTF12') && !orderedAssessmentCodes.includes('LTF10')) {
-        orderedAssessmentCodes.push('LTF10');
-      }
-      if (orderedAssessmentCodes.includes('LTF10') && !orderedAssessmentCodes.includes('LTF12')) {
-        orderedAssessmentCodes.push('LTF12');
-      }
-
-      const uniqueOrderedCodes = [...new Set(orderedAssessmentCodes)];
-      return uniqueOrderedCodes
-        .map(assessmentCode => assessmentSpecificationLinks[assessmentCode])
-        .filter(Boolean);
     }
   },
   async beforeMount() {
