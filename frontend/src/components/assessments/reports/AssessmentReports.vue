@@ -296,48 +296,12 @@
             <v-row class="pl-3 pb-3 mt-n6">
               <v-col cols="12">
                 <a
-                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp10-specifications.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <v-icon class="mr-1">mdi-download</v-icon>
-                  LTP10
-                </a>
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <a
-                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <v-icon class="mr-1">mdi-download</v-icon>
-                  NME10
-                </a>
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <a
                   href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/grade-12-literacy-specifications.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
                   LTE12
-                </a>
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <a
-                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp12_specs.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <v-icon class="mr-1">mdi-download</v-icon>
-                  LTP12
                 </a>
               </v-col>
             </v-row>
@@ -356,12 +320,36 @@
             <v-row class="pl-3 pb-3 mt-n6">
               <v-col cols="12">
                 <a
-                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf"
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp10-specifications.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
-                  LTF12
+                  LTP10
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltp12_specs.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTP12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  NME10
                 </a>
               </v-col>
             </v-row>
