@@ -423,19 +423,10 @@ export default {
         orderedAssessmentCodes.push('LTF12');
       }
 
-      const seenCodes = new Set();
-      return orderedAssessmentCodes.reduce((accumulator, assessmentCode) => {
-        if (seenCodes.has(assessmentCode)) {
-          return accumulator;
-        }
-        seenCodes.add(assessmentCode);
-        const specification = assessmentSpecificationLinks[assessmentCode];
-        if (!specification) {
-          return accumulator;
-        }
-        accumulator.push(specification);
-        return accumulator;
-      }, []);
+      const uniqueOrderedCodes = [...new Set(orderedAssessmentCodes)];
+      return uniqueOrderedCodes
+        .map(assessmentCode => assessmentSpecificationLinks[assessmentCode])
+        .filter(Boolean);
     }
   },
   async beforeMount() {
