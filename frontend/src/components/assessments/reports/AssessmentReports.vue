@@ -284,24 +284,12 @@
             <v-row class="pl-3 pb-3">
               <v-col cols="12">
                 <a
-                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <v-icon class="mr-1">mdi-download</v-icon>
-                  Numeracy 10
-                </a>
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <a
                   href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/GLA_10_Specifications.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
-                  Literacy 10
+                  LTE10
                 </a>
               </v-col>
             </v-row>
@@ -313,7 +301,19 @@
                   rel="noopener noreferrer"
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
-                  Literacy 12
+                  LTE12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/ltf12-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  LTF10
                 </a>
               </v-col>
             </v-row>
@@ -338,6 +338,18 @@
                 >
                   <v-icon class="mr-1">mdi-download</v-icon>
                   LTP12
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <v-col cols="12">
+                <a
+                  href="https://curriculum.gov.bc.ca/sites/curriculum.gov.bc.ca/files/pdf/assessment/gna-10-specifications.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <v-icon class="mr-1">mdi-download</v-icon>
+                  NME10
                 </a>
               </v-col>
             </v-row>
