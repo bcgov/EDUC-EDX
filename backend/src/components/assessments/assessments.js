@@ -20,6 +20,22 @@ const {ASSESSMENTS_REPORT_TYPE_CODE_MAP,
 } = require('../../util/constants');
 const log = require('../logger');
 
+function decorateAndSortAssessmentsByDisplayOrder(session) {
+  if (!Array.isArray(session?.assessments)) {
+    return;
+  }
+
+  session.assessments.forEach(assessment => {
+    const assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
+    assessment.assessmentTypeName = assessment.assessmentTypeCode;
+    assessment.displayOrder = assessmentType?.displayOrder ?? Number.MAX_SAFE_INTEGER;
+  });
+
+  session.assessments.sort((firstAssessment, secondAssessment) => {
+    return firstAssessment.displayOrder - secondAssessment.displayOrder;
+  });
+}
+
 async function getAssessmentSessions(req, res) {
   try {
     const url = `${config.get('assessments:assessmentSessionsURL')}`;
@@ -31,6 +47,7 @@ async function getAssessmentSessions(req, res) {
       const activeFromDate = LocalDate.parse(session.activeFromDate, formatter);
       const activeUntilDate = LocalDate.parse(session.activeUntilDate, formatter);
       session.isOpen = activeFromDate.isBefore(today) && activeUntilDate.isAfter(today) && !session.completionDate;
+      decorateAndSortAssessmentsByDisplayOrder(session);
     });
 
     return res.status(200).json(data);
@@ -61,12 +78,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
       const activeFrom = LocalDateTime.parse(session.activeFromDate);
       const activeUntil = LocalDateTime.parse(session.activeUntilDate);
       session.isOpen = activeFrom.isBefore(now) && activeUntil.isAfter(now) && !session.completionDate;
-
-      session.assessments.forEach(assessment => {
-        let assessmentType = cacheService.getAssessmentTypeByCode(assessment.assessmentTypeCode);
-        assessment.assessmentTypeName = assessment.assessmentTypeCode;
-        assessment.displayOrder = assessmentType.displayOrder;
-      });
+      decorateAndSortAssessmentsByDisplayOrder(session);
     });
 
     return res.status(200).json(data);
