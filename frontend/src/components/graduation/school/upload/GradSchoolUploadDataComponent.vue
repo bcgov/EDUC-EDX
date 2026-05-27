@@ -349,6 +349,80 @@
           </v-col>
         </v-row>
       </div>
+      <v-row
+        v-else-if="hasPageViewPermission()"
+        class="mt-1"
+      >
+        <v-col class="d-flex justify-end">
+          <v-menu
+            location="bottom"
+          >
+            <template #activator="{ props }">
+              <a
+                class="mt-n1 mr-1"
+                style="font-weight: bold"
+                v-bind="props"
+                @click="toggleMoreInfoTooltip"
+              >...</a>
+              <a
+                v-bind="props"
+                @click="toggleMoreInfoTooltip"
+              >
+                More Info
+              </a>
+            </template>
+            <v-card
+              style="max-width: 30em;"
+              border="sm"
+              class="pa-2"
+            >
+              <div style="font-weight: bold">
+                Data Processing
+              </div>
+              <div>Before graduation data can be processed, all three files must be uploaded. Any unprocessed files will be deleted after 3 hours.</div>
+              <div class="mt-4">
+                Once all errors have been resolved, data will be loaded to the GRAD system for further processing.
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                File Formats
+              </div>
+              <div>
+                For more information on the required file formats, see the <a
+                  target="_blank"
+                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/grad_data_transfer_specifications.pdf"
+                >Graduation Data File Specification</a>.
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                Reporting Mode
+              </div>
+              <div>
+                For more information, see "Replace or Append Course Status" in the <a
+                  target="_blank"
+                  href="https://www2.gov.bc.ca/assets/gov/education/administration/kindergarten-to-grade-12/exams/grad_data_transfer_specifications.pdf"
+                >Graduation Data File Specification</a>. Note all graduated students are on "Append Mode".
+              </div>
+              <div
+                style="font-weight: bold"
+                class="mt-4"
+              >
+                Data Corrections
+              </div>
+              <div>
+                To make a correction to data outside of the data file uploads, submit a <a
+                  target="_blank"
+                  href="https://forms.gov.bc.ca/education-training/grad-change-form"
+                >GRAD Change Form</a>
+              </div>
+            </v-card>
+          </v-menu>
+        </v-col>
+      </v-row>
       <v-row class="mt-5">
         <v-col
           class="pb-0 d-flex justify-start"
@@ -977,6 +1051,9 @@ export default {
       this.isSummerPeriod = today.isAfter(summerPeriodStart) && today.isBefore(summerPeriodEnd);
       this.isBetweenSummerSchoolPeriod = (today.isBefore(schoolPeriodStart) && today.isBefore(summerPeriodStart)) || (today.isAfter(summerPeriodEnd) && today.isAfter(schoolPeriodEnd));
       this.isBeforeSummerSchoolPeriod = today.isAfter(schoolPeriodEnd) && today.isBefore(summerPeriodStart);
+    },
+    hasPageViewPermission() {
+      return this.hasRequiredPermission('GRAD_SCH_RPT_VIEW') || this.hasRequiredPermission('GRAD_SCH_UPLOAD');
     },
     toggleMoreInfoTooltip(){
       this.showMoreInfoTooltip = !this.showMoreInfoTooltip;
