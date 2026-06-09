@@ -26,6 +26,7 @@
       >
         <ExportCurrentStudentsButton
           class="mr-4 mb-1"
+          :disabled="totalElements === 0"
         />
         <v-btn
           id="filters"
