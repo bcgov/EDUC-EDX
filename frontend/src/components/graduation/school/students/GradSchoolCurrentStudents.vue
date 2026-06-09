@@ -22,8 +22,11 @@
     <v-row>
       <v-col
         cols="12"
-        class="d-flex justify-end"
+        class="d-flex justify-end align-center"
       >
+        <ExportCurrentStudentsButton
+          class="mr-4 mb-1"
+        />
         <v-btn
           id="filters"
           color="#003366"
@@ -147,12 +150,14 @@ import {
 } from '../../../../utils/gdc/gradReports';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
 import {appStore} from '../../../../store/modules/app';
+import ExportCurrentStudentsButton from '../../ExportCurrentStudentsButton.vue';
 
 export default {
   name: 'GradSchoolCurrentStudents',
   components: {
     CommonCustomTable,
-    GradErrorFilters
+    GradErrorFilters,
+    ExportCurrentStudentsButton
   },
   mixins: [alertMixin],
   props: {

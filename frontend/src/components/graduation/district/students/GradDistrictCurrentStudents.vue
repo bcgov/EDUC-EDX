@@ -35,6 +35,10 @@
         cols="8"
         class="d-flex justify-end mt-5"
       >
+        <ExportCurrentStudentsButton
+          class="mr-4 mb-1"
+          :disabled="!schoolCodeNameFilter"
+        />
         <v-btn
           id="filters"
           color="#003366"
@@ -159,10 +163,12 @@ import {
 } from '../../../../utils/gdc/gradReports';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
+import ExportCurrentStudentsButton from '../../ExportCurrentStudentsButton.vue';
 
 export default {
   name: 'GradDistrictCurrentStudents',
   components: {
+    ExportCurrentStudentsButton,
     GradSchoolCodeNameFilter,
     CommonCustomTable,
     GradErrorFilters
