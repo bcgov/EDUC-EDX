@@ -127,11 +127,45 @@ async function updateSchoolCollection(req, res) {
 async function getDistrictCollectionById(req, res) {
   try {
     const data = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, req.session?.correlationID);
-    return res.status(HttpStatus.OK).json(data);
+    const enrichedData = enrichSubmissionSignaturesWithDisplayNames(data);
+    return res.status(HttpStatus.OK).json(enrichedData);
   } catch (e) {
     log.error('Error retrieving the district collection record', e.stack);
     return handleExceptionResponse(e, res);
   }
+}
+
+function enrichSubmissionSignaturesWithDisplayNames(districtCollection) {
+  if (!districtCollection?.submissionSignatures?.length) {
+    return districtCollection;
+  }
+
+  return {
+    ...districtCollection,
+    submissionSignatures: districtCollection.submissionSignatures.map(signature => {
+      const districtSignatoryDisplayName = getUserDisplayName(signature?.districtSignatoryUserID);
+      return districtSignatoryDisplayName ? {
+        ...signature,
+        districtSignatoryDisplayName
+      } : signature;
+    })
+  };
+}
+
+function getUserDisplayName(userIdentifier) {
+  if (typeof userIdentifier !== 'string') {
+    return null;
+  }
+
+  if (userIdentifier.startsWith('EDX/')) {
+    return cacheService.getEdxUserByID(userIdentifier.substring(4))?.displayName ?? null;
+  }
+
+  if (userIdentifier.startsWith('ADMIN/')) {
+    return cacheService.getIdirUserById(userIdentifier.substring(6)) ?? null;
+  }
+
+  return null;
 }
 
 async function getSchoolCollectionById(req, res) {
@@ -155,7 +189,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
     } else if(req.params.sdcDistrictCollectionID) {
       search.push({
         condition: null,
-        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcDistrictCollectionID', value: req.params.sdcDistrictCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]   
+        searchCriteriaList: [{ key: 'sdcSchoolCollection.sdcDistrictCollectionID', value: req.params.sdcDistrictCollectionID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID }]
       });
     }
     search.push({
@@ -206,7 +240,7 @@ async function getSDCSchoolCollectionStudentPaginated(req, res) {
         searchCriteriaList: JSON.stringify(search),
       }
     };
-    
+
     let collectionData = null;
     if(req.params.sdcDistrictCollectionID) {
       collectionData = await getSdcDistrictCollection(req.params.sdcDistrictCollectionID, res, req.session?.correlationID);
@@ -298,7 +332,7 @@ async function markSdcSchoolCollectionStudentAsDifferent(req, res) {
     payload.createUser = null;
     payload.updateDate = null;
     payload.updateUser = getCreateOrUpdateUserValue(req);
-    
+
     payload.assignedPen = null;
     payload.assignedStudentId = null;
     payload.penMatchResult = null;
@@ -455,7 +489,7 @@ function toTableRow(student, collectionType = null) {
   student.spedProgramEligible = getProgramEligibleValue('SPED',student.specialEducationNonEligReasonCode, collectionType, student.schoolID);
   student.mappedNoOfCourses = getNumberOfCourses(student.numberOfCourses);
   student.mappedHomelanguageCode = student.homeLanguageSpokenCode !== '' && homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode) !== undefined ? `${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.description} (${homeLanguageSpokenCodesMap.get(student.homeLanguageSpokenCode)?.homeLanguageSpokenCode})` : null;
-  
+
   return student;
 }
 
@@ -491,7 +525,7 @@ function getProgramEligibleValue(type, reasonCode, collectionType, schoolID) {
 
 function fundingEligibleRefugee(student) {
   const hasIssue = student?.sdcSchoolCollectionStudentValidationIssues?.some(issue =>
-    issue.validationIssueCode === 'REFUGEEINPREVCOL' || issue.validationIssueCode === 'REFUGEEISADULT'
+      issue.validationIssueCode === 'REFUGEEINPREVCOL' || issue.validationIssueCode === 'REFUGEEISADULT'
   );
   return hasIssue ? 'No' : 'Yes';
 }
@@ -502,13 +536,13 @@ function enrolledProgramMapping(student, enrolledProgramFilter) {
     return '';
   }
   return student.enrolledProgramCodes
-    .match(/.{1,2}/g)
-    .filter(programCode => enrolledProgramFilter.includes(programCode))
-    .map(programCode => {
-      const enrolledProgram = enrolledProgramCodesMap.get(programCode);
-      return enrolledProgram ? `${enrolledProgram.description} (${programCode})` : programCode;
-    })
-    .join(',');
+      .match(/.{1,2}/g)
+      .filter(programCode => enrolledProgramFilter.includes(programCode))
+      .map(programCode => {
+        const enrolledProgram = enrolledProgramCodesMap.get(programCode);
+        return enrolledProgram ? `${enrolledProgram.description} (${programCode})` : programCode;
+      })
+      .join(',');
 }
 
 function nativeAncestryInd(student) {
