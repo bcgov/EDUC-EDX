@@ -162,6 +162,7 @@ import GradErrorFilters from '../../GradFilters.vue';
 import {
   downloadDocument
 } from '../../../../utils/gdc/gradReports';
+import { downloadCurrentStudentsCsv } from '../../../../utils/gdc/currentStudentsCsv';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
 import ExportCurrentStudentsButton from '../../ExportCurrentStudentsButton.vue';
@@ -213,8 +214,8 @@ export default {
     }
   },
   methods: {
-    downloadCurrentStudents() {
-      // Export implementation will be added once the request contract is wired.
+    async downloadCurrentStudents() {
+      await downloadCurrentStudentsCsv(this, this.schoolCodeNameFilter, this.filterSearchParams.moreFilters);
     },
     toggleFilters() {
       this.showFilters = !this.showFilters;
