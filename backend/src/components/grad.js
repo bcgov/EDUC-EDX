@@ -801,6 +801,7 @@ function getGradSchools(req, res) {
 module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
+  getCurrentGradStudentsDownload,
   getFilesetsPaginated,
   downloadErrorReport,
   getStudentFilesetByPenFilesetId,
