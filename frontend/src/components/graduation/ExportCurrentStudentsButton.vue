@@ -6,6 +6,7 @@
     prepend-icon="mdi-tray-arrow-down"
     variant="outlined"
     :disabled="disabled"
+    @click="$emit('click')"
   />
 </template>
 
@@ -17,6 +18,7 @@ export default {
       type: Boolean,
       default: false
     }
-  }
+  },
+  emits: ['click']
 };
 </script>

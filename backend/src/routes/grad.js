@@ -38,6 +38,9 @@ router.post('/school/:schoolID/upload-file-xls', passport.authenticate('jwt', {s
 router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsPaginated);
 
+router.get('/school/:schoolID/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsPaginated);
+
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);
 

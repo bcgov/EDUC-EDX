@@ -38,6 +38,7 @@
         <ExportCurrentStudentsButton
           class="mr-4 mb-1"
           :disabled="!schoolCodeNameFilter || totalElements === 0"
+          @click="downloadCurrentStudents"
         />
         <v-btn
           id="filters"
@@ -212,6 +213,9 @@ export default {
     }
   },
   methods: {
+    downloadCurrentStudents() {
+      // Export implementation will be added once the request contract is wired.
+    },
     toggleFilters() {
       this.showFilters = !this.showFilters;
     },
