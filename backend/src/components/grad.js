@@ -444,22 +444,7 @@ async function getCurrentGradStudentsDownload(req, res) {
     return errorResponse(res, 'User activeInstituteIdentifier does not exist in session', HttpStatus.BAD_REQUEST);
   }
   try {
-    const search = [];
-
-    if(req.params.schoolID) {
-      search.push({
-        condition: null,
-        searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
-          { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
-      });
-    }
-
-    if (req.query.searchParams?.['moreFilters']) {
-      let criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
-      criteriaArray.forEach(criteria => {
-        search.push(criteria);
-      });
-    }
+    const search = buildCurrentGradStudentsSearch(req);
 
     const studentSearchParam = {
       params: {
@@ -520,22 +505,7 @@ async function getCurrentGradStudentsPaginated(req, res){
     return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
   }
 
-  const search = [];
-
-  if(req.params.schoolID) {
-    search.push({
-      condition: null,
-      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
-        { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
-    });
-  }
-
-  if (req.query.searchParams?.['moreFilters']) {
-    let criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
-    criteriaArray.forEach(criteria => {
-      search.push(criteria);
-    });
-  }
+  const search = buildCurrentGradStudentsSearch(req);
 
   const studentSearchParam = {
     params: {
@@ -568,6 +538,27 @@ async function getCurrentGradStudentsPaginated(req, res){
   });
 
   return res.status(HttpStatus.OK).json(data);
+}
+
+function buildCurrentGradStudentsSearch(req) {
+  const search = [];
+
+  if(req.params.schoolID) {
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
+        { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+    });
+  }
+
+  if (req.query.searchParams?.['moreFilters']) {
+    const criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
+    criteriaArray.forEach(criteria => {
+      search.push(criteria);
+    });
+  }
+
+  return search;
 }
 
 function toTableRow(validationIssues) {
