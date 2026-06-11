@@ -347,6 +347,47 @@ function formatNumberOfCourses(value) {
   return value;
 }
 
+async function getCommonServiceStream(url, params, req = null) {
+  try {
+    const axiosConfig = {
+      ...params,
+      headers: {
+        ...(params?.headers || {}),
+        Authorization: `Bearer ${await getAccessToken()}`,
+        correlationID: params?.headers?.correlationID || req?.session?.correlationID || uuidv4()
+      },
+      responseType: 'stream'
+    };
+
+    let axiosResponse = null;
+    let streamDestroyed = false;
+
+    if (req) {
+      const destroyStream = () => {
+        if (streamDestroyed) return;
+        streamDestroyed = true;
+        if (axiosResponse && axiosResponse.data && !axiosResponse.data.destroyed) {
+          log.debug('Client disconnected, destroying upstream stream');
+          axiosResponse.data.destroy();
+        }
+      };
+
+      req.on('close', destroyStream);
+      req.on('aborted', destroyStream);
+      if (req.res) {
+        req.res.on('close', destroyStream);
+      }
+    }
+
+    axiosResponse = await axios.get(url, axiosConfig);
+    return axiosResponse;
+  } catch (e) {
+    log.error('getCommonServiceStream Error', e.response ? e.response.status : e.message);
+    const status = e.response ? e.response.status : HttpStatus.INTERNAL_SERVER_ERROR;
+    throw new ApiError(status, { message: 'API Get error' }, e);
+  }
+}
+
 const utils = {
   prettyStringify: (obj, indent = 2) => JSON.stringify(obj, null, indent),
   getSessionUser,
@@ -369,7 +410,8 @@ const utils = {
   isPdf,
   isImage,
   stripNumberFormattingNumberOfCourses,
-  formatNumberOfCourses
+  formatNumberOfCourses,
+  getCommonServiceStream
 };
 
 module.exports = utils;

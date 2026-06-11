@@ -35,6 +35,11 @@
         cols="8"
         class="d-flex justify-end mt-5"
       >
+        <ExportCurrentStudentsButton
+          class="mr-4 mb-1"
+          :disabled="!schoolCodeNameFilter || totalElements === 0"
+          @click="downloadCurrentStudents"
+        />
         <v-btn
           id="filters"
           color="#003366"
@@ -157,12 +162,15 @@ import GradErrorFilters from '../../GradFilters.vue';
 import {
   downloadDocument
 } from '../../../../utils/gdc/gradReports';
+import { downloadCurrentStudentsCsv } from '../../../../utils/gdc/currentStudentsCsv';
 import CommonCustomTable from '../../../common/CommonCustomTable.vue';
 import GradSchoolCodeNameFilter from '../../GradSchoolCodeNameFilter.vue';
+import ExportCurrentStudentsButton from '../../ExportCurrentStudentsButton.vue';
 
 export default {
   name: 'GradDistrictCurrentStudents',
   components: {
+    ExportCurrentStudentsButton,
     GradSchoolCodeNameFilter,
     CommonCustomTable,
     GradErrorFilters
@@ -206,6 +214,9 @@ export default {
     }
   },
   methods: {
+    async downloadCurrentStudents() {
+      await downloadCurrentStudentsCsv(this, this.schoolCodeNameFilter, this.filterSearchParams.moreFilters);
+    },
     toggleFilters() {
       this.showFilters = !this.showFilters;
     },

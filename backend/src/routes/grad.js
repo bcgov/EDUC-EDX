@@ -6,7 +6,7 @@ const isValidBackendToken = auth.isValidBackendToken();
 const { validateAccessToken, checkEdxUserPermission, findSchoolID_params, findInstituteInformation_query, findDistrictID_params, checkEDXUserAccessToRequestedInstitute, loadIncomingFileset, checkUserHasAccessToIncomingFileset } = require('../components/permissionUtils');
 const { scanFilePayload } = require('../components/fileUtils');
 const { uploadFile, uploadFileXLS, getErrorFilesetStudentPaginated, getFilesetsPaginated, downloadErrorReport,
-  getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId,getFinalFilesetsPaginated, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, getPreviousReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
+  getCurrentGradStudentsDownload, getCurrentGradStudentsPaginated, getStudentFilesetByPenFilesetId,getFinalFilesetsPaginated, getSubmissionMetrics, getErrorMetrics, getActiveReportingPeriod, getPreviousReportingPeriod, processSummerStudents, getGradSchoolDetails, getGradSchools
 } = require('../components/grad');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
@@ -37,6 +37,9 @@ router.post('/school/:schoolID/upload-file-xls', passport.authenticate('jwt', {s
 
 router.get('/school/:schoolID/current-students', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsPaginated);
+
+router.get('/school/:schoolID/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
+  checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getCurrentGradStudentsDownload);
 
 router.get('/fileset/:schoolID/paginated', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,
   checkEdxUserPermission(PERMISSION.GRAD_SCH_RPT_VIEW), validate(gradSchoolFilesetPaginatedSchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, getFilesetsPaginated);

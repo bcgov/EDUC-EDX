@@ -1,5 +1,5 @@
 'use strict';
-const { handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData
+const { errorResponse, handleExceptionResponse, postData, getCreateOrUpdateUserValue, getDataWithParams, getData, getCommonServiceStream
 } = require('./utils');
 const HttpStatus = require('http-status-codes');
 const log = require('./logger');
@@ -439,27 +439,73 @@ async function getGradSchoolDetails(req, res){
   }
 }
 
+async function getCurrentGradStudentsDownload(req, res) {
+  if (!req.session.activeInstituteIdentifier) {
+    return errorResponse(res, 'User activeInstituteIdentifier does not exist in session', HttpStatus.BAD_REQUEST);
+  }
+  try {
+    const search = buildCurrentGradStudentsSearch(req);
+
+    const studentSearchParam = {
+      params: {
+        searchCriteriaList: JSON.stringify(search)
+      }
+    };
+
+    const url = `${config.get('gradCurrentStudents:rootURL')}/grad/student/search/download`;
+
+    const apiRes = await getCommonServiceStream(url, studentSearchParam, req);
+
+    if (apiRes.headers['content-type']) {
+      res.setHeader('Content-Type', apiRes.headers['content-type']);
+    } else {
+      res.setHeader('Content-Type', 'text/csv');
+    }
+
+    if (apiRes.headers['content-disposition']) {
+      res.setHeader('Content-Disposition', apiRes.headers['content-disposition']);
+    } else {
+      res.setHeader('Content-Disposition', 'attachment; filename="students.csv"');
+    }
+
+    req.on('close', () => {
+      if (!res.writableEnded) {apiRes.data.destroy();
+      }
+    });
+
+    apiRes.data.on('error', async (err) => {
+      log.error(err, 'Error streaming student search report');
+      if (!res.headersSent) {
+        return errorResponse(res);
+      }
+      res.destroy(err);
+    });
+
+    res.on('error', (err) => {
+      console.error('Error writing to client response:', err);
+      apiRes.data.destroy();
+    });
+
+    apiRes.data.pipe(res);
+  } catch (e) {
+    log.error(e, 'Error getting student search report');
+    if (!res.headersSent) {
+      if (e.data?.message) {
+        return errorResponse(res, e.data.message, e.status);
+      }
+      return errorResponse(res);
+    }
+    res.destroy(e);
+  }
+  
+}
+
 async function getCurrentGradStudentsPaginated(req, res){
   if (!req.session.activeInstituteIdentifier) {
     return Promise.reject('getCurrentGradStudentsPaginated error: User activeInstituteIdentifier does not exist in session');
   }
 
-  const search = [];
-
-  if(req.params.schoolID) {
-    search.push({
-      condition: null,
-      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
-        { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
-    });
-  }
-
-  if (req.query.searchParams?.['moreFilters']) {
-    let criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
-    criteriaArray.forEach(criteria => {
-      search.push(criteria);
-    });
-  }
+  const search = buildCurrentGradStudentsSearch(req);
 
   const studentSearchParam = {
     params: {
@@ -492,6 +538,27 @@ async function getCurrentGradStudentsPaginated(req, res){
   });
 
   return res.status(HttpStatus.OK).json(data);
+}
+
+function buildCurrentGradStudentsSearch(req) {
+  const search = [];
+
+  if(req.params.schoolID) {
+    search.push({
+      condition: null,
+      searchCriteriaList: [{ key: 'schoolOfRecordId', value: req.params.schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND },
+        { key: 'studentStatus', value: 'CUR', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND }]
+    });
+  }
+
+  if (req.query.searchParams?.['moreFilters']) {
+    const criteriaArray = createMoreFiltersCurrentStudentsSearchCriteria(req.query.searchParams['moreFilters']);
+    criteriaArray.forEach(criteria => {
+      search.push(criteria);
+    });
+  }
+
+  return search;
 }
 
 function toTableRow(validationIssues) {
@@ -725,6 +792,7 @@ function getGradSchools(req, res) {
 module.exports = {
   uploadFile,
   getErrorFilesetStudentPaginated,
+  getCurrentGradStudentsDownload,
   getFilesetsPaginated,
   downloadErrorReport,
   getStudentFilesetByPenFilesetId,
