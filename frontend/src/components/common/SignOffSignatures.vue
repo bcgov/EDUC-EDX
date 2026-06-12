@@ -105,6 +105,26 @@ const createActionData = () => ([
   }
 ]);
 
+function formatDisplayName(name) {
+  if (!name || typeof name !== 'string') {
+    return name;
+  }
+
+  const trimmedName = name.trim();
+  if (trimmedName === '') {
+    return trimmedName;
+  }
+
+  const shouldNormalizeCase = trimmedName === trimmedName.toUpperCase() || trimmedName === trimmedName.toLowerCase();
+  if (!shouldNormalizeCase) {
+    return trimmedName;
+  }
+
+  return trimmedName
+      .toLowerCase()
+      .replace(/(^|[\s'-])([a-z])/g, (match, prefix, character) => `${prefix}${character.toUpperCase()}`);
+}
+
 export default {
   name: 'SignOffSignatures',
   components: {
@@ -204,7 +224,7 @@ export default {
     },
     getSignatoryDisplayName(signature) {
       if (signature?.districtSignatoryDisplayName) {
-        return signature.districtSignatoryDisplayName;
+        return formatDisplayName(signature.districtSignatoryDisplayName);
       }
 
       const signatoryID = signature?.districtSignatoryUserID?.split('/');
