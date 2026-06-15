@@ -171,10 +171,10 @@
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
 import PrimaryButton from '../../../util/PrimaryButton.vue';
-import { mapState } from 'pinia';
-import { sdcCollectionStore } from '../../../../store/modules/sdcCollection';
-import { appStore } from '../../../../store/modules/app';
-import { SDC_VERIFY_TABS, getSdcVerifyTabLabel } from '../../../../utils/sdc/SdcVerifyTabs';
+import {mapState} from 'pinia';
+import {sdcCollectionStore} from '../../../../store/modules/sdcCollection';
+import {appStore} from '../../../../store/modules/app';
+import {SDC_VERIFY_TABS, getSdcVerifyTabLabel} from '../../../../utils/sdc/SdcVerifyTabs';
 import FTEComponent from './FTEComponent.vue';
 import CareerProgramsComponent from './CareerProgramsComponent.vue';
 import IndSupportProgramsComponent from './IndSupportProgramsComponent.vue';
@@ -247,7 +247,7 @@ export default {
     ...mapState(authStore, ['userInfo']),
     ...mapState(sdcCollectionStore, ['currentStepInCollectionProcess', 'currentCollectionTypeCode']),
     ...mapState(appStore, ['activeSchoolsMap', 'config']),
-    hasEditPermission(){
+    hasEditPermission() {
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
     showRefugeeTab() {
@@ -280,7 +280,12 @@ export default {
         'Refugee': this.showRefugeeTab,
       };
 
-      return this.tabs.filter(tab => { if(!tagVisibilityMap[tab]) {console.warn(`Tab: ${tab} is not accounted in the tagBisibilityMap defaulting to always show`);} return tagVisibilityMap[tab] ?? true;});
+      return this.tabs.filter(tab => {
+        if (tagVisibilityMap[tab] === undefined) {
+          console.warn(`Tab: ${tab} is not accounted in the tagVisibilityMap defaulting to always show`);
+        }
+        return tagVisibilityMap[tab] ?? true;
+      });
     },
     isMigratedCollection() { //we don't show student differences or resolved duplicates for collections before EDX go live
       return LocalDateTime.parse(this.schoolCollectionObject.createDate).toLocalDate().isBefore(LocalDate.parse(this.config.SLD_MIGRATION_DATE));
@@ -293,13 +298,13 @@ export default {
   },
   methods: {
     next() {
-      if(this.isStepComplete) {
+      if (this.isStepComplete) {
         this.$emit('next');
       } else {
         this.markStepAsComplete();
       }
     },
-    canMoveForward(){
+    canMoveForward() {
       return this.isStepComplete || this.hasEditPermission;
     },
     markStepAsComplete() {
@@ -330,7 +335,7 @@ export default {
   margin-bottom: 2em;
 }
 
-.form-hint{
+.form-hint {
   color: rgb(56, 89, 138);
   font-size: 14px;
 }
@@ -340,7 +345,7 @@ export default {
   border-radius: 0px;
 }
 
-.divider:last-child  {
+.divider:last-child {
   border-right: 0
 }
 </style>
