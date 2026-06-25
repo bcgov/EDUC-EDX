@@ -107,7 +107,7 @@
               text="Add Registration"
               prepend-icon="mdi-plus"
               class="mr-1 mb-1"
-              v-if="hasEditPermission"
+              v-if="canManageRegistrations"
               @click="openCreateStudentRegDialog"
             />
             <v-btn
@@ -117,7 +117,7 @@
               variant="outlined"
               prepend-icon="mdi-trash-can-outline"
               class="mr-1 mb-1"
-              v-if="hasEditPermission"
+              v-if="canManageRegistrations"
               :disabled="selectedAssessmentStudents.length <= 0"
               @click="removeStudents"
             />
@@ -315,6 +315,9 @@ export default {
     },
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || perm === PERMISSION.EAS_DIS_EDIT).length > 0);
+    },
+    canManageRegistrations() {
+      return this.userInfo?.activeInstituteType === 'SCHOOL' && this.hasEditPermission;
     },
   },
   created() {
