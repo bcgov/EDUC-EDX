@@ -8,6 +8,7 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
   let writingSiteFilter = [];
   let schoolNameNumberFilter = [];
   let assessmentCenterNameNumberFilter = [];
+  const search = [];
 
   //Always filter on ACTIVE students
   searchCriteriaList.push({ key: 'studentStatusCode', value: 'ACTIVE', operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
@@ -67,8 +68,16 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
     }
 
     if (key === 'districtID' && pValue) {
-      let schools = cacheService.getAllSchoolIDsForDistrictID(pValue[0]);
-      searchCriteriaList.push({key: 'schoolOfRecordSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND});
+      let schools = cacheService.getAllPublicSchoolIDsForDistrictID(pValue[0]);
+      if (schools?.length > 0) {
+        const districtSchoolCriteria = [];
+        districtSchoolCriteria.push({ key: 'schoolOfRecordSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        districtSchoolCriteria.push({ key: 'assessmentCenterSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        search.push({
+          condition: CONDITION.AND,
+          searchCriteriaList: districtSchoolCriteria
+        });
+      }
     }
 
     if (key === 'schoolID' && pValue) {
@@ -119,7 +128,6 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
     }
 
   }
-  const search = [];
   if (schoolNameNumberFilter.length > 0) {
     search.push({
       condition: CONDITION.AND,
@@ -151,7 +159,7 @@ function createSchoolNameNumberSearchCriteria(value) {
   const searchSchoolCriteriaList = [];
 
   searchSchoolCriteriaList.push({
-    key: 'schoolID',
+    key: 'schoolOfRecordSchoolID',
     operation: FILTER_OPERATION.EQUAL,
     value: value,
     valueType: VALUE_TYPE.UUID,

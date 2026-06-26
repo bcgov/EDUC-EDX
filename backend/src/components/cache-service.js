@@ -91,6 +91,12 @@ const cacheService = {
   getAllSchoolIDsForDistrictID(districtID) {
     return districtToSchoolsMap.get(districtID);
   },
+  getAllPublicSchoolIDsForDistrictID(districtID) {
+    return (districtToSchoolsMap.get(districtID) || []).filter(schoolID => {
+      const school = schoolMap.get(schoolID);
+      return school?.schoolCategoryCode === 'PUBLIC';
+    });
+  },
   getDistrictByDistrictID(districtID) {
     return districtsMap.get(districtID);
   },
