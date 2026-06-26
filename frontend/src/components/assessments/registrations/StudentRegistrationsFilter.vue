@@ -436,12 +436,10 @@ export default {
     setPenLocalIdNameFilter($event, val) {
       const keys = ['givenName', 'surName', 'pen', 'localID'];
       keys.forEach((key) => {
-        if (this[key] != null) {
-          if (this[key].length > 0) {
-            this.selected[key] = [{ title: key, value: this[key] }];
-          } else {
-            delete this.selected[key];
-          }
+        if (this[key] != null && this[key].length > 0) {
+          this.selected[key] = [{ title: key, value: this[key] }];
+        } else {
+          delete this.selected[key];
         }
       });
       if ($event && val === 'click') {
@@ -479,10 +477,7 @@ export default {
       }
     },
     clear() {
-      delete this.selected['session'];
-      delete this.selected['transfer'];
-      delete this.selected['assessmentTypeCode'];
-      this.penLocalIdNameFilter = null;
+      this.selected = {};
       this.schoolNameNumberFilter = null;
       this.assessmentCenterNameNumberFilter = null;
       this.givenName = null;

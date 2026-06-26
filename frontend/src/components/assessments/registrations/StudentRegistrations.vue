@@ -107,7 +107,7 @@
               text="Add Registration"
               prepend-icon="mdi-plus"
               class="mr-1 mb-1"
-              v-if="hasEditPermission"
+              v-if="canManageRegistrations"
               @click="openCreateStudentRegDialog"
             />
             <v-btn
@@ -117,7 +117,7 @@
               variant="outlined"
               prepend-icon="mdi-trash-can-outline"
               class="mr-1 mb-1"
-              v-if="hasEditPermission"
+              v-if="canManageRegistrations"
               :disabled="selectedAssessmentStudents.length <= 0"
               @click="removeStudents"
             />
@@ -311,10 +311,13 @@ export default {
     filterCount() {
       return Object.values(this.filterSearchParams.moreFilters).filter(filter => {
         return !!filter[0].id;
-      } ).reduce((total, filter) => total.concat(filter), []).length;
+      } ).reduce((total, filter) => total.concat(filter), []).filter(filter => filter.id !== this.userInfo.activeInstituteIdentifier).length;
     },
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || perm === PERMISSION.EAS_DIS_EDIT).length > 0);
+    },
+    canManageRegistrations() {
+      return this.userInfo?.activeInstituteType === 'SCHOOL' && this.hasEditPermission;
     },
   },
   created() {
@@ -350,9 +353,15 @@ export default {
           { title: capitalize(Month.of(this.activeSession.courseMonth).toString()), courseMonth: this.activeSession.courseMonth, courseYear: this.activeSession.courseYear, id: this.activeSession.sessionID, value: this.activeSession.sessionID }
         ];
       }
-      this.filterSearchParams.moreFilters.writingSite = [
-        { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
-      ];
+      if (this.userInfo.activeInstituteType === 'DISTRICT') {
+        this.filterSearchParams.moreFilters.districtID = [
+          { id: this.userInfo.activeInstituteIdentifier, value: this.userInfo.activeInstituteIdentifier }
+        ];
+      } else {
+        this.filterSearchParams.moreFilters.writingSite = [
+          { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+        ];
+      }
     },
     getAssessmentStudents() {
       this.isLoading = true;
@@ -407,14 +416,25 @@ export default {
     },
     applyFilters($event) {
       this.filterSearchParams.moreFilters = cloneDeep($event);
+      if (this.userInfo.activeInstituteType === 'DISTRICT') {
+        this.filterSearchParams.moreFilters.districtID = [
+          { id: this.userInfo.activeInstituteIdentifier, value: this.userInfo.activeInstituteIdentifier }
+        ];
+      }
       this.pageNumber = 1;
       this.getAssessmentStudents();
     },
     clearFilters() {
       this.filterSearchParams.moreFilters = {};
-      this.filterSearchParams.moreFilters.writingSite = [
-        { title: 'Any Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
-      ];
+      if (this.userInfo.activeInstituteType === 'DISTRICT') {
+        this.filterSearchParams.moreFilters.districtID = [
+          { id: this.userInfo.activeInstituteIdentifier, value: this.userInfo.activeInstituteIdentifier }
+        ];
+      } else {
+        this.filterSearchParams.moreFilters.writingSite = [
+          { title: 'Any Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+        ];
+      }
       this.pageNumber = 1;
       this.getAssessmentStudents();
     },

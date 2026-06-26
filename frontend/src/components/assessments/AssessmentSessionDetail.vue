@@ -17,8 +17,7 @@
           v-model="tab"
           style="color: #38598a"
         >
-          <v-tab 
-            v-if="isSchoolUser"
+          <v-tab
             value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
@@ -33,7 +32,6 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
-            v-if="isSchoolUser"
             value="1"
             transition="false"
             reverse-transition="false"
