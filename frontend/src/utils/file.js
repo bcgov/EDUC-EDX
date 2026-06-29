@@ -55,7 +55,7 @@ export function getFilenameFromDisposition(disposition, fallbackFilename) {
 export function downloadBlobResponse(response, fallbackFilename) {
   const disposition = response.headers?.['content-disposition'] || response.headers?.['Content-Disposition'];
   const filename = getFilenameFromDisposition(disposition, fallbackFilename);
-  const blobUrl = window.URL.createObjectURL(response.data);
+  const blobUrl = globalThis.URL.createObjectURL(response.data);
   const anchor = document.createElement('a');
 
   anchor.style.display = 'none';
@@ -65,5 +65,5 @@ export function downloadBlobResponse(response, fallbackFilename) {
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  window.URL.revokeObjectURL(blobUrl);
+  globalThis.URL.revokeObjectURL(blobUrl);
 }

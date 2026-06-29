@@ -1,4 +1,5 @@
 'use strict';
+const { cloneDeep } = require('lodash');
 const {
   logApiError,
   getData,
@@ -390,7 +391,7 @@ async function buildRegistrationExportSearch(req) {
     .filter(session => session?.completionDate === null)
     .map(session => session.sessionID);
 
-  const moreFilters = req.query.searchParams?.moreFilters ? JSON.parse(JSON.stringify(req.query.searchParams.moreFilters)) : {};
+  const moreFilters = req.query.searchParams?.moreFilters ? cloneDeep(req.query.searchParams.moreFilters) : {};
 
   if (!moreFilters.writingSite || moreFilters.writingSite.length === 0) {
     moreFilters.writingSite = [
