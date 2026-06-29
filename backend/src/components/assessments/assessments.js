@@ -6,7 +6,8 @@ const {
   postData,
   getCreateOrUpdateUserValue,
   getDataWithParams,
-  handleExceptionResponse
+  handleExceptionResponse,
+  getCommonServiceStream
 } = require('../utils');
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
@@ -118,6 +119,58 @@ async function getAssessmentStudentsPaginated(req, res) {
       await logApiError(e, 'Error getting assessment student paginated list');
       return handleExceptionResponse(e, res);
     }
+  }
+}
+
+async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
+  try {
+    const search = await buildRegistrationExportSearch(req);
+    const params = {
+      params: {
+        searchCriteriaList: JSON.stringify(search),
+      },
+    };
+    const url = `${config.get('assessments:rootURL')}/report/assessment-registrations/search/download`;
+    const apiRes = await getCommonServiceStream(url, params, req);
+
+    if (apiRes.headers['content-type']) {
+      res.setHeader('Content-Type', apiRes.headers['content-type']);
+    } else {
+      res.setHeader('Content-Type', 'text/csv');
+    }
+
+    if (apiRes.headers['content-disposition']) {
+      res.setHeader('Content-Disposition', apiRes.headers['content-disposition']);
+    } else {
+      res.setHeader('Content-Disposition', 'attachment; filename="AssessmentRegistrations.csv"');
+    }
+
+    req.on('close', () => {
+      if (!res.writableEnded) {
+        apiRes.data.destroy();
+      }
+    });
+
+    apiRes.data.on('error', async (err) => {
+      await logApiError(err, 'Error streaming assessment registration report');
+      if (!res.headersSent) {
+        return handleExceptionResponse(err, res);
+      }
+      res.destroy(err);
+    });
+
+    res.on('error', (err) => {
+      log.error('Error writing assessment registration report to client response:', err);
+      apiRes.data.destroy();
+    });
+
+    apiRes.data.pipe(res);
+  } catch (e) {
+    logApiError(e, 'downloadSchoolAssessmentRegistrationsCsv', 'Error occurred while attempting to download the school assessment registrations CSV.');
+    if (!res.headersSent) {
+      return handleExceptionResponse(e, res);
+    }
+    res.destroy(e);
   }
 }
 
@@ -330,6 +383,30 @@ function getSchoolName(school) {
   return school.mincode + ' - ' + school.schoolName;
 }
 
+async function buildRegistrationExportSearch(req) {
+  const schoolID = req.session.activeInstituteIdentifier;
+  const sessions = await getData(`${config.get('assessments:assessmentSessionsURL')}`, req.session?.correlationID);
+  const nonApprovedSessionIDs = sessions
+    .filter(session => session?.completionDate === null)
+    .map(session => session.sessionID);
+
+  const moreFilters = req.query.searchParams?.moreFilters ? JSON.parse(JSON.stringify(req.query.searchParams.moreFilters)) : {};
+
+  if (!moreFilters.writingSite || moreFilters.writingSite.length === 0) {
+    moreFilters.writingSite = [
+      { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+    ];
+  }
+
+  if ((!moreFilters.session || moreFilters.session.length === 0) && (!moreFilters.openSessions || moreFilters.openSessions.length === 0)) {
+    moreFilters.openSessions = nonApprovedSessionIDs.length > 0
+      ? [{ value: nonApprovedSessionIDs }]
+      : [{ value: ['00000000-0000-0000-0000-000000000000'] }];
+  }
+
+  return createMoreFiltersSearchCriteria(moreFilters, schoolID);
+}
+
 function getAssessmentSpecialCases(req, res) {
   try {
     const codes = cacheService.getAllAssessmentSpecialCases();
@@ -376,9 +453,9 @@ module.exports = {
   removeAssessmentStudents,
   getAssessmentSpecialCases,
   postAssessmentStudent,
+  downloadSchoolAssessmentRegistrationsCsv,
   downloadXamFile,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,
   checkSchoolReportAvailability
 };
-
