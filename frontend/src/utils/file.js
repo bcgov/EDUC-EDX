@@ -38,3 +38,32 @@ export function getFileNameWithMaxNameLength(fileName, nameLength=30, extensionL
 
   return name + extension;
 }
+
+export function getFilenameFromDisposition(disposition, fallbackFilename) {
+  if (!disposition) {
+    return fallbackFilename;
+  }
+
+  const match = disposition.match(/filename\*?=(?:UTF-8''|")(.*?)(?:"|;|$)/i);
+  if (match?.[1]) {
+    return decodeURIComponent(match[1]);
+  }
+
+  return fallbackFilename;
+}
+
+export function downloadBlobResponse(response, fallbackFilename) {
+  const disposition = response.headers?.['content-disposition'] || response.headers?.['Content-Disposition'];
+  const filename = getFilenameFromDisposition(disposition, fallbackFilename);
+  const blobUrl = window.URL.createObjectURL(response.data);
+  const anchor = document.createElement('a');
+
+  anchor.style.display = 'none';
+  anchor.href = blobUrl;
+  anchor.download = filename;
+
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.URL.revokeObjectURL(blobUrl);
+}
