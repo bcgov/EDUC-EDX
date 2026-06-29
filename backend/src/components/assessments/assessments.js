@@ -398,7 +398,7 @@ async function buildRegistrationExportSearch(req) {
       { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
     ];
   }
-
+  // pass an empty guid in the event that there are no approved sessions in search. Ensures a valid IN clause ~cd
   if ((!moreFilters.session || moreFilters.session.length === 0) && (!moreFilters.openSessions || moreFilters.openSessions.length === 0)) {
     moreFilters.openSessions = nonApprovedSessionIDs.length > 0
       ? [{ value: nonApprovedSessionIDs }]
