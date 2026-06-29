@@ -122,6 +122,17 @@
               @click="removeStudents"
             />
             <v-btn
+              id="exportRegistrations"
+              color="#003366"
+              text="Export Registrations"
+              variant="outlined"
+              prepend-icon="mdi-download-outline"
+              class="mr-1 mb-1"
+              v-if="userInfo.activeInstituteType === 'SCHOOL'"
+              :disabled="totalElements <= 0"
+              @click="downloadRegistrationsExport"
+            />
+            <v-btn
               id="filters"
               color="#003366"
               text="Filter"
@@ -238,6 +249,7 @@ import AddStudentRegistration from './forms/AddStudentRegistration.vue';
 import {setFailureAlert, setSuccessAlert} from '../../composable/alertComposable';
 import ConfirmationDialog from '../../util/ConfirmationDialog.vue';
 import {PERMISSION} from '../../../utils/constants/Permission';
+import { downloadRegistrationExportCsv } from '../../../utils/eas/registrationExportCsv';
 
 export default {
   name: 'StudentRegistrations',
@@ -413,6 +425,14 @@ export default {
         }).finally(() => {
           this.isLoading = false;
         });
+    },
+    async downloadRegistrationsExport() {
+      this.isLoading = true;
+      try {
+        await downloadRegistrationExportCsv(this.filterSearchParams.moreFilters);
+      } finally {
+        this.isLoading = false;
+      }
     },
     applyFilters($event) {
       this.filterSearchParams.moreFilters = cloneDeep($event);
