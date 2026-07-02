@@ -29,6 +29,12 @@
           >
             Reports & Results
           </v-tab>
+          <v-tab
+            value="3"
+            prepend-icon="mdi-file-document-outline"
+          >
+            Assessment Completion for Current Students
+          </v-tab>
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
@@ -61,6 +67,13 @@
           >
             <AssessmentReports />
           </v-window-item>
+          <v-window-item
+            value="3"
+            transition="false"
+            reverse-transition="false"
+          >
+            <AssessmentCompletionForCurrentStudents />
+          </v-window-item>
         </v-window>
       </v-col>
     </v-row>
@@ -76,13 +89,15 @@ import Spinner from '../common/Spinner.vue';
 import {authStore} from '../../store/modules/auth';
 import { easStore } from '../../store/modules/eas';
 import AssessmentReports from './reports/AssessmentReports.vue';
+import AssessmentCompletionForCurrentStudents from './reports/AssessmentCompletionForCurrentStudents.vue';
 
 export default {
   name: 'AssessmentSessionDetail',
   components: {
     StudentRegistrations,
     Spinner,
-    AssessmentReports
+    AssessmentReports,
+    AssessmentCompletionForCurrentStudents
   },
   mixins: [alertMixin],
   props: {
