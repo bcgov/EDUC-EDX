@@ -18,6 +18,7 @@
           style="color: #38598a"
         >
           <v-tab
+            v-if="isSchoolUser"
             value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
@@ -38,6 +39,7 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
+            v-if="isSchoolUser"
             value="1"
             transition="false"
             reverse-transition="false"
@@ -111,7 +113,6 @@ export default {
     return {
       assessmentStudents: [],
       schoolYearSessions: [],
-      isSchoolUser: false,
       isLoading: false,
       tab: '',
       session: ''
@@ -119,7 +120,10 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    ...mapState(easStore, ['schoolYear'])   
+    ...mapState(easStore, ['schoolYear']),
+    isSchoolUser() {
+      return this.userInfo?.activeInstituteType === 'SCHOOL';
+    }
   },
   async created() {    
     this.loading = true;
@@ -129,12 +133,7 @@ export default {
       }
     });
     authStore().getUserInfo().then(() => {
-      if(this.userInfo.activeInstituteType === 'SCHOOL') {
-        this.isSchoolUser = true;
-        this.tab = '1';
-      }else{
-        this.isSchoolUser = false;
-      }
+      this.tab = this.isSchoolUser ? '1' : '2';
     });
   },
   methods: {
