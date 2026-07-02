@@ -321,6 +321,44 @@ async function checkSchoolReportAvailability(req, res) {
   }
 }
 
+async function checkXamFileAvailability(req, res) {
+  try {
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/XAM_FILE/available`;
+    const data = await getData(url);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function checkSchoolReportTypeAvailability(req, res) {
+  try {
+    const reportType = ASSESSMENTS_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid report type provided' });
+    }
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/school/${req.params.schoolID}/${reportType}/available`;
+    const data = await getData(url);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function checkStudentReportAvailability(req, res) {
+  try {
+    const reportType = ASSESSMENTS_STUDENT_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid report type provided' });
+    }
+    const url = `${config.get('assessments:rootURL')}/report/student/${req.params.studentID}/${reportType}/available`;
+    const data = await getData(url);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function setResponseHeaders(res, { filename, contentType }) {
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
@@ -379,6 +417,9 @@ module.exports = {
   downloadXamFile,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,
-  checkSchoolReportAvailability
+  checkSchoolReportAvailability,
+  checkXamFileAvailability,
+  checkSchoolReportTypeAvailability,
+  checkStudentReportAvailability,
 };
 

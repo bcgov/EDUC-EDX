@@ -111,8 +111,39 @@ const checkSchoolReportAvailabilitySchema = object({
   body: object().noUnknown(),
 }).noUnknown();
 
+const checkXamFileAvailabilitySchema = object({
+  params: object({
+    sessionID: uuidGeneric().required(),
+    schoolID:  uuidGeneric().required(),
+  }).noUnknown(),
+  query: object().noUnknown(),
+  body:  object().noUnknown(),
+}).noUnknown();
+
+const checkSchoolReportTypeAvailabilitySchema = object({
+  params: object({
+    sessionID:      uuidGeneric().required(),
+    schoolID:       uuidGeneric().required(),
+    reportTypeCode: string().required(),
+  }).noUnknown(),
+  query: object().noUnknown(),
+  body:  object().noUnknown(),
+}).noUnknown();
+
+const checkStudentReportAvailabilitySchema = object({
+  params: object({
+    studentID:      uuidGeneric().required(),
+    reportTypeCode: string().required(),
+  }).noUnknown(),
+  query: object().noUnknown(),
+  body:  object().noUnknown(),
+}).noUnknown();
+
 module.exports = {
   putStudentAssessmentSchema,
   postAssessmentStudentSchema,
-  checkSchoolReportAvailabilitySchema
+  checkSchoolReportAvailabilitySchema,
+  checkXamFileAvailabilitySchema,
+  checkSchoolReportTypeAvailabilitySchema,
+  checkStudentReportAvailabilitySchema,
 };
