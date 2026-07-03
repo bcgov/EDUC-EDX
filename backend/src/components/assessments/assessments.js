@@ -175,6 +175,52 @@ async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
   }
 }
 
+async function downloadAssessmentCompletionCurrentStudentsCsv(req, res) {
+  try {
+    const instituteType = req.session.activeInstituteType?.toLowerCase();
+    const instituteIdentifier = req.session.activeInstituteIdentifier;
+
+    if (!instituteType || !instituteIdentifier) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Unable to determine the current institute for this download.'
+      });
+    }
+
+    const url = `${config.get('assessments:rootURL')}/report/${instituteType}/${instituteIdentifier}/assessment-completions/current-students/download`;
+    const apiRes = await getCommonServiceStream(url, {}, req);
+
+    res.setHeader('Content-Type', apiRes.headers['content-type'] || 'text/csv');
+    res.setHeader('Content-Disposition', apiRes.headers['content-disposition'] || 'attachment; filename="AssessmentCompletions.csv"');
+
+    req.on('close', () => {
+      if (!res.writableEnded) {
+        apiRes.data.destroy();
+      }
+    });
+
+    apiRes.data.on('error', async (err) => {
+      await logApiError(err, 'Error streaming assessment completion current students report');
+      if (!res.headersSent) {
+        return handleExceptionResponse(err, res);
+      }
+      res.destroy(err);
+    });
+
+    res.on('error', (err) => {
+      log.error('Error writing assessment completion current students report to client response:', err);
+      apiRes.data.destroy();
+    });
+
+    apiRes.data.pipe(res);
+  } catch (e) {
+    logApiError(e, 'downloadAssessmentCompletionCurrentStudentsCsv', 'Error occurred while attempting to download the assessment completion current students CSV.');
+    if (!res.headersSent) {
+      return handleExceptionResponse(e, res);
+    }
+    res.destroy(e);
+  }
+}
+
 async function postAssessmentStudent(req, res) {
   try {
     const payload = {
@@ -455,6 +501,7 @@ module.exports = {
   getAssessmentSpecialCases,
   postAssessmentStudent,
   downloadSchoolAssessmentRegistrationsCsv,
+  downloadAssessmentCompletionCurrentStudentsCsv,
   downloadXamFile,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,

@@ -11,7 +11,7 @@
       <v-col cols="12">
         <DownloadLink
           label="Assessment Completions for Current Students"
-          :download-action="downloadPlaceholderReport"
+          :download-action="downloadAssessmentCompletionReport"
         />
       </v-col>
     </v-row>
@@ -23,6 +23,9 @@ import DownloadLink from '../../common/DownloadLink.vue';
 import alertMixin from '../../../mixins/alertMixin';
 import { mapState } from 'pinia';
 import { authStore } from '../../../store/modules/auth';
+import ApiService from '../../../common/apiService';
+import { ApiRoutes } from '../../../utils/constants';
+import { downloadBlobResponse } from '../../../utils/file';
 
 export default {
   name: 'AssessmentCompletionForCurrentStudents',
@@ -42,8 +45,19 @@ export default {
     }
   },
   methods: {
-    async downloadPlaceholderReport() {
-      this.setWarningAlert('Download link placeholder only. CSV endpoint is not implemented yet.');
+    async downloadAssessmentCompletionReport() {
+      const instituteType = this.userInfo?.activeInstituteType?.toLowerCase();
+      const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${instituteType}/assessment-completions/current-students/download`;
+
+      try {
+        const response = await ApiService.apiAxios.get(url, {
+          responseType: 'blob'
+        });
+        downloadBlobResponse(response, 'assessment-completions.csv');
+      } catch (error) {
+        console.error('Error downloading assessment completion current students CSV:', error);
+        this.setFailureAlert('An error occurred while trying to export assessment completions. Please try again later.');
+      }
     }
   }
 };
