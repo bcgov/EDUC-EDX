@@ -132,40 +132,13 @@ async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
       },
     };
     const url = `${config.get('assessments:rootURL')}/report/assessment-registrations/search/download`;
-    const apiRes = await getCommonServiceStream(url, params, req);
-
-    if (apiRes.headers['content-type']) {
-      res.setHeader('Content-Type', apiRes.headers['content-type']);
-    } else {
-      res.setHeader('Content-Type', 'text/csv');
-    }
-
-    if (apiRes.headers['content-disposition']) {
-      res.setHeader('Content-Disposition', apiRes.headers['content-disposition']);
-    } else {
-      res.setHeader('Content-Disposition', 'attachment; filename="AssessmentRegistrations.csv"');
-    }
-
-    req.on('close', () => {
-      if (!res.writableEnded) {
-        apiRes.data.destroy();
-      }
+    await streamCsvDownload(req, res, {
+      url,
+      params,
+      fallbackFilename: 'AssessmentRegistrations.csv',
+      streamErrorLogMessage: 'Error streaming assessment registration report',
+      responseErrorLogMessage: 'Error writing assessment registration report to client response:',
     });
-
-    apiRes.data.on('error', async (err) => {
-      await logApiError(err, 'Error streaming assessment registration report');
-      if (!res.headersSent) {
-        return handleExceptionResponse(err, res);
-      }
-      res.destroy(err);
-    });
-
-    res.on('error', (err) => {
-      log.error('Error writing assessment registration report to client response:', err);
-      apiRes.data.destroy();
-    });
-
-    apiRes.data.pipe(res);
   } catch (e) {
     logApiError(e, 'downloadSchoolAssessmentRegistrationsCsv', 'Error occurred while attempting to download the school assessment registrations CSV.');
     if (!res.headersSent) {
@@ -173,6 +146,67 @@ async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
     }
     res.destroy(e);
   }
+}
+
+async function downloadAssessmentCompletionCurrentStudentsCsv(req, res) {
+  try {
+    const instituteType = req.session.activeInstituteType?.toLowerCase();
+    const instituteIdentifier = req.session.activeInstituteIdentifier;
+
+    if (!instituteType || !instituteIdentifier) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Unable to determine the current institute for this download.'
+      });
+    }
+
+    const url = `${config.get('assessments:rootURL')}/report/${instituteType}/${instituteIdentifier}/assessment-completions/current-students/download`;
+    await streamCsvDownload(req, res, {
+      url,
+      fallbackFilename: 'AssessmentCompletions.csv',
+      streamErrorLogMessage: 'Error streaming assessment completion current students report',
+      responseErrorLogMessage: 'Error writing assessment completion current students report to client response:',
+    });
+  } catch (e) {
+    logApiError(e, 'downloadAssessmentCompletionCurrentStudentsCsv', 'Error occurred while attempting to download the assessment completion current students CSV.');
+    if (!res.headersSent) {
+      return handleExceptionResponse(e, res);
+    }
+    res.destroy(e);
+  }
+}
+
+async function streamCsvDownload(req, res, {
+  url,
+  params = {},
+  fallbackFilename,
+  streamErrorLogMessage,
+  responseErrorLogMessage,
+}) {
+  const apiRes = await getCommonServiceStream(url, params, req);
+
+  res.setHeader('Content-Type', apiRes.headers['content-type'] || 'text/csv');
+  res.setHeader('Content-Disposition', apiRes.headers['content-disposition'] || `attachment; filename="${fallbackFilename}"`);
+
+  req.on('close', () => {
+    if (!res.writableEnded) {
+      apiRes.data.destroy();
+    }
+  });
+
+  apiRes.data.on('error', async (err) => {
+    await logApiError(err, streamErrorLogMessage);
+    if (!res.headersSent) {
+      return handleExceptionResponse(err, res);
+    }
+    res.destroy(err);
+  });
+
+  res.on('error', (err) => {
+    log.error(responseErrorLogMessage, err);
+    apiRes.data.destroy();
+  });
+
+  apiRes.data.pipe(res);
 }
 
 async function postAssessmentStudent(req, res) {
@@ -455,6 +489,7 @@ module.exports = {
   getAssessmentSpecialCases,
   postAssessmentStudent,
   downloadSchoolAssessmentRegistrationsCsv,
+  downloadAssessmentCompletionCurrentStudentsCsv,
   downloadXamFile,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,
