@@ -1,13 +1,51 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadSchoolAssessmentRegistrationsCsv, downloadAssessmentCompletionCurrentStudentsCsv, downloadXamFile, downloadAssessmentReport, downloadAssessmentStudentReport, checkSchoolReportAvailability } = require('../components/assessments/assessments');
+const {
+  checkSchoolReportAvailability,
+  checkSchoolReportTypeAvailability,
+  checkStudentReportAvailability,
+  checkXamFileAvailability,
+  downloadAssessmentCompletionCurrentStudentsCsv,
+  downloadAssessmentReport,
+  downloadAssessmentStudentReport,
+  downloadSchoolAssessmentRegistrationsCsv,
+  downloadXamFile,
+  getActiveAssessmentSessions,
+  getAssessmentSessions,
+  getAssessmentSessionsBySchoolYear,
+  getAssessmentSpecialCases,
+  getAssessmentStudentByID,
+  getAssessmentStudentsPaginated,
+  postAssessmentStudent,
+  removeAssessmentStudents,
+  updateAssessmentStudentByID
+} = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
-const { isValidUUIDParam, validateAccessToken, checkEdxUserPermission, findAssessmentStudentID_params, findAssessmentStudentIDs_body, loadRequestedAssessmentStudent, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudents, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, findSchoolID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
+const {
+  checkCurrentUserAccessToRequestedAssessmentStudent,
+  checkCurrentUserAccessToRequestedAssessmentStudents,
+  checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent,
+  checkEDXUserAccessToRequestedInstitute,
+  checkEdxUserPermission,
+  findAssessmentStudentID_params,
+  findAssessmentStudentIDs_body,
+  findSchoolID_params,
+  loadRequestedAssessmentStudent,
+  loadRequestedAssessmentStudents,
+  validateAccessToken
+} = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
-const {putStudentAssessmentSchema, postAssessmentStudentSchema, checkSchoolReportAvailabilitySchema} = require('../validations/assessments');
+const {
+  checkSchoolReportAvailabilitySchema,
+  checkSchoolReportTypeAvailabilitySchema,
+  checkStudentReportAvailabilitySchema,
+  checkXamFileAvailabilitySchema,
+  postAssessmentStudentSchema,
+  putStudentAssessmentSchema
+} = require('../validations/assessments');
 
 router.get('/assessment-sessions/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getAssessmentSessions);
 router.get('/assessment-sessions/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), getAssessmentSessions);
@@ -36,8 +74,14 @@ router.get('/reports/district/:sessionID/school/:schoolID/xam/download', auth.re
 router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
 router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
 router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
-router.get('/reports/student/:studentID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, isValidUUIDParam('studentID'), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentStudentReport);
+router.get('/reports/student/:studentID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentStudentReport);
 router.get('/reports/district/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
 router.get('/reports/school/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
+
+router.get('/reports/district/:sessionID/school/:schoolID/xam/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkXamFileAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkXamFileAvailability);
+router.get('/reports/school/:sessionID/school/:schoolID/xam/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkXamFileAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkXamFileAvailability);
+router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportTypeAvailability);
+router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportTypeAvailability);
+router.get('/reports/student/:studentID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), checkStudentReportAvailability);
 
 module.exports = router;

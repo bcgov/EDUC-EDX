@@ -77,9 +77,17 @@
               class="mt-n2"
             >
               <DownloadLink
+                v-if="studentReportAvailable"
                 label="Student Report"
                 :download-action="downloadStudentReport"
               />
+              <v-card-text
+                v-else-if="studentReportAvailable === false"
+                style="color: gray; font-size: small"
+                class="pa-0"
+              >
+                No results available for the selected session.
+              </v-card-text>
             </v-col>
           </v-row>
         </div>
@@ -168,38 +176,57 @@
               Assessment Results
             </v-card-title>
 
-            <v-row class="pl-3 pb-3">
-              <v-col cols="12">
-                <DownloadLink
-                  label="Session Results.csv"
-                  :download-action="() => downloadAssessmentResultCSV()"
-                />
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <DownloadLink
-                  label="Session Results.xam"
-                  :download-action="() => downloadXamFile()"
-                />
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <DownloadLink
-                  label="Session Results by Student.pdf"
-                  :download-action="() => downloadSessionResultsByStudentPDF()"
-                />
-              </v-col>
-            </v-row>
-            <v-row class="pl-3 pb-3 mt-n6">
-              <v-col cols="12">
-                <DownloadLink
-                  label="Session Results by Assessment.pdf"
-                  :download-action="() => downloadSessionResultsByAssessmentPDF()"
-                />
-              </v-col>
-            </v-row>
+            <div
+              v-if="availabilityLoading"
+              class="d-flex justify-center pb-3"
+            >
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="24"
+              />
+            </div>
+            <template v-else-if="assessmentResultsAvailable">
+              <v-row class="pl-3 pb-3">
+                <v-col cols="12">
+                  <DownloadLink
+                    label="Session Results.csv"
+                    :download-action="() => downloadAssessmentResultCSV()"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="pl-3 pb-3 mt-n6">
+                <v-col cols="12">
+                  <DownloadLink
+                    label="Session Results.xam"
+                    :download-action="() => downloadXamFile()"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="pl-3 pb-3 mt-n6">
+                <v-col cols="12">
+                  <DownloadLink
+                    label="Session Results by Student.pdf"
+                    :download-action="() => downloadSessionResultsByStudentPDF()"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="pl-3 pb-3 mt-n6">
+                <v-col cols="12">
+                  <DownloadLink
+                    label="Session Results by Assessment.pdf"
+                    :download-action="() => downloadSessionResultsByAssessmentPDF()"
+                  />
+                </v-col>
+              </v-row>
+            </template>
+            <v-card-text
+              v-else-if="assessmentResultsAvailable === false"
+              style="color: gray; font-size: small"
+              class="mt-n3"
+            >
+              No results available for the selected session.
+            </v-card-text>
           </v-card>
         </v-col>
         <v-col>
@@ -227,19 +254,52 @@
                 </v-col>
               </v-row>
             </v-card-title>
-            <v-row
-              v-if="!isSessionAvailableForDOAR"
-              class="pl-3 pb-3"
+            <div
+              v-if="availabilityLoading"
+              class="d-flex justify-center pb-3"
             >
-              <v-col
-                cols="12"
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                size="24"
+              />
+            </div>
+            <template v-else-if="!isSessionAvailableForDOAR">
+              <v-row
+                v-if="doarSummaryAvailable"
+                class="pl-3 pb-3"
               >
-                <DownloadLink
-                  label="DOAR Summary.pdf"
-                  :download-action="() => downloadSummaryDOARReport()"
-                />
-              </v-col>
-            </v-row>
+                <v-col cols="12">
+                  <DownloadLink
+                    label="DOAR Summary.pdf"
+                    :download-action="() => downloadSummaryDOARReport()"
+                  />
+                </v-col>
+              </v-row>
+              <div
+                v-for="(assessment, index) in orderedSelectedAssessments"
+                :key="index"
+              >
+                <v-row
+                  v-if="assessmentDoarAvailability[assessment?.assessmentTypeCode]"
+                  class="pl-3 pb-3"
+                >
+                  <v-col cols="12">
+                    <DownloadLink
+                      :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
+                      :download-action="() => downloadDetailedDOARReport(assessment?.assessmentTypeCode)"
+                    />
+                  </v-col>
+                </v-row>
+              </div>
+              <v-card-text
+                v-if="doarSummaryAvailable === false && !orderedSelectedAssessments.some(a => assessmentDoarAvailability[a?.assessmentTypeCode])"
+                style="color: gray; font-size: small"
+                class="mt-n3"
+              >
+                No results available for the selected session.
+              </v-card-text>
+            </template>
             <v-card-text
               v-else
               style="color: gray;font-size: small"
@@ -247,24 +307,6 @@
             >
               Historic DOAR Reports are not available through EDX.
             </v-card-text>
-            <div
-              v-for="(assessment, index) in orderedSelectedAssessments"
-              :key="index"
-            >
-              <v-row
-                v-if="!isSessionAvailableForDOAR"
-                class="pl-3 pb-3"
-              >
-                <v-col
-                  cols="12"
-                >
-                  <DownloadLink
-                    :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
-                    :download-action="() => downloadDetailedDOARReport(assessment?.assessmentTypeCode)"
-                  />
-                </v-col>
-              </v-row>
-            </div>
           </v-card>
         </v-col>
         <v-col>
@@ -349,14 +391,19 @@ export default {
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
       selectedSessionID: null,
-      selectedAssessments: []
+      selectedAssessments: [],
+      availabilityLoading: false,
+      assessmentResultsAvailable: null,
+      doarSummaryAvailable: null,
+      assessmentDoarAvailability: {},
+      studentReportAvailable: null,
     };
   },
   computed: {
     ...mapState(appStore, ['schoolsMap', 'config']),
     ...mapState(authStore, ['userInfo']),
     disableCondition() {
-      return this.userInfo.activeInstituteType === 'DISTRICT' ? (!this.schoolNameNumberFilter || !this.selectedSessionID)  : !this.selectedSessionID;
+      return this.userInfo.activeInstituteType === 'DISTRICT' ? (!this.schoolNameNumberFilter || !this.selectedSessionID) : !this.selectedSessionID;
     },
     schoolIdentifierForReports() {
       if (this.userInfo.activeInstituteType === 'SCHOOL') {
@@ -413,6 +460,11 @@ export default {
         .filter(Boolean);
     }
   },
+  watch: {
+    schoolNameNumberFilter() {
+      this.checkSessionReportAvailability();
+    },
+  },
   async beforeMount() {
     authStore().getUserInfo();
     await appStore().getInstitutesData().then(() => {
@@ -425,6 +477,56 @@ export default {
       this.selectedAssessments.splice(0);
       var sessionObj = this.schoolYearSessions.filter(session => session.sessionID === selectedSessionID);
       sessionObj[0]?.assessments.forEach(assessment => this.selectedAssessments.push(assessment));
+      this.checkSessionReportAvailability();
+    },
+    async checkSessionReportAvailability() {
+      if (this.disableCondition) {
+        this.assessmentResultsAvailable = null;
+        this.doarSummaryAvailable = null;
+        this.assessmentDoarAvailability = {};
+        return;
+      }
+      this.availabilityLoading = true;
+      const instituteType = this.userInfo.activeInstituteType.toLowerCase();
+      const baseUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/${instituteType}/${this.selectedSessionID}/school/${this.schoolIdentifierForReports}`;
+      try {
+        const [resultsResp, doarResp] = await Promise.all([
+          ApiService.apiAxios.get(`${baseUrl}/SESSION_RESULTS/available`),
+          ApiService.apiAxios.get(`${baseUrl}/doar-summary/available`),
+        ]);
+        this.assessmentResultsAvailable = resultsResp.data;
+        this.doarSummaryAvailable = doarResp.data;
+        const doarAvailability = {};
+        await Promise.all(
+          this.orderedSelectedAssessments.map(async (assessment) => {
+            const code = assessment?.assessmentTypeCode;
+            if (!code) return;
+            const reportType = this.getReportName(code);
+            if (!reportType) return;
+            const { data } = await ApiService.apiAxios.get(`${baseUrl}/${reportType}/available`);
+            doarAvailability[code] = data;
+          })
+        );
+        this.assessmentDoarAvailability = doarAvailability;
+      } catch (error) {
+        console.error('Error checking report availability', error);
+        this.assessmentResultsAvailable = null;
+        this.doarSummaryAvailable = null;
+        this.assessmentDoarAvailability = {};
+      } finally {
+        this.availabilityLoading = false;
+      }
+    },
+    async checkStudentReportAvailability(studentID) {
+      try {
+        const { data } = await ApiService.apiAxios.get(
+          `${ApiRoutes.assessments.BASE_REPORTS_URL}/student/${studentID}/ISR/available`
+        );
+        this.studentReportAvailable = data;
+      } catch (error) {
+        console.error('Error checking student report availability', error);
+        this.studentReportAvailable = null;
+      }
     },
     async getAllSessions() {
       this.loading = true;
@@ -503,6 +605,7 @@ export default {
           };
           this.showPENSearchResultArea = true;
           this.isSearchingStudent = false;
+          this.checkStudentReportAvailability(response.data.studentID);
         })
         .catch(error => {
           console.log(error);
