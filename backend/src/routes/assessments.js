@@ -1,13 +1,51 @@
 const passport = require('passport');
 const express = require('express');
 const router = express.Router();
-const { getAssessmentSessions, getActiveAssessmentSessions, getAssessmentSessionsBySchoolYear, getAssessmentStudentsPaginated, getAssessmentStudentByID, updateAssessmentStudentByID, getAssessmentSpecialCases, removeAssessmentStudents, postAssessmentStudent, downloadXamFile, downloadSchoolAssessmentRegistrationsCsv, downloadAssessmentReport, downloadAssessmentStudentReport, checkSchoolReportAvailability, checkXamFileAvailability, checkSchoolReportTypeAvailability, checkStudentReportAvailability } = require('../components/assessments/assessments');
+const {
+  checkSchoolReportAvailability,
+  checkSchoolReportTypeAvailability,
+  checkStudentReportAvailability,
+  checkXamFileAvailability,
+  downloadAssessmentCompletionCurrentStudentsCsv,
+  downloadAssessmentReport,
+  downloadAssessmentStudentReport,
+  downloadSchoolAssessmentRegistrationsCsv,
+  downloadXamFile,
+  getActiveAssessmentSessions,
+  getAssessmentSessions,
+  getAssessmentSessionsBySchoolYear,
+  getAssessmentSpecialCases,
+  getAssessmentStudentByID,
+  getAssessmentStudentsPaginated,
+  postAssessmentStudent,
+  removeAssessmentStudents,
+  updateAssessmentStudentByID
+} = require('../components/assessments/assessments');
 const auth = require('../components/auth');
 const isValidBackendToken = auth.isValidBackendToken();
-const { validateAccessToken, checkEdxUserPermission, findAssessmentStudentID_params, findAssessmentStudentIDs_body, loadRequestedAssessmentStudent, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudents, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, findSchoolID_params, checkEDXUserAccessToRequestedInstitute } = require('../components/permissionUtils');
+const {
+  checkCurrentUserAccessToRequestedAssessmentStudent,
+  checkCurrentUserAccessToRequestedAssessmentStudents,
+  checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent,
+  checkEDXUserAccessToRequestedInstitute,
+  checkEdxUserPermission,
+  findAssessmentStudentID_params,
+  findAssessmentStudentIDs_body,
+  findSchoolID_params,
+  loadRequestedAssessmentStudent,
+  loadRequestedAssessmentStudents,
+  validateAccessToken
+} = require('../components/permissionUtils');
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
-const {putStudentAssessmentSchema, postAssessmentStudentSchema, checkSchoolReportAvailabilitySchema, checkXamFileAvailabilitySchema, checkSchoolReportTypeAvailabilitySchema, checkStudentReportAvailabilitySchema} = require('../validations/assessments');
+const {
+  checkSchoolReportAvailabilitySchema,
+  checkSchoolReportTypeAvailabilitySchema,
+  checkStudentReportAvailabilitySchema,
+  checkXamFileAvailabilitySchema,
+  postAssessmentStudentSchema,
+  putStudentAssessmentSchema
+} = require('../validations/assessments');
 
 router.get('/assessment-sessions/district', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getAssessmentSessions);
 router.get('/assessment-sessions/school', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), getAssessmentSessions);
@@ -27,6 +65,8 @@ router.put('/assessment-registrations/school/students/:assessmentStudentID', pas
 router.post('/assessment-registrations/district/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_EDIT), findAssessmentStudentIDs_body, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudents, removeAssessmentStudents);
 router.post('/assessment-registrations/school/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), findAssessmentStudentIDs_body, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudents, removeAssessmentStudents);
 router.get('/assessment-registrations/school/export', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadSchoolAssessmentRegistrationsCsv);
+router.get('/reports/school/assessment-completions/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentCompletionCurrentStudentsCsv);
+router.get('/reports/district/assessment-completions/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), downloadAssessmentCompletionCurrentStudentsCsv);
 
 router.get('/assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,  getAssessmentSpecialCases);
 

@@ -18,6 +18,7 @@
           style="color: #38598a"
         >
           <v-tab
+            v-if="isSchoolUser"
             value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
@@ -29,9 +30,16 @@
           >
             Reports & Results
           </v-tab>
+          <v-tab
+            value="3"
+            prepend-icon="mdi-file-document-outline"
+          >
+            Assessment Completion for Current Students
+          </v-tab>
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
+            v-if="isSchoolUser"
             value="1"
             transition="false"
             reverse-transition="false"
@@ -61,6 +69,13 @@
           >
             <AssessmentReports />
           </v-window-item>
+          <v-window-item
+            value="3"
+            transition="false"
+            reverse-transition="false"
+          >
+            <AssessmentCompletionForCurrentStudents />
+          </v-window-item>
         </v-window>
       </v-col>
     </v-row>
@@ -76,13 +91,15 @@ import Spinner from '../common/Spinner.vue';
 import {authStore} from '../../store/modules/auth';
 import { easStore } from '../../store/modules/eas';
 import AssessmentReports from './reports/AssessmentReports.vue';
+import AssessmentCompletionForCurrentStudents from './reports/AssessmentCompletionForCurrentStudents.vue';
 
 export default {
   name: 'AssessmentSessionDetail',
   components: {
     StudentRegistrations,
     Spinner,
-    AssessmentReports
+    AssessmentReports,
+    AssessmentCompletionForCurrentStudents
   },
   mixins: [alertMixin],
   props: {
@@ -96,7 +113,6 @@ export default {
     return {
       assessmentStudents: [],
       schoolYearSessions: [],
-      isSchoolUser: false,
       isLoading: false,
       tab: '',
       session: ''
@@ -104,7 +120,10 @@ export default {
   },
   computed: {
     ...mapState(authStore, ['userInfo']),
-    ...mapState(easStore, ['schoolYear'])   
+    ...mapState(easStore, ['schoolYear']),
+    isSchoolUser() {
+      return this.userInfo?.activeInstituteType === 'SCHOOL';
+    }
   },
   async created() {    
     this.loading = true;
@@ -114,12 +133,7 @@ export default {
       }
     });
     authStore().getUserInfo().then(() => {
-      if(this.userInfo.activeInstituteType === 'SCHOOL') {
-        this.isSchoolUser = true;
-        this.tab = '1';
-      }else{
-        this.isSchoolUser = false;
-      }
+      this.tab = this.isSchoolUser ? '1' : '2';
     });
   },
   methods: {
