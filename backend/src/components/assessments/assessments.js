@@ -447,6 +447,23 @@ async function checkStudentReportAvailability(req, res) {
   }
 }
 
+async function getDistrictSchoolsWithResults(req, res) {
+  try {
+    const districtID = req.session.activeInstituteIdentifier;
+    if (!districtID) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'User activeInstituteIdentifier does not exist in session.'
+      });
+    }
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/schools-with-results`;
+    const data = await getData(url);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    logApiError(e, 'getDistrictSchoolsWithResults', 'Error occurred while attempting to GET district schools with results.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 function setResponseHeaders(res, { filename, contentType }) {
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   res.setHeader('Content-Type', contentType);
@@ -535,4 +552,5 @@ module.exports = {
   checkXamFileAvailability,
   checkSchoolReportTypeAvailability,
   checkStudentReportAvailability,
+  getDistrictSchoolsWithResults,
 };

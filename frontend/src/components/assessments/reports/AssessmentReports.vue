@@ -133,11 +133,12 @@
           id="selectSchool"
           v-model="schoolNameNumberFilter"
           variant="underlined"
-          :items="schoolSearchNames"
+          :items="filteredSchoolSearchNames"
           color="#003366"
           label="School Code & Name"
           single-line
           :clearable="true"
+          :loading="schoolsIdsWithResults === null && !!selectedSessionID"
           item-title="schoolCodeName"
           item-value="schoolCodeValue"
           autocomplete="off"
@@ -226,6 +227,13 @@
               class="mt-n3"
             >
               No results available for the selected session.
+            </v-card-text>
+            <v-card-text
+              v-else
+              style="color: gray; font-size: small"
+              class="mt-n3"
+            >
+              Please select a school and session.
             </v-card-text>
           </v-card>
         </v-col>
@@ -390,6 +398,7 @@ export default {
       rules: Rules,
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
+      schoolsIdsWithResults: null,
       selectedSessionID: null,
       selectedAssessments: [],
       availabilityLoading: false,
@@ -404,6 +413,12 @@ export default {
     ...mapState(authStore, ['userInfo']),
     disableCondition() {
       return this.userInfo.activeInstituteType === 'DISTRICT' ? (!this.schoolNameNumberFilter || !this.selectedSessionID) : !this.selectedSessionID;
+    },
+    filteredSchoolSearchNames() {
+      if (this.userInfo.activeInstituteType !== 'DISTRICT' || this.schoolsIdsWithResults == null) {
+        return this.schoolSearchNames;
+      }
+      return this.schoolSearchNames.filter(school => this.schoolsIdsWithResults.has(school.schoolCodeValue));
     },
     schoolIdentifierForReports() {
       if (this.userInfo.activeInstituteType === 'SCHOOL') {
@@ -477,7 +492,26 @@ export default {
       this.selectedAssessments.splice(0);
       var sessionObj = this.schoolYearSessions.filter(session => session.sessionID === selectedSessionID);
       sessionObj[0]?.assessments.forEach(assessment => this.selectedAssessments.push(assessment));
+      this.loadDistrictSchoolsWithResults();
       this.checkSessionReportAvailability();
+    },
+    async loadDistrictSchoolsWithResults() {
+      if (this.userInfo.activeInstituteType !== 'DISTRICT' || !this.selectedSessionID) {
+        this.schoolsIdsWithResults = null;
+        return;
+      }
+      try {
+        const { data } = await ApiService.apiAxios.get(
+          `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.selectedSessionID}/schools-with-results`
+        );
+        this.schoolsIdsWithResults = new Set(data);
+        if (this.schoolNameNumberFilter && !this.schoolsIdsWithResults.has(this.schoolNameNumberFilter)) {
+          this.schoolNameNumberFilter = null;
+        }
+      } catch (error) {
+        console.error('Error loading district schools with results', error);
+        this.schoolsIdsWithResults = null;
+      }
     },
     async checkSessionReportAvailability() {
       if (this.disableCondition) {
