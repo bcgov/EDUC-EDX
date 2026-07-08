@@ -17,6 +17,7 @@ const {
   getAssessmentSpecialCases,
   getAssessmentStudentByID,
   getAssessmentStudentsPaginated,
+  getDistrictSchoolsWithResults,
   postAssessmentStudent,
   removeAssessmentStudents,
   updateAssessmentStudentByID
@@ -83,5 +84,7 @@ router.get('/reports/school/:sessionID/school/:schoolID/xam/available', auth.ref
 router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportTypeAvailability);
 router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportTypeAvailability);
 router.get('/reports/student/:studentID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), checkStudentReportAvailability);
+
+router.get('/reports/district/:sessionID/schools-with-results', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getDistrictSchoolsWithResults);
 
 module.exports = router;
