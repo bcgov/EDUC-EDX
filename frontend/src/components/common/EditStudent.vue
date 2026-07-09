@@ -732,7 +732,7 @@ export default {
     this.generateCourseOptions();
   },
   created() {
-    this.validateErrorsForm;
+    this.validateErrorsForm();
   },
   methods: {
     generateCourseOptions() {
