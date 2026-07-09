@@ -83,7 +83,7 @@
             :is-loading="isLoading"
             :reset="resetFlag"
             :school-collection="schoolCollection" 
-            :disable-select="!isCollectionActive || isSubmitted"           
+            :disable-select="!isCollectionActive || isSubmitted"
             @reload="reload"
             @editSelectedRow="editStudent"
             @selections="selectedStudents = $event"
