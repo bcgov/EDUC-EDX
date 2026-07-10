@@ -4,7 +4,7 @@
     :class="functionType !== 'add' ? 'mb-12' : 'mb-2'"
   >
     <v-col class="pt-0">
-      <v-row v-if="isLoading()">
+      <v-row v-if="isLoading">
         <v-col class="d-flex justify-center">
           <Spinner
             :flat="true"
@@ -23,8 +23,8 @@
               type="info"
               variant="tonal"
             >
-              <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessment System on 
-                {{activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessment System unless schools enter them directly.</span>
+              <span>Registrations for the {{ activeSession?.courseYear }}/{{ activeSession?.courseMonth }} session were transferred to e-Assessment System on
+                {{ activeSession?.assessmentRegistrationsExportDate.substring(0,19).replaceAll('-', '/').replaceAll('T', ' ') }}. Any changes made here or through XAM file submissions after that date will not appear in e-Assessment System unless schools enter them directly.</span>
             </v-alert>
           </v-col>
         </v-row>
@@ -260,12 +260,12 @@ export default {
     ConfirmationDialog,
     Spinner
   },
-  props: {   
+  props: {
     selectedAssessmentStudentId: {
       type: String,
       required: true,
       default: null,
-    }, 
+    },
     schoolYearSessions: {
       type: Object,
       required: true,
@@ -280,7 +280,7 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },    
+    },
     functionType: {
       type: String,
       required: false,
@@ -319,12 +319,15 @@ export default {
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.EAS_SCH_EDIT || perm === PERMISSION.EAS_DIS_EDIT).length > 0);
     },
+    isLoading() {
+      return this.loadingCount > 0;
+    },
   },
   watch: {
     selectedAssessmentStudentId: {
       handler(value) {
-        this.setupAssessmentSessions();  
-        this.getAssessmentStudentDetail(value);       
+        this.setupAssessmentSessions();
+        this.getAssessmentStudentDetail(value);
       },
       immediate: true
     },
@@ -341,33 +344,30 @@ export default {
           this.deleteRegistration();
         }
       },
-    },    
+    },
     studentRegistrationDetailsFormValid: {
       handler() {
         this.$emit('form-validity', this.studentRegistrationDetailsFormValid);
       }
     },
-  },  
+  },
   async beforeMount() {
     this.selected = {...this.initialFilterSelection};
     if (this.activeSchoolsMap.size === 0 || this.schoolsMap.size === 0) {
       await appStore().getInstitutesData();
-    }    
+    }
   },
   async created() {
     await authStore().getUserInfo().then(() => {
-      easStore().getSpecialCaseCodes().then(() => {            
-        this.setupSpecialCaseCodes();     
+      easStore().getSpecialCaseCodes().then(() => {
+        this.setupSpecialCaseCodes();
         this.loading = false;
-         this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
+        this.isDistrictUser = this.userInfo.activeInstituteType !== 'SCHOOL';
       });
     });
     this.setupProficiencyScore();
   },
   methods: {
-    isLoading(){
-      return this.loadingCount > 0;
-    },
     showLTP12BannerForNonCSF() {
       const filteredAssessmentTypes = this.assessmentTypeSearchNames.filter((at) => at.assessmentID === this.assessmentStudentDetail.assessmentID);
       return !this.isSchoolCSF() && filteredAssessmentTypes.length > 0 && filteredAssessmentTypes[0].assessmentCodeName === 'LTP12';
@@ -398,7 +398,7 @@ export default {
           });
         }
       });
-      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['sessionCourseYear','sessionCourseMonth']); 
+      this.sessionSearchNames = sortBy(this.sessionSearchNames, ['sessionCourseYear','sessionCourseMonth']);
     },
     setupSpecialCaseCodes($event) {
       this.specialCaseSearchNames = [];
@@ -437,13 +437,13 @@ export default {
           assessmentID: assessment.assessmentID,
           displayOrder: assessment.displayOrder
         });
-      });            
-      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']); 
+      });
+      this.assessmentTypeSearchNames = sortBy(this.assessmentTypeSearchNames, ['displayOrder']);
       if(assessmentID && this.assessmentStudentDetail.sessionID) {
-        this.assessmentStudentDetail.assessmentID = assessmentID;         
+        this.assessmentStudentDetail.assessmentID = assessmentID;
       } else {
         this.assessmentStudentDetail.assessmentID = null;
-        this.assessmentStudentDetail.assessmentTypeName_desc = null;        
+        this.assessmentStudentDetail.assessmentTypeName_desc = null;
       }
       this.validateForm();
     },
@@ -452,18 +452,18 @@ export default {
       let assessment = session?.assessments.find(assessment => assessment.assessmentTypeName === $event);
       if(assessment && this.assessmentStudentDetail.sessionID) {
         this.assessmentStudentDetail.assessmentID =  assessment.assessmentID;
-      } else {        
+      } else {
         this.assessmentStudentDetail.assessmentID = null;
         this.assessmentStudentDetail.assessmentTypeName_desc = null;
       }
-    },        
+    },
     getAssessmentStudentDetail(assessmentStudentID) {
       this.loadingCount += 1;
       this.selectedAssessmentStudentID = assessmentStudentID;
       ApiService.apiAxios.get(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/${assessmentStudentID}`)
         .then(response => {
           this.assessmentStudentDetail = response.data;
-          this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);          
+          this.refreshAssessmentTypes(this.assessmentStudentDetail.sessionID);
           this.setupActiveFlag();
           this.setupSchoolList();
           this.school = this.activeSchoolsMap.get(this.assessmentStudentDetail?.schoolOfRecordSchoolID);
@@ -472,12 +472,12 @@ export default {
           setFailureAlert(error?.response?.data?.message ? error?.response?.data?.message : 'An error occurred while trying to get student registration details. Please try again later.');
         }).finally(() => {
           this.loadingCount -= 1;
-          if (!this.isLoading()) {
+          if (!this.isLoading) {
             this.$nextTick().then(this.validateForm);
           }
         });
     },
-    setupActiveFlag() {      
+    setupActiveFlag() {
       this.isActive = this.schoolYearSessions.find(session => session.sessionID === this.assessmentStudentDetail.sessionID)?.isOpen;
       this.isSessionEditable = this.isActive &&  !this.assessmentStudentDetail.provincialSpecialCaseCode && !this.assessmentStudentDetail.proficiencyScore && this.hasEditPermission;
     },
@@ -529,7 +529,7 @@ export default {
       let payload = [this.selectedAssessmentStudentID];
       ApiService.apiAxios.post(`${ApiRoutes.assessments.ASSESSMENT_REGISTRATIONS}/${this.userInfo.activeInstituteType.toLowerCase()}/students/remove`, payload)
         .then(() => {
-          setSuccessAlert('Success! The student registration details have been deleted.');   
+          setSuccessAlert('Success! The student registration details have been deleted.');
           this.$emit('reset-student-registration-pagination');
         }).catch((error) => {
           console.error(error);

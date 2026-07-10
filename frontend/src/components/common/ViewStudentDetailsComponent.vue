@@ -39,7 +39,14 @@
         <template #eligibility>
           <v-row v-if="studentForEdit?.fte === 0">
             <v-col>
-              <span id="fteReason"><b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}</span>
+              <p id="fteReason">
+                <b>Reason for FTE of 0:</b> {{ getZeroFteReasonCodes(studentForEdit?.fteZeroReasonCode) }}
+              </p>
+            </v-col>
+          </v-row>
+          <v-row v-if="isHomeSchoolStudent">
+            <v-col>
+              <b>Note:</b> Home school students are funded per headcount. This FTE is not included in FTE totals on summary reports
             </v-col>
           </v-row>
           <v-row v-if="showFundingEligibilitySection() && studentForEdit">
@@ -121,15 +128,15 @@ export default {
       programEligibilityData: []
     };
   },
+  computed: {
+    ...mapState(sdcCollectionStore, ['schoolCollection', 'districtCollection']),
+    isHomeSchoolStudent() {
+      return this.studentForEdit?.enrolledGradeCode === 'HS';
+    }
+  },
   created() {
     this.selectedStudent.splice(0);
     this.selectedStudent = Array.from(this.selectedStudentIds);
-  },
-  computed: {
-    ...mapState(sdcCollectionStore, ['schoolCollection', 'districtCollection']),
-  },
-  mounted() {
-      
   },
   methods: {
     setStudentContext($event) {
@@ -206,7 +213,6 @@ export default {
   }
 };
 </script>
-  
   <style scoped>
     .sheetHeader {
         background-color: #003366;
@@ -218,5 +224,5 @@ export default {
     .headerVal{
     color: #7f7f7f;
  }
-  </style>
-  
+</style>
+

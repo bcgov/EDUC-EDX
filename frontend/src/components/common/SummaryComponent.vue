@@ -161,6 +161,17 @@
       :table-i-d="tableID"
     />
   </slot>
+  <v-row
+    v-if="hasHomeSchoolStudents"
+    class="mt-2"
+    no-gutters
+  >
+    <v-col>
+      <p>
+        <b>Note: </b>Homeschool students are not included in FTE totals in this report
+      </p>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -210,6 +221,13 @@ export default {
   },
   computed: {
     ...mapState(sdcCollectionStore, ['currentCollectionTypeCode']),
+    hasHomeSchoolStudents() {
+      const allStudentHeadCounts = this.headcountTableData?.rows.find((r) => {
+        return r.title.currentValue === 'Headcount' && r.section.currentValue === 'All Students';
+      });
+      if (!allStudentHeadCounts) return false;
+      return allStudentHeadCounts.HS.currentValue > 0;
+    }
   },
   watch: {
     headcountType: {

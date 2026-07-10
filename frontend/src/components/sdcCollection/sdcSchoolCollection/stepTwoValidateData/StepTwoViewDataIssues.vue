@@ -2,7 +2,7 @@
   <div
     v-if="!openEditView"
   >
-    <v-row v-if="isLoading()">
+    <v-row v-if="isLoading">
       <v-col>
         <Spinner />
       </v-col>
@@ -257,7 +257,7 @@
             :headers="headers"
             :items-length="totalStudents"
             :items="studentListData"
-            :loading="isLoading()"
+            :loading="isLoading"
             item-value="sdcSchoolCollectionStudentID"
             class="mt-2"
             mobile-breakpoint="0"
@@ -321,7 +321,7 @@
           </v-data-table-server>
         </v-row>
       </v-col>
-      <v-col v-else-if="!isLoading()">
+      <v-col v-else-if="!isLoading">
         <v-alert
           type="success"
           variant="tonal"
@@ -449,6 +449,9 @@ export default {
     hasEditPermission(){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === PERMISSION.SCHOOL_SDC_EDIT).length > 0);
     },
+    isLoading() {
+      return this.loadingCount > 0;
+    }
   },
   watch: {
     pageNumber: {
@@ -553,7 +556,7 @@ export default {
         });
     },
     nextButtonIsDisabled(){
-      return this.errorCount > 0 || this.isLoading();
+      return this.errorCount > 0 || this.isLoading;
     },
     getSummaryCounts(){
       this.loadingCount += 1;
@@ -625,9 +628,6 @@ export default {
       }).finally(() => {
         this.allIssueLoader = false;
       });
-    },
-    isLoading(){
-      return this.loadingCount > 0;
     },
     getLegalName(first, middle, last){
       if(first && middle){

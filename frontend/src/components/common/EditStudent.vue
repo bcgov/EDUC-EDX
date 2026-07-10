@@ -4,7 +4,7 @@
     :class="functionType !== 'add' ? 'mb-12' : 'mb-2'"
   >
     <v-col class="pt-0">
-      <v-row v-if="isLoading()">
+      <v-row v-if="isLoading">
         <v-col class="d-flex justify-center">
           <Spinner
             :flat="true"
@@ -684,7 +684,10 @@ export default {
     },
     isReadOnly() {
       return !this.hasEditPermission || this.isFinalSignOff;
-    }
+    },
+    isLoading(){
+      return this.loadingCount > 0;
+    },
   },
   watch: {
     selectedStudents: {
@@ -728,8 +731,8 @@ export default {
   mounted() {
     this.generateCourseOptions();
   },
-  async created() {
-    await this.validateErrorsForm;
+  created() {
+    this.validateErrorsForm();
   },
   methods: {
     generateCourseOptions() {
@@ -750,9 +753,6 @@ export default {
     navigate() {
       this.getSdcSchoolCollectionStudentDetail(this.selectedStudents[this.page - 1]);
     },
-    isLoading(){
-      return this.loadingCount > 0;
-    },
     togglePENRequestDialog(){
       this.showPenRequestDialog = !this.showPenRequestDialog;
     },
@@ -768,7 +768,7 @@ export default {
         }).finally(() => {
           this.removeIndex = null;
           this.loadingCount -= 1;
-          if (!this.isLoading()) {
+          if (!this.isLoading) {
             this.$nextTick().then(this.validateForm);
           }
           this.$emit('student-object', this.sdcSchoolCollectionStudentDetailCopy);
