@@ -18,7 +18,6 @@
           style="color: #38598a"
         >
           <v-tab
-            v-if="isSchoolUser"
             value="1"
             prepend-icon="mdi-account-multiple-outline"
           >
@@ -39,7 +38,6 @@
         </v-tabs>
         <v-window v-model="tab">
           <v-window-item
-            v-if="isSchoolUser"
             value="1"
             transition="false"
             reverse-transition="false"
@@ -133,7 +131,7 @@ export default {
       }
     });
     authStore().getUserInfo().then(() => {
-      this.tab = this.isSchoolUser ? '1' : '2';
+      this.tab = '1';
     });
   },
   methods: {
