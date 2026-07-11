@@ -94,9 +94,119 @@
       </v-form>
     </v-card>
 
+    <template v-if="userInfo.activeInstituteType === 'DISTRICT'">
+      <v-row class="mt-2">
+        <v-col>
+          <h3>District Level Distribution of Assessment Results (DOAR) Reports</h3>
+        </v-col>
+      </v-row>
+      <v-row class="mt-n6">
+        <v-col>
+          <span
+            style="color: gray;font-size: small"
+          >
+            Select a session below to find the DOAR reports available for download.
+          </span>
+        </v-col>
+      </v-row>
+      <v-row class="mt-n2">
+        <v-col cols="4">
+          <v-select
+            id="districtDoarSelectedSession"
+            v-model="districtSelectedSessionID"
+            variant="underlined"
+            :items="sessionSearchNames"
+            label="Session"
+            item-title="sessionCodeName"
+            item-value="sessionCodeValue"
+            :rules="[rules.required()]"
+            :clearable="true"
+            @update:model-value="getAssessmentsForDistrictSelectedSession(districtSelectedSessionID)"
+          />
+        </v-col>
+      </v-row>
+      <div :class="{ 'disabled-section': !districtSelectedSessionID }">
+        <v-card
+          class="mt-2"
+          border="sm"
+          style="border: 1px solid black;border-radius: 10px;"
+        >
+          <v-card-title style="font-size: medium;">
+            <v-row>
+              <v-col class="d-flex justify-end">
+                <v-icon
+                  aria-hidden="false"
+                  color="rgb(0, 51, 102)"
+                  style="cursor: pointer;"
+                  size="24"
+                  @click="openDOARSummaryHelp"
+                >
+                  mdi-help-circle-outline
+                </v-icon>
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <div
+            v-if="districtAvailabilityLoading"
+            class="d-flex justify-center pb-3"
+          >
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="24"
+            />
+          </div>
+          <template v-else-if="!isDistrictSessionAvailableForDOAR">
+            <v-row
+              v-if="districtDoarSummaryAvailable"
+              class="pl-3 pb-3 mt-n8"
+            >
+              <v-col cols="12">
+                <DownloadLink
+                  label="DOAR Summary.pdf"
+                  :download-action="() => downloadDistrictSummaryDOARReport()"
+                />
+              </v-col>
+            </v-row>
+            <v-row class="pl-3 pb-3 mt-n6">
+              <template
+                v-for="(assessment, index) in orderedDistrictSelectedAssessments"
+                :key="index"
+              >
+                <v-col
+                  v-if="districtAssessmentDoarAvailability[assessment?.assessmentTypeCode]"
+                  cols="12"
+                  md="4"
+                >
+                  <DownloadLink
+                    :label="`${assessment?.assessmentTypeCode} Detailed DOAR.csv`"
+                    :download-action="() => downloadDistrictDetailedDOARReport(assessment?.assessmentTypeCode)"
+                  />
+                </v-col>
+              </template>
+            </v-row>
+            <v-card-text
+              v-if="districtDoarSummaryAvailable === false && !orderedDistrictSelectedAssessments.some(a => districtAssessmentDoarAvailability[a?.assessmentTypeCode])"
+              style="color: gray; font-size: small"
+              class="mt-n8"
+            >
+              No results available for the selected session.
+            </v-card-text>
+          </template>
+          <v-card-text
+            v-else
+            style="color: gray;font-size: small"
+            class="mt-n8"
+          >
+            Historic DOAR Reports are not available through EDX.
+          </v-card-text>
+        </v-card>
+      </div>
+    </template>
+
     <v-row class="mt-2">
       <v-col>
-        <h3>Session Results</h3>
+        <h3>School Level Session Reports</h3>
       </v-col>
     </v-row>
     <v-row
@@ -406,6 +516,11 @@ export default {
       doarSummaryAvailable: null,
       assessmentDoarAvailability: {},
       studentReportAvailable: null,
+      districtSelectedSessionID: null,
+      districtSelectedAssessments: [],
+      districtAvailabilityLoading: false,
+      districtDoarSummaryAvailable: null,
+      districtAssessmentDoarAvailability: {},
     };
   },
   computed: {
@@ -439,6 +554,29 @@ export default {
       const initialSessionDate = LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE);
       const sessionDate = LocalDate.of(Number.parseInt(this.selectedSession?.courseYear), Number.parseInt(this.selectedSession?.courseMonth), 1);
       return sessionDate.isBefore(initialSessionDate);
+    },
+    districtSelectedSession() {
+      if (!this.districtSelectedSessionID) return null;
+      return this.schoolYearSessions.find(
+        session => session.sessionID === this.districtSelectedSessionID
+      ) || null;
+    },
+    isDistrictSessionAvailableForDOAR() {
+      if(!this.districtSelectedSession) {
+        return false;
+      }
+      const initialSessionDate = LocalDate.parse(this.config.DOAR_REPORTS_AVAILABLE_DATE);
+      const sessionDate = LocalDate.of(Number.parseInt(this.districtSelectedSession?.courseYear), Number.parseInt(this.districtSelectedSession?.courseMonth), 1);
+      return sessionDate.isBefore(initialSessionDate);
+    },
+    orderedDistrictSelectedAssessments() {
+      return [...this.districtSelectedAssessments].sort((firstAssessment, secondAssessment) => {
+        const firstOrderValue = Number(firstAssessment?.displayOrder);
+        const secondOrderValue = Number(secondAssessment?.displayOrder);
+        const firstOrder = Number.isFinite(firstOrderValue) ? firstOrderValue : Number.MAX_SAFE_INTEGER;
+        const secondOrder = Number.isFinite(secondOrderValue) ? secondOrderValue : Number.MAX_SAFE_INTEGER;
+        return firstOrder - secondOrder;
+      });
     },
     orderedSelectedAssessments() {
       return [...this.selectedAssessments].sort((firstAssessment, secondAssessment) => {
@@ -494,6 +632,85 @@ export default {
       sessionObj[0]?.assessments.forEach(assessment => this.selectedAssessments.push(assessment));
       this.loadDistrictSchoolsWithResults();
       this.checkSessionReportAvailability();
+    },
+    getAssessmentsForDistrictSelectedSession(districtSelectedSessionID) {
+      this.districtSelectedAssessments.splice(0);
+      var sessionObj = this.schoolYearSessions.filter(session => session.sessionID === districtSelectedSessionID);
+      sessionObj[0]?.assessments.forEach(assessment => this.districtSelectedAssessments.push(assessment));
+      this.checkDistrictReportAvailability();
+    },
+    async checkDistrictReportAvailability() {
+      if (!this.districtSelectedSessionID) {
+        this.districtDoarSummaryAvailable = null;
+        this.districtAssessmentDoarAvailability = {};
+        return;
+      }
+      if (this.isDistrictSessionAvailableForDOAR) {
+        return;
+      }
+      this.districtAvailabilityLoading = true;
+      const baseUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.districtSelectedSessionID}/district`;
+      try {
+        const { data: doarSummaryAvailable } = await ApiService.apiAxios.get(`${baseUrl}/doar-summary/available`);
+        this.districtDoarSummaryAvailable = doarSummaryAvailable;
+        const doarAvailability = {};
+        await Promise.all(
+          this.orderedDistrictSelectedAssessments.map(async (assessment) => {
+            const code = assessment?.assessmentTypeCode;
+            if (!code) return;
+            const reportType = this.getReportName(code);
+            if (!reportType) return;
+            const { data } = await ApiService.apiAxios.get(`${baseUrl}/${reportType}/available`);
+            doarAvailability[code] = data;
+          })
+        );
+        this.districtAssessmentDoarAvailability = doarAvailability;
+      } catch (error) {
+        console.error('Error checking district report availability', error);
+        this.districtDoarSummaryAvailable = null;
+        this.districtAssessmentDoarAvailability = {};
+      } finally {
+        this.districtAvailabilityLoading = false;
+      }
+    },
+    async downloadDistrictSummaryDOARReport() {
+      this.isLoading = true;
+      try {
+        const availUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.districtSelectedSessionID}/district/results/available`;
+        const { data: available } = await ApiService.apiAxios.get(availUrl);
+        if (!available) {
+          this.setFailureAlert('Results are not available for the selected session.');
+          return;
+        }
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.districtSelectedSessionID}/district/doar-summary/download`;
+        window.open(url, '_blank');
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to retrieve your district\'s report.');
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async downloadDistrictDetailedDOARReport(assessmentTypeCode) {
+      this.isLoading = true;
+
+      const reportType = this.getReportName(assessmentTypeCode);
+
+      try {
+        const availUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.districtSelectedSessionID}/district/results/available?assessmentTypeCode=${assessmentTypeCode}`;
+        const { data: available } = await ApiService.apiAxios.get(availUrl);
+        if (!available) {
+          this.setFailureAlert('Results are not available for the selected session.');
+          return;
+        }
+        const url = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.districtSelectedSessionID}/district/${reportType}/download`;
+        window.open(url, '_blank');
+      } catch (error) {
+        console.error(error);
+        this.setFailureAlert('An error occurred while trying to retrieve your district\'s report.');
+      } finally {
+        this.isLoading = false;
+      }
     },
     async loadDistrictSchoolsWithResults() {
       if (this.userInfo.activeInstituteType !== 'DISTRICT' || !this.selectedSessionID) {
@@ -602,6 +819,10 @@ export default {
         const mostRecentApprovedSession = approvedSessions[0];
         this.selectedSessionID = mostRecentApprovedSession.sessionID;
         this.getAssessmentsForSelectedSession(this.selectedSessionID);
+        if (this.userInfo.activeInstituteType === 'DISTRICT') {
+          this.districtSelectedSessionID = mostRecentApprovedSession.sessionID;
+          this.getAssessmentsForDistrictSelectedSession(this.districtSelectedSessionID);
+        }
       }
     },
     setupSchoolLists() {

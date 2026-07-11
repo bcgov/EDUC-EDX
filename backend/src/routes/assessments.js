@@ -2,6 +2,8 @@ const passport = require('passport');
 const express = require('express');
 const router = express.Router();
 const {
+  checkDistrictReportAvailability,
+  checkDistrictReportTypeAvailability,
   checkSchoolReportAvailability,
   checkSchoolReportTypeAvailability,
   checkStudentReportAvailability,
@@ -9,6 +11,7 @@ const {
   downloadAssessmentCompletionCurrentStudentsCsv,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,
+  downloadDistrictAssessmentReport,
   downloadSchoolAssessmentRegistrationsCsv,
   downloadXamFile,
   getActiveAssessmentSessions,
@@ -40,6 +43,8 @@ const {
 const { PERMISSION } = require('../util/Permission');
 const validate = require('../components/validator');
 const {
+  checkDistrictReportAvailabilitySchema,
+  checkDistrictReportTypeAvailabilitySchema,
   checkSchoolReportAvailabilitySchema,
   checkSchoolReportTypeAvailabilitySchema,
   checkStudentReportAvailabilitySchema,
@@ -86,5 +91,9 @@ router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/availabl
 router.get('/reports/student/:studentID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), checkStudentReportAvailability);
 
 router.get('/reports/district/:sessionID/schools-with-results', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getDistrictSchoolsWithResults);
+
+router.get('/reports/district/:sessionID/district/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkDistrictReportAvailabilitySchema), checkDistrictReportAvailability);
+router.get('/reports/district/:sessionID/district/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkDistrictReportTypeAvailabilitySchema), checkDistrictReportTypeAvailability);
+router.get('/reports/district/:sessionID/district/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), downloadDistrictAssessmentReport);
 
 module.exports = router;
