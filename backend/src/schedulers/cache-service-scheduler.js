@@ -16,6 +16,7 @@ try {
       await cacheService.loadAllIdirUsersToMap();
       await cacheService.loadAllAssessmentTypeCodesToMap();
       await cacheService.loadAllSpecialCaseTypeCodesToMap();
+      await cacheService.loadAllGradAssessmentSpecialCaseCodes();
       await cacheService.loadAllGradProgramCodesToMap();
     } catch (e) {
       log.error(e);

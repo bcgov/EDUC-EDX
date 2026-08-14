@@ -38,6 +38,18 @@
       <li><strong>"4" = Extending</strong></li>
       <li><strong>"NC" = Student did not complete enough of the assessment</strong></li>
     </ul>
+    <!-- Assessment Special Case Codes -->
+    <div>
+      <h1>Assessment Special Case Codes</h1>
+      <v-data-table
+        :headers="specialCasesFields"
+        :items="specialCases"
+        :items-per-page="-1"
+        class="elevation-1 special-cases-table"
+      >
+        <template #bottom />
+      </v-data-table>
+    </div>
 
     <h1>School Types</h1>
     <p>
@@ -73,12 +85,56 @@
 </template>
 
 <script>
+import ApiService from '../../../common/apiService';
+
 export default {
   name: 'DoarSummary',
   data() {
     return {
-      // Component data can be added here if needed
+      specialCases: [],
+      specialCasesFields: [
+        {
+          key: 'spCase',
+          title: 'Special Case',
+          sortable: true,
+          sortDirection: 'desc',
+        },
+        {
+          key: 'label',
+          title: 'Label',
+          sortable: true,
+        },
+        {
+          key: 'description',
+          title: 'Description',
+          sortable: true,
+        },
+        {
+          key: 'passFlag',
+          title: 'Pass',
+          sortable: true,
+        },
+        {
+          key: 'effectiveDate',
+          title: 'Effective Date',
+          sortable: true,
+        },
+        {
+          key: 'expiryDate',
+          title: 'Expiry Date',
+          sortable: true,
+        },
+      ],
     };
+  },
+  created() {
+    this.getSpecialCaseCodes();
+  },
+  methods: {
+    async getSpecialCaseCodes() {
+      const response = await ApiService.getAllGradAssessmentSpecialCaseCodes();
+      this.specialCases = response.data;
+    },
   }
 };
 </script>
@@ -118,5 +174,9 @@ p {
 
 strong {
   color: #2c3e50;
+}
+
+.special-cases-table {
+  margin: 0.625em 0 1.25em;
 }
 </style>

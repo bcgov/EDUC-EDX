@@ -507,6 +507,16 @@ function getAssessmentSpecialCases(req, res) {
   }
 }
 
+function getGradAssessmentSpecialCases(req, res) {
+  try {
+    const codes = cacheService.getAllGradAssessmentSpecialCases();
+    return res.status(HttpStatus.OK).json(codes);
+  } catch (e) {
+    logApiError(e, 'getGradAssessmentSpecialCases', 'Error occurred while attempting to get GRAD special case types.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
 async function getAssessmentStudent(assessmentStudentID, res, correlationID) {
   if (res.locals.requestedAssessmentStudent && res.locals.requestedAssessmentStudent.assessmentStudentID === assessmentStudentID) {
     return res.locals.requestedAssessmentStudent;
@@ -542,6 +552,7 @@ module.exports = {
   updateAssessmentStudentByID,
   removeAssessmentStudents,
   getAssessmentSpecialCases,
+  getGradAssessmentSpecialCases,
   postAssessmentStudent,
   downloadSchoolAssessmentRegistrationsCsv,
   downloadAssessmentCompletionCurrentStudentsCsv,
