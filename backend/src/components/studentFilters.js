@@ -373,12 +373,12 @@ function createFundingTypeFilter(pValue) {
 
 function createEllYearsFilter(pValue) {
   let ellList = [];
-  if(pValue.includes('ell1Between5')) {
-    ellList.push({ key: 'yearsInEll', value: 1, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
-    ellList.push({ key: 'yearsInEll', value: 5, operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+  if(pValue.includes('ell0Between4')) {
+    ellList.push({ key: 'yearsInEll', value: 0, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+    ellList.push({ key: 'yearsInEll', value: 4, operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
   }
-  if(pValue.includes('ellGtEq6')) {
-    ellList.push({ key: 'yearsInEll', value: 6, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+  if(pValue.includes('ellGtEq5')) {
+    ellList.push({ key: 'yearsInEll', value: 5, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
   }
   return ellList;
 }

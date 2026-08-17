@@ -302,7 +302,7 @@ describe('SDC School Collection View', () => {
 
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters1');
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('1-5 years in ELL').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('0-4 years in ELL').click();
       cy.get(selectors.filters.cancelBtn).click();
 
       cy.wait('@paginationFilters1');
@@ -318,7 +318,7 @@ describe('SDC School Collection View', () => {
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters2');
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
       cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('6+ years in ELL').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).contains('5+ years in ELL').click();
       cy.get(selectors.filters.cancelBtn).click();
       cy.wait('@paginationFilters2');
       cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
