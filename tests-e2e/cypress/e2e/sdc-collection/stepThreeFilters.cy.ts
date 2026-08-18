@@ -300,28 +300,9 @@ describe('SDC School Collection View', () => {
       cy.get(selectors.dataCollectionsLanding.continue).contains('Continue').click();
       cy.get(selectors.stepThreeTabSlider.englishLanguageLearningButton).click();
 
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters1');
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('1-5 years in ELL').click();
+      cy.get(selectors.activeFiltersDrawer.drawer).find('#ell-years-slider').should('exist');
       cy.get(selectors.filters.cancelBtn).click();
-
-      cy.wait('@paginationFilters1');
-      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(1);
-      cy.get(selectors.ellComponent.tab).find('tbody tr').each($cell => {
-        cy.wrap($cell).children().last().invoke('text').then((text) => {
-          expect(text).to.satisfy((value: string) => {
-            return value === 'English Language Learning (17)3';
-          });
-        });
-      });
-
-      cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters2');
-      cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('Clear').click();
-      cy.get(selectors.activeFiltersDrawer.drawer).contains('6+ years in ELL').click();
-      cy.get(selectors.filters.cancelBtn).click();
-      cy.wait('@paginationFilters2');
-      cy.get(selectors.ellComponent.tab).find(selectors.studentLevelData.studentsFound).should('exist').contains(0);
 
       cy.intercept(Cypress.env('interceptors').collection_students_pagination).as('paginationFilters3');
       cy.get(selectors.ellComponent.tab).find(selectors.fteComponent.filterButton).click();

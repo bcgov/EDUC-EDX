@@ -373,12 +373,10 @@ function createFundingTypeFilter(pValue) {
 
 function createEllYearsFilter(pValue) {
   let ellList = [];
-  if(pValue.includes('ell1Between5')) {
-    ellList.push({ key: 'yearsInEll', value: 1, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
-    ellList.push({ key: 'yearsInEll', value: 5, operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
-  }
-  if(pValue.includes('ellGtEq6')) {
-    ellList.push({ key: 'yearsInEll', value: 6, operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.OR });
+  const range = pValue[0];
+  if (range) {
+    ellList.push({ key: 'yearsInEll', value: range[0], operation: FILTER_OPERATION.GREATER_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
+    ellList.push({ key: 'yearsInEll', value: range[1], operation: FILTER_OPERATION.LESS_THAN_OR_EQUAL_TO, valueType: VALUE_TYPE.INTEGER, condition: CONDITION.AND });
   }
   return ellList;
 }

@@ -754,20 +754,7 @@ export const ELL_YEARS_FILTER = Object.freeze(
   {
     heading: 'Years in ELL',
     id: 'ellYears',
-    multiple: true,
-    key: 'ellYears',
-    filterOptions: [
-      {
-        title: '1-5 years in ELL',
-        id: 'ell1Between5',
-        value: 'ell1Between5'
-      },
-      {
-        title: '6+ years in ELL',
-        id: 'ellGtEq6',
-        value: 'ellGtEq6'
-      }
-    ]
+    key: 'ellYears'
   }
 );
 

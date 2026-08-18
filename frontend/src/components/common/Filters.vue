@@ -114,6 +114,7 @@
         </v-row>
         <v-row>
           <v-btn-toggle
+            v-if="key !== 'ellYears'"
             v-model="selected[key]"
             color="#003366"
             rounded="0"
@@ -196,6 +197,46 @@
               </template>
             </v-range-slider>
           </v-col>
+          <v-col v-if="key === 'ellYears'">
+            <v-range-slider
+              id="ell-years-slider"
+              v-model="ellYearsRange"
+              :min="ellYearsRangeDefault[0]"
+              :max="ellYearsRangeDefault[1]"
+              :step="1"
+              color="#003366"
+              hide-details
+              strict
+              thumb-size="15"
+              class="align-center"
+              @end="setEllYearsRangeFilter($event)"
+            >
+              <template #prepend>
+                <v-text-field
+                  v-model="ellYearsRange[0]"
+                  hide-details
+                  single-line
+                  type="number"
+                  :readonly="true"
+                  variant="outlined"
+                  density="compact"
+                  class="slider-text"
+                />
+              </template>
+              <template #append>
+                <v-text-field
+                  v-model="ellYearsRange[1]"
+                  hide-details
+                  single-line
+                  type="number"
+                  :readonly="true"
+                  variant="outlined"
+                  density="compact"
+                  class="slider-text"
+                />
+              </template>
+            </v-range-slider>
+          </v-col>
         </v-row>
       </div>
     </v-card-text>
@@ -250,6 +291,8 @@ export default {
       sdcCollection: sdcCollectionStore(),
       courseRangeDefault: [0, 15],
       courseRange: [0, 15],
+      ellYearsRangeDefault: [0, 15],
+      ellYearsRange: [0, 15],
       penLocalIdNameFilter: null,
       schoolNameNumberFilter: null,
       schoolSearchNames: [],
@@ -375,10 +418,21 @@ export default {
         this.apply();
       }
     },
+    setEllYearsRangeFilter($event){
+      if($event) {
+        const title = 'Between ' + $event[0] + ' and ' + $event[1] + ' years in ELL';
+        this.selected['ellYears'] = [{title, value: $event}];
+        this.apply();
+      } else {
+        delete this.selected['ellYears'];
+        this.apply();
+      }
+    },
     clear() {
       this.selected = {};
       this.bandCodeValue = null;
       this.courseRange = [...this.courseRangeDefault];
+      this.ellYearsRange = [...this.ellYearsRangeDefault];
       this.penLocalIdNameFilter = null;
       this.schoolNameNumberFilter = null;
       this.$emit('clearFilters');
