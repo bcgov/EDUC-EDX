@@ -144,6 +144,7 @@ nconf.defaults({
     validationFieldCodesURL: process.env.GRAD_API_ENDPOINT + '/validation-field-codes',
     gradProgramCodesURL: process.env.GRAD_API_ENDPOINT +  '/graduation-program-codes',
     filesetURL: process.env.GRAD_API_ENDPOINT + '/fileset',
+    specialCaseCodesURL: process.env.GRAD_SPECIAL_CASE_CODES_URL,
   },
   gradReports: {
     rootURL: process.env.GRAD_REPORTS_API_ENDPOINT,

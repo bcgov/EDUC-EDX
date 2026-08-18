@@ -125,6 +125,11 @@ if(process.env.NODE_ENV !== 'test'){  //do not cache for test environment to sto
     }).catch((e) => {
       log.error('Error loading SpecialCaseTypeCodes during boot .', e);
     });
+    cacheService.loadAllGradAssessmentSpecialCaseCodes().then(() => {
+      log.info('Loaded GRAD Assessment Special Case Codes data to memory');
+    }).catch((e) => {
+      log.error('Error loading GRAD Assessment Special Case Codes during boot .', e);
+    });
   }
 
   if(!gradDisabled) {

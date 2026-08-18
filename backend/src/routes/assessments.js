@@ -14,6 +14,7 @@ const {
   getActiveAssessmentSessions,
   getAssessmentSessions,
   getAssessmentSessionsBySchoolYear,
+  getGradAssessmentSpecialCases,
   getAssessmentSpecialCases,
   getAssessmentStudentByID,
   getAssessmentStudentsPaginated,
@@ -70,6 +71,7 @@ router.get('/reports/school/assessment-completions/current-students/download', p
 router.get('/reports/district/assessment-completions/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), downloadAssessmentCompletionCurrentStudentsCsv);
 
 router.get('/assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,  getAssessmentSpecialCases);
+router.get('/grad-assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getGradAssessmentSpecialCases);
 
 router.get('/reports/district/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
 router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);

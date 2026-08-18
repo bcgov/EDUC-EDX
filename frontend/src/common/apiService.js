@@ -185,6 +185,7 @@ export default {
   getGdcValidationFieldCodes: getCodes(`${ApiRoutes.gdc.VALIDATION_FIELD_CODES}`),
   getGradProgramCodes: getCodes(`${ApiRoutes.gdc.GRAD_PROGRAM_CODES}`),
   getAllAssessmentSpecialCaseCodes:getCodes(`${ApiRoutes.assessments.GET_ASSESSMENT_SPECIALCASE_TYPES}`),
+  getAllGradAssessmentSpecialCaseCodes:getCodes(`${ApiRoutes.assessments.GET_GRAD_ASSESSMENT_SPECIALCASE_TYPES}`),
 
 
 };
@@ -198,4 +199,3 @@ function getCodes(url) {
     }
   };
 }
-

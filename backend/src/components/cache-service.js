@@ -38,6 +38,7 @@ let rolePermissionsMap = new Map();
 let documentTypeCodesMap = new Map();
 let assessmentTypeCodesMap = new Map();
 let assessmentSpecialCaseTypeCodesMap = new Map();
+let gradAssessmentSpecialCaseCodes = [];
 let documentTypeCodes = [];
 let edxUsers = new Map();
 let idirUsers = new Map();
@@ -181,6 +182,18 @@ const cacheService = {
         });
       }
       log.info(`Loaded ${assessmentSpecialCaseTypeCodesMap.size} assessmentSpecialCaseTypeCodes.`);
+    }, {
+      retries: 50
+    });
+  },
+  async loadAllGradAssessmentSpecialCaseCodes() {
+    log.debug('Loading all GRAD assessment special case codes during start up');
+    await retry(async () => {
+      const specialCaseCodesResponse = await getData(config.get('grad:specialCaseCodesURL'));
+      if (specialCaseCodesResponse && specialCaseCodesResponse.length > 0) {
+        gradAssessmentSpecialCaseCodes = specialCaseCodesResponse;
+      }
+      log.info(`Loaded ${gradAssessmentSpecialCaseCodes.length} GRAD assessment special case codes.`);
     }, {
       retries: 50
     });
@@ -491,6 +504,9 @@ const cacheService = {
   },
   getAllAssessmentSpecialCases(){         
     return assessmentSpecialCaseTypeCodesMap;
+  },
+  getAllGradAssessmentSpecialCases() {
+    return gradAssessmentSpecialCaseCodes;
   }
 };
 
