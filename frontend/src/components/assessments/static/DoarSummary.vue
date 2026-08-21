@@ -109,21 +109,6 @@ export default {
           title: 'Description',
           sortable: true,
         },
-        {
-          key: 'passFlag',
-          title: 'Pass',
-          sortable: true,
-        },
-        {
-          key: 'effectiveDate',
-          title: 'Effective Date',
-          sortable: true,
-        },
-        {
-          key: 'expiryDate',
-          title: 'Expiry Date',
-          sortable: true,
-        },
       ],
     };
   },
