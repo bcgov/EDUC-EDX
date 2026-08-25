@@ -130,6 +130,25 @@ const checkSchoolReportTypeAvailabilitySchema = object({
   body:  object().noUnknown(),
 }).noUnknown();
 
+const checkDistrictReportAvailabilitySchema = object({
+  params: object({
+    sessionID: uuidGeneric().required(),
+  }).noUnknown(),
+  query: object({
+    assessmentTypeCode: string().optional(),
+  }).noUnknown(),
+  body: object().noUnknown(),
+}).noUnknown();
+
+const checkDistrictReportTypeAvailabilitySchema = object({
+  params: object({
+    sessionID:      uuidGeneric().required(),
+    reportTypeCode: string().required(),
+  }).noUnknown(),
+  query: object().noUnknown(),
+  body:  object().noUnknown(),
+}).noUnknown();
+
 const checkStudentReportAvailabilitySchema = object({
   params: object({
     studentID:      uuidGeneric().required(),
@@ -145,5 +164,7 @@ module.exports = {
   checkSchoolReportAvailabilitySchema,
   checkXamFileAvailabilitySchema,
   checkSchoolReportTypeAvailabilitySchema,
+  checkDistrictReportAvailabilitySchema,
+  checkDistrictReportTypeAvailabilitySchema,
   checkStudentReportAvailabilitySchema,
 };
