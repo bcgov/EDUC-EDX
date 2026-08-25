@@ -754,8 +754,8 @@ export default {
     },
     onDistrictSessionChange(selectedDistrictSessionID) {
       this.selectedDistrictAssessments.splice(0);
-      const sessionObj = this.schoolYearSessions.filter(session => session.sessionID === selectedDistrictSessionID);
-      sessionObj[0]?.assessments.forEach(assessment => this.selectedDistrictAssessments.push(assessment));
+      const sessionObj = this.schoolYearSessions.find(session => session.sessionID === selectedDistrictSessionID);
+      sessionObj?.assessments.forEach(assessment => this.selectedDistrictAssessments.push(assessment));
       this.checkDistrictReportAvailability();
     },
     async checkDistrictReportAvailability() {
