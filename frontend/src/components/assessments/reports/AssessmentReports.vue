@@ -766,20 +766,26 @@ export default {
       }
       this.districtAvailabilityLoading = true;
       const baseUrl = `${ApiRoutes.assessments.BASE_REPORTS_URL}/district/${this.selectedDistrictSessionID}/district`;
+      const detailedDoarFieldByAssessmentTypeCode = {
+        NME10: 'nmeDetailedDoar',
+        NMF10: 'nmfDetailedDoar',
+        LTE10: 'lte10DetailedDoar',
+        LTE12: 'lte12DetailedDoar',
+        LTP10: 'ltp10DetailedDoar',
+        LTP12: 'ltp12DetailedDoar',
+        LTF12: 'ltf12DetailedDoar',
+      };
       try {
-        const doarResp = await ApiService.apiAxios.get(`${baseUrl}/doar-summary/available`);
-        this.districtDoarSummaryAvailable = doarResp.data;
+        const { data: availability } = await ApiService.apiAxios.get(`${baseUrl}/availability`);
+        this.districtDoarSummaryAvailable = availability.doarSummaryAvailable;
         const doarAvailability = {};
-        await Promise.all(
-          this.orderedDistrictAssessments.map(async (assessment) => {
-            const code = assessment?.assessmentTypeCode;
-            if (!code) return;
-            const reportType = this.getReportName(code);
-            if (!reportType) return;
-            const { data } = await ApiService.apiAxios.get(`${baseUrl}/${reportType}/available`);
-            doarAvailability[code] = data;
-          })
-        );
+        this.orderedDistrictAssessments.forEach((assessment) => {
+          const code = assessment?.assessmentTypeCode;
+          const field = detailedDoarFieldByAssessmentTypeCode[code];
+          if (code && field) {
+            doarAvailability[code] = availability[field];
+          }
+        });
         this.districtAssessmentDoarAvailability = doarAvailability;
       } catch (error) {
         console.error('Error checking district DOAR report availability', error);
@@ -798,7 +804,7 @@ export default {
           this.setFailureAlert('Results are not available for the selected session.');
           return;
         }
-        window.open(`${baseUrl}/doar-summary/download`, '_blank');
+        window.open(`${baseUrl}/doar-summary/stream`, '_blank');
       } catch (error) {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve your district\'s report.');
@@ -818,7 +824,7 @@ export default {
           this.setFailureAlert('Results are not available for the selected session.');
           return;
         }
-        window.open(`${baseUrl}/${reportType}/download`, '_blank');
+        window.open(`${baseUrl}/${reportType}/stream`, '_blank');
       } catch (error) {
         console.error(error);
         this.setFailureAlert('An error occurred while trying to retrieve your district\'s report.');
