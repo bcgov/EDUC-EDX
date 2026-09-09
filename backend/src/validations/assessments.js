@@ -1,6 +1,7 @@
 const { object, string, boolean, number, array } = require('yup');
 const { baseRequestSchema } = require('./base');
 const { uuidGeneric } = require('./custom-validations');
+const { ASSESSMENTS_REPORT_TYPE_CODE_MAP } = require('../util/constants');
 
 
 const putStudentAssessmentSchema = object({
@@ -100,63 +101,59 @@ const postAssessmentStudentSchema = object({
   }).noUnknown(),
 }).noUnknown();
 
-const checkSchoolReportAvailabilitySchema = object({
-  params: object({
-    sessionID: uuidGeneric().required(),
-    schoolID: uuidGeneric().required(),
-  }).noUnknown(),
-  query: object({
-    assessmentTypeCode: string().optional(),
-  }).noUnknown(),
+const sessionIDParams = () => object({
+  sessionID: uuidGeneric().required(),
+}).noUnknown();
+
+const sessionAndSchoolIDParams = () => object({
+  sessionID: uuidGeneric().required(),
+  schoolID:  uuidGeneric().required(),
+}).noUnknown();
+
+const reportRequestSchema = (params, query = object().noUnknown()) => object({
+  params,
+  query,
   body: object().noUnknown(),
 }).noUnknown();
 
-const checkXamFileAvailabilitySchema = object({
-  params: object({
-    sessionID: uuidGeneric().required(),
-    schoolID:  uuidGeneric().required(),
-  }).noUnknown(),
-  query: object().noUnknown(),
-  body:  object().noUnknown(),
-}).noUnknown();
+const checkSchoolReportAvailabilitySchema = reportRequestSchema(
+  sessionAndSchoolIDParams(),
+  object({ assessmentTypeCode: string().optional() }).noUnknown()
+);
 
-const checkSchoolReportTypeAvailabilitySchema = object({
-  params: object({
+const checkXamFileAvailabilitySchema = reportRequestSchema(sessionAndSchoolIDParams());
+
+const checkSchoolReportTypeAvailabilitySchema = reportRequestSchema(
+  object({
     sessionID:      uuidGeneric().required(),
     schoolID:       uuidGeneric().required(),
     reportTypeCode: string().required(),
   }).noUnknown(),
-  query: object().noUnknown(),
-  body:  object().noUnknown(),
-}).noUnknown();
+  object({ sessionCode: string().optional() }).noUnknown()
+);
 
-const checkDistrictReportAvailabilitySchema = object({
-  params: object({
-    sessionID: uuidGeneric().required(),
-  }).noUnknown(),
-  query: object({
-    assessmentTypeCode: string().optional(),
-  }).noUnknown(),
-  body: object().noUnknown(),
-}).noUnknown();
+const checkDistrictReportAvailabilitySchema = reportRequestSchema(
+  sessionIDParams(),
+  object({ assessmentTypeCode: string().optional() }).noUnknown()
+);
 
-const checkDistrictReportTypeAvailabilitySchema = object({
-  params: object({
+const checkDistrictReportTypeAvailabilitySchema = reportRequestSchema(
+  object({
     sessionID:      uuidGeneric().required(),
-    reportTypeCode: string().required(),
-  }).noUnknown(),
-  query: object().noUnknown(),
-  body:  object().noUnknown(),
-}).noUnknown();
+    reportTypeCode: string().oneOf([...ASSESSMENTS_REPORT_TYPE_CODE_MAP.keys()]).required(),
+  }).noUnknown()
+);
 
-const checkStudentReportAvailabilitySchema = object({
-  params: object({
+const getDistrictReportAvailabilitySchema = reportRequestSchema(sessionIDParams());
+
+const getDistrictSchoolsWithResultsSchema = reportRequestSchema(sessionIDParams());
+
+const checkStudentReportAvailabilitySchema = reportRequestSchema(
+  object({
     studentID:      uuidGeneric().required(),
     reportTypeCode: string().required(),
-  }).noUnknown(),
-  query: object().noUnknown(),
-  body:  object().noUnknown(),
-}).noUnknown();
+  }).noUnknown()
+);
 
 module.exports = {
   putStudentAssessmentSchema,
@@ -167,4 +164,6 @@ module.exports = {
   checkDistrictReportAvailabilitySchema,
   checkDistrictReportTypeAvailabilitySchema,
   checkStudentReportAvailabilitySchema,
+  getDistrictReportAvailabilitySchema,
+  getDistrictSchoolsWithResultsSchema,
 };

@@ -50,6 +50,8 @@ const {
   checkSchoolReportTypeAvailabilitySchema,
   checkStudentReportAvailabilitySchema,
   checkXamFileAvailabilitySchema,
+  getDistrictReportAvailabilitySchema,
+  getDistrictSchoolsWithResultsSchema,
   postAssessmentStudentSchema,
   putStudentAssessmentSchema
 } = require('../validations/assessments');
@@ -78,10 +80,10 @@ router.get('/reports/district/assessment-completions/current-students/download',
 router.get('/assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken,  getAssessmentSpecialCases);
 router.get('/grad-assessment-specialcase-types', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, getGradAssessmentSpecialCases);
 
-router.get('/reports/district/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
-router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
-router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
-router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
+router.get('/reports/district/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkXamFileAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
+router.get('/reports/school/:sessionID/school/:schoolID/xam/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkXamFileAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadXamFile);
+router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
+router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, downloadAssessmentReport);
 router.get('/reports/student/:studentID/:reportTypeCode/download', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentStudentReport);
 router.get('/reports/district/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
 router.get('/reports/school/:sessionID/school/:schoolID/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportAvailability);
@@ -92,9 +94,9 @@ router.get('/reports/district/:sessionID/school/:schoolID/:reportTypeCode/availa
 router.get('/reports/school/:sessionID/school/:schoolID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), validate(checkSchoolReportTypeAvailabilitySchema), findSchoolID_params, checkEDXUserAccessToRequestedInstitute, checkSchoolReportTypeAvailability);
 router.get('/reports/student/:studentID/:reportTypeCode/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, validate(checkStudentReportAvailabilitySchema), checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), checkStudentReportAvailability);
 
-router.get('/reports/district/:sessionID/schools-with-results', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getDistrictSchoolsWithResults);
+router.get('/reports/district/:sessionID/schools-with-results', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(getDistrictSchoolsWithResultsSchema), getDistrictSchoolsWithResults);
 
-router.get('/reports/district/:sessionID/district/availability', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), getDistrictReportAvailability);
+router.get('/reports/district/:sessionID/district/availability', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(getDistrictReportAvailabilitySchema), getDistrictReportAvailability);
 router.get('/reports/district/:sessionID/district/:reportTypeCode/stream', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkDistrictReportTypeAvailabilitySchema), streamDistrictAssessmentReport);
 router.get('/reports/district/:sessionID/district/results/available', auth.refreshJWT, isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), validate(checkDistrictReportAvailabilitySchema), checkDistrictReportAvailability);
 
