@@ -395,41 +395,6 @@ async function downloadAssessmentStudentReport(req, res) {
   }
 }
 
-async function downloadDistrictAssessmentReport(req, res) {
-  try {
-    const reportType = ASSESSMENTS_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
-    if (!reportType) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'Invalid report type provided'
-      });
-    }
-
-    const districtID = req.session.activeInstituteIdentifier;
-    if (!districtID) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'User activeInstituteIdentifier does not exist in session.'
-      });
-    }
-
-    let districtNumber = cacheService.getDistrictJSONByDistrictID(districtID)?.districtNumber;
-    let url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/${reportType}/download`;
-
-    const resData = await getData(url);
-    let session = req.query.sessionCode;
-    const fileDetails = getFileDetails(reportType, districtNumber, session);
-
-    setResponseHeaders(res, fileDetails);
-    const buffer = Buffer.from(resData.documentData, 'base64');
-    return res.status(HttpStatus.OK).send(buffer);
-  } catch (e) {
-    log.error('downloadDistrictAssessmentReport Error', e.stack);
-    if (e.status === 428) {
-      return res.status(HttpStatus.PRECONDITION_REQUIRED).json('Results are not available for the selected session.');
-    }
-    return handleExceptionResponse(e, res);
-  }
-}
-
 async function checkSchoolReportAvailability(req, res) {
   try {
     const params = { params: {} };
@@ -482,6 +447,57 @@ async function checkStudentReportAvailability(req, res) {
   }
 }
 
+async function getDistrictReportAvailability(req, res) {
+  try {
+    const districtID = req.session.activeInstituteIdentifier;
+    if (!districtID) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'User activeInstituteIdentifier does not exist in session.'
+      });
+    }
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/availability`;
+    const data = await getData(url);
+    return res.status(HttpStatus.OK).json(data);
+  } catch (e) {
+    logApiError(e, 'getDistrictReportAvailability', 'Error occurred while attempting to GET district report availability.');
+    return handleExceptionResponse(e, res);
+  }
+}
+
+async function streamDistrictAssessmentReport(req, res) {
+  try {
+    const reportType = ASSESSMENTS_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
+    if (!reportType) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Invalid report type provided'
+      });
+    }
+
+    const districtID = req.session.activeInstituteIdentifier;
+    if (!districtID) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'User activeInstituteIdentifier does not exist in session.'
+      });
+    }
+
+    let districtNumber = cacheService.getDistrictJSONByDistrictID(districtID)?.districtNumber;
+    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/${reportType}/stream`;
+
+    await streamCsvDownload(req, res, {
+      url,
+      fallbackFilename: `${districtNumber || 'District'}-${reportType}.pdf`,
+      streamErrorLogMessage: 'Error streaming district assessment report',
+      responseErrorLogMessage: 'Error writing district assessment report to client response:',
+    });
+  } catch (e) {
+    logApiError(e, 'streamDistrictAssessmentReport', 'Error occurred while attempting to stream the district assessment report.');
+    if (!res.headersSent) {
+      return handleExceptionResponse(e, res);
+    }
+    res.destroy(e);
+  }
+}
+
 async function checkDistrictReportAvailability(req, res) {
   try {
     const districtID = req.session.activeInstituteIdentifier;
@@ -496,26 +512,6 @@ async function checkDistrictReportAvailability(req, res) {
     }
     const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/results/available`;
     const data = await getDataWithParams(url, params);
-    return res.status(HttpStatus.OK).json(data);
-  } catch (e) {
-    return handleExceptionResponse(e, res);
-  }
-}
-
-async function checkDistrictReportTypeAvailability(req, res) {
-  try {
-    const reportType = ASSESSMENTS_REPORT_TYPE_CODE_MAP.get(req.params.reportTypeCode);
-    if (!reportType) {
-      return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid report type provided' });
-    }
-    const districtID = req.session.activeInstituteIdentifier;
-    if (!districtID) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'User activeInstituteIdentifier does not exist in session.'
-      });
-    }
-    const url = `${config.get('assessments:rootURL')}/report/${req.params.sessionID}/district/${districtID}/${reportType}/available`;
-    const data = await getData(url);
     return res.status(HttpStatus.OK).json(data);
   } catch (e) {
     return handleExceptionResponse(e, res);
@@ -634,13 +630,13 @@ module.exports = {
   downloadAssessmentCompletionCurrentStudentsCsv,
   downloadXamFile,
   downloadAssessmentReport,
-  downloadDistrictAssessmentReport,
   downloadAssessmentStudentReport,
   checkSchoolReportAvailability,
   checkXamFileAvailability,
   checkSchoolReportTypeAvailability,
   checkDistrictReportAvailability,
-  checkDistrictReportTypeAvailability,
   checkStudentReportAvailability,
+  getDistrictReportAvailability,
   getDistrictSchoolsWithResults,
+  streamDistrictAssessmentReport,
 };
