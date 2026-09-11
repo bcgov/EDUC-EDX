@@ -1,5 +1,5 @@
 'use strict';
-const {getData, getSessionUser, getDataWithParams} = require('./utils');
+const {getData, getSessionUser, getDataWithParams, putData, getCreateOrUpdateUserValue, handleExceptionResponse} = require('./utils');
 const config = require('../config');
 const {ServiceError} = require('./error');
 const HttpStatus = require('http-status-codes');
@@ -59,6 +59,8 @@ async function getUserInfo(req, res) {
   if(userInfo._json.idir_guid){
     let resData = {
       displayName: userInfo._json.name.trim(),
+      firstName: userInfo._json.given_name,
+      lastName: userInfo._json.family_name,
       accountType: 'IDIR',
       userSchoolIDs: req.session.userSchoolIDs,
       userDistrictIDs:req.session.userDistrictIDs,
@@ -76,6 +78,8 @@ async function getUserInfo(req, res) {
   if (req.session.digitalIdentityData && isDistrictOrSchoolAlreadyInUserSession(req) && req.session.edxUserData) {
     let resData = {
       displayName: `${req.session.edxUserData?.firstName} ${req.session.edxUserData?.lastName}`.trim(),
+      firstName: req.session.edxUserData?.firstName,
+      lastName: req.session.edxUserData?.lastName,
       accountType: userInfo._json.accountType,
       userSchoolIDs: req.session.userSchoolIDs,
       userDistrictIDs:req.session.userDistrictIDs,
@@ -121,6 +125,8 @@ async function getUserInfo(req, res) {
     let resData = {
       //edx user name may not exist yet in case of relink or activation. If so, fallback to BCeid displayName
       displayName: req.session.edxUserData?.firstName && req.session.edxUserData?.lastName ? `${req.session.edxUserData.firstName} ${req.session.edxUserData.lastName}` : userInfo._json.displayName,
+      firstName: req.session.edxUserData?.firstName,
+      lastName: req.session.edxUserData?.lastName,
       accountType: userInfo._json.accountType,
       userSchoolIDs: req.session.userSchoolIDs,
       userDistrictIDs: req.session.userDistrictIDs,
@@ -151,6 +157,40 @@ async function getDigitalIdData(digitalID, correlationID) {
   }
 }
 
+async function updateUserName(req, res) {
+  const sessionEdxUserData = req.session?.edxUserData;
+  console.log(sessionEdxUserData);
+  if (!sessionEdxUserData?.edxUserID || !sessionEdxUserData?.digitalIdentityID) {
+    return res.status(HttpStatus.FORBIDDEN).json({
+      status: HttpStatus.FORBIDDEN,
+      message: 'You do not have permission to update this user name'
+    });
+  }
+  try {
+    const payload = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      digitalIdentityID: sessionEdxUserData.digitalIdentityID,
+      updateUser: getCreateOrUpdateUserValue(req)
+    };
+    const result = await putData(payload, `${config.get('edx:edxUsersURL')}/${sessionEdxUserData.edxUserID}`, req.session?.correlationID);
+    //update the session and the display name cache so the new name is reflected immediately.
+    req.session.edxUserData.firstName = result.firstName;
+    req.session.edxUserData.lastName = result.lastName;
+    cacheService.updateEdxUser(sessionEdxUserData.edxUserID, result.firstName, result.lastName);
+    return res.status(HttpStatus.OK).json(result);
+  } catch (e) {
+    log.error('updateUserName', 'Error occurred while attempting to update user name.', e);
+    if (e.status === 403) {
+      return res.status(HttpStatus.FORBIDDEN).json({
+        status: HttpStatus.FORBIDDEN,
+        message: 'You do not have permission to update this user name'
+      });
+    }
+    return handleExceptionResponse(e, res);
+  }
+}
+
 
 async function getServerSideCodes(correlationID) {
   if (!codes) {
@@ -170,5 +210,6 @@ async function getServerSideCodes(correlationID) {
 
 module.exports = {
   getUserInfo,
-  getEdxUserByDigitalId
+  getEdxUserByDigitalId,
+  updateUserName
 };

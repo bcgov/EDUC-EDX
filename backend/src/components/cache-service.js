@@ -335,6 +335,14 @@ const cacheService = {
   getEdxUserByID(edxUserID) {
     return edxUsers.get(edxUserID);
   },
+  updateEdxUser(edxUserID, firstName, lastName) {
+    edxUsers.set(edxUserID, {
+      'edxUserID': edxUserID,
+      'firstName': firstName,
+      'lastName': lastName,
+      'displayName': `${firstName} ${lastName}`.trim()
+    });
+  },
   async loadAllIdirUsersToMap() {
     log.debug('Loading all IDIR Users to cache.');
     await retry(async () => {
