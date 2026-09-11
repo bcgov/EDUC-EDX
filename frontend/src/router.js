@@ -45,7 +45,7 @@ import DoarSummary from './components/assessments/static/DoarSummary.vue';
 import YukonReports from './components/graduation/district/yukon/YukonReports.vue';
 import ProfilePage from './components/profile/ProfilePage.vue';
 
-const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER, PAGE_TITLES.PROFILE];
+const excludeInstituteNameFromPageTitleList=new Set([PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER, PAGE_TITLES.PROFILE]);
 const router = createRouter({
   history: createWebHistory(),
   base: import.meta.env.BASE_URL,
@@ -502,7 +502,7 @@ router.beforeEach((to, _from, next) => {
           } else if (to?.meta?.mustBeDistrict && aStore.userInfo.activeInstituteType !== 'DISTRICT') {
             next('/unauthorized');
           } else if (to?.meta) {
-            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
+            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.has(to.meta.pageTitle)) {
               apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle + ' (' + aStore.userInfo.activeInstituteCode + ')');
             } else {
               apStore.setPageTitle(to.meta.pageTitle);
