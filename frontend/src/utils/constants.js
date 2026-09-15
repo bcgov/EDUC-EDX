@@ -36,6 +36,7 @@ object = {
   TOKEN: authRoot + '/token',
   SESSION_REMAINING_TIME: authRoot + '/user-session-remaining-time',
   INSTITUTE_SELECTION: '/institute-selection',
+  PROFILE: '/profile',
 };
 //Authentication endpoints
 export const AuthRoutes = Object.freeze(object);
@@ -167,6 +168,7 @@ export const PAGE_TITLES = Object.freeze({
   ALL_DISTRICT_SCHOOL_USERS: 'All School Users',
   SELECTION:'Institute Selection',
   LOGIN:'Login',
+  PROFILE:'Your Profile',
   DOAR_SUMMARY:'Distribution of Assessment Results (DOAR) Summary - Report Description',
   STAFF_LOGIN:'Staff Login',
   NEW_USER_INVITE:'New User',

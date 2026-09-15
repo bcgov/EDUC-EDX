@@ -43,8 +43,9 @@ import GraduationDistrictTabs from './components/graduation/district/GraduationD
 import ChallengeReports from './components/challengeReports/ChallengeReports.vue';
 import DoarSummary from './components/assessments/static/DoarSummary.vue';
 import YukonReports from './components/graduation/district/yukon/YukonReports.vue';
+import ProfilePage from './components/profile/ProfilePage.vue';
 
-const excludeInstituteNameFromPageTitleList=[PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER];
+const excludeInstituteNameFromPageTitleList=new Set([PAGE_TITLES.SELECTION, PAGE_TITLES.ACTIVATE_USER, PAGE_TITLES.PROFILE]);
 const router = createRouter({
   history: createWebHistory(),
   base: import.meta.env.BASE_URL,
@@ -231,6 +232,15 @@ const router = createRouter({
       path: '/',
       component: RouterView,
       children: [
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfilePage,
+          meta: {
+            pageTitle: PAGE_TITLES.PROFILE,
+            requiresAuth: true
+          }
+        },
         {
           path: 'inbox',
           name: 'inbox',
@@ -478,7 +488,7 @@ router.beforeEach((to, _from, next) => {
             });
           }
           if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions'))) {
-            if (to.fullPath === '/institute-selection') {
+            if (to.fullPath === '/institute-selection' || to.fullPath === '/profile') {
               next();
             } else {
               next('/institute-selection');
@@ -492,7 +502,7 @@ router.beforeEach((to, _from, next) => {
           } else if (to?.meta?.mustBeDistrict && aStore.userInfo.activeInstituteType !== 'DISTRICT') {
             next('/unauthorized');
           } else if (to?.meta) {
-            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.includes(to.meta.pageTitle)) {
+            if (aStore.userInfo.activeInstituteTitle && !excludeInstituteNameFromPageTitleList.has(to.meta.pageTitle)) {
               apStore.setPageTitle(to.meta.pageTitle + ' | ' + aStore.userInfo.activeInstituteTitle + ' (' + aStore.userInfo.activeInstituteCode + ')');
             } else {
               apStore.setPageTitle(to.meta.pageTitle);
