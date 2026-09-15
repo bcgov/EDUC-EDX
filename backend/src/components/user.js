@@ -159,8 +159,7 @@ async function getDigitalIdData(digitalID, correlationID) {
 
 async function updateUserName(req, res) {
   const sessionEdxUserData = req.session?.edxUserData;
-  console.log(sessionEdxUserData);
-  if (!sessionEdxUserData?.edxUserID || !sessionEdxUserData?.digitalIdentityID) {
+  if (!sessionEdxUserData?.edxUserID) {
     return res.status(HttpStatus.FORBIDDEN).json({
       status: HttpStatus.FORBIDDEN,
       message: 'You do not have permission to update this user name'
@@ -170,7 +169,6 @@ async function updateUserName(req, res) {
     const payload = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      digitalIdentityID: sessionEdxUserData.digitalIdentityID,
       updateUser: getCreateOrUpdateUserValue(req)
     };
     const result = await putData(payload, `${config.get('edx:edxUsersURL')}/${sessionEdxUserData.edxUserID}`, req.session?.correlationID);
