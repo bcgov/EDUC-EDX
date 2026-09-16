@@ -488,7 +488,7 @@ router.beforeEach((to, _from, next) => {
             });
           }
           if ((aStore.userInfo?.userSchoolIDs?.length > 0 || aStore.userInfo?.userDistrictIDs?.length > 0) && (!Object.prototype.hasOwnProperty.call(aStore.userInfo, 'activeInstitutePermissions'))) {
-            if (to.fullPath === '/institute-selection' || to.fullPath === '/profile') {
+            if (to.fullPath === '/institute-selection') {
               next();
             } else {
               next('/institute-selection');
