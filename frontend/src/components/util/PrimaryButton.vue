@@ -91,7 +91,7 @@ export default {
       type: Boolean,
       default: false
     },
-    title:{
+    title: {
       type: String,
       default: null
     }
