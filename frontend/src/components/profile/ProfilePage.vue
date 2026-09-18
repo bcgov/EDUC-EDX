@@ -128,7 +128,7 @@ export default {
         lastName: this.formData.lastName
       })
         .then(async () => {
-          this.setSuccessAlert('Success! Your profile has been updated. Some areas of the application may take up to 24 hours to reflect your new name.');
+          this.setSuccessAlert('Success! Your profile has been updated.');
           await authStore().getUserInfo();
           this.syncFormData();
         })
