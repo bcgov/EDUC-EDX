@@ -857,6 +857,7 @@
   
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
+import gradSubmissionMixin from '../../../../mixins/gradSubmissionMixin';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../../../utils/file';
@@ -864,7 +865,6 @@ import { mapState } from 'pinia';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {authStore} from '../../../../store/modules/auth';
 import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
-import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import {LocalDateTime} from '@js-joda/core';
@@ -879,7 +879,7 @@ export default {
     ConfirmationDialog,
     PreviewStudentsDialog
   },
-  mixins: [alertMixin],
+  mixins: [alertMixin, gradSubmissionMixin],
   props: {
     schoolID: {
       type: String,
@@ -894,9 +894,6 @@ export default {
   emits: [],
   data() {
     return {
-      selectedReportingYear: 'Current Year',
-      previousReportingPeriod: null,
-      isChangingReportingYear: false,
       summerPeriodStart: '',
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
       acceptableXLSFileExtensions: ['.xlsx', '.csv'],
@@ -985,8 +982,8 @@ export default {
     };
   },
   computed: {
-    selectedReportingPeriod() {
-      return this.selectedReportingYear === 'Previous Year' ? this.previousReportingPeriod : this.collectionObject;
+    submissionFilesetUrl() {
+      return `${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`;
     },
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeSchoolsMap']),
@@ -1032,31 +1029,6 @@ export default {
     this.clearAllIntervals();
   },
   methods: {
-    async changeReportingYear() {
-      this.clearAllIntervals();
-      this.isChangingReportingYear = true;
-      try {
-        if (this.selectedReportingYear === 'Previous Year' && !this.previousReportingPeriod) {
-          const response = await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/previous-reporting-period`);
-          if (!response.data?.reportingPeriodID) {
-            throw new Error('Previous reporting period is unavailable.');
-          }
-          this.previousReportingPeriod = response.data;
-        }
-      } catch (error) {
-        console.error(error);
-        this.selectedReportingYear = 'Current Year';
-        this.setFailureAlert('Unable to retrieve the previous reporting year. Please try again later.');
-      }
-      this.pageNumber = 1;
-      this.pageNumberFinal = 1;
-      this.filesetList = [];
-      this.finalFilesetList = [];
-      this.totalElements = 0;
-      this.totalElementsFinal = 0;
-      await Promise.all([this.getFilesetPaginated(), this.getFinalFilesetPaginated()]);
-      this.isChangingReportingYear = false;
-    },
     clearAllIntervals() {
       clearInterval(this.interval);
       clearInterval(this.intervalFinal);
@@ -1335,61 +1307,6 @@ export default {
           fileJSON.status = this.fileUploadError;
         }
       } 
-    },
-    async getFilesetPaginated() {
-      const reportingPeriod = this.selectedReportingPeriod;
-      if (!reportingPeriod?.reportingPeriodID) return;
-      this.isLoading= true;
-      this.filterSearchParams.collectionObject = reportingPeriod;
-      return ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
-        params: {
-          pageNumber: this.pageNumber - 1,
-          pageSize: this.pageSize,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
-          sort: {
-            updateDate: 'DESC'
-          },
-        }
-      }).then(response => {
-        if (reportingPeriod !== this.selectedReportingPeriod) return;
-        this.filesetList = response.data.content;
-        this.totalElements = response.data.totalElements;
-        this.clearAllIntervals();
-        if (this.selectedReportingYear === 'Current Year') this.startPollingStatus();
-      }).catch(error => {
-        if (reportingPeriod !== this.selectedReportingPeriod) return;
-        this.clearAllIntervals();
-        console.error(error);
-        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
-      }).finally(() => {
-        if (reportingPeriod === this.selectedReportingPeriod) this.isLoading = false;
-      });
-    },
-    async getFinalFilesetPaginated() {
-      const reportingPeriod = this.selectedReportingPeriod;
-      if (!reportingPeriod?.reportingPeriodID) return;
-      this.isLoading= true;
-      this.filterSearchParams.collectionObject = reportingPeriod;
-      return ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated/final`, {
-        params: {
-          pageNumber: this.pageNumberFinal - 1,
-          pageSize: this.pageSizeFinal,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
-          sort: {
-            updateDate: 'DESC'
-          },
-        }
-      }).then(response => {
-        if (reportingPeriod !== this.selectedReportingPeriod) return;
-        this.finalFilesetList = response.data.content;
-        this.totalElementsFinal = response.data.totalElements;
-      }).catch(error => {
-        if (reportingPeriod !== this.selectedReportingPeriod) return;
-        console.error(error);
-        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
-      }).finally(() => {
-        if (reportingPeriod === this.selectedReportingPeriod) this.isLoading = false;
-      });
     },
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
