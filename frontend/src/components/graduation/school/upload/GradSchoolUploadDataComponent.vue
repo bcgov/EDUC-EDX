@@ -432,6 +432,23 @@
           </span>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          sm="4"
+        >
+          <v-select
+            id="submission-reporting-year"
+            v-model="selectedReportingYear"
+            label="Reporting Year"
+            :items="['Current Year', 'Previous Year']"
+            :disabled="isChangingReportingYear"
+            :loading="isChangingReportingYear"
+            variant="underlined"
+            @update:model-value="changeReportingYear"
+          />
+        </v-col>
+      </v-row>
       <v-row
         v-if="totalElements > 0"
         class="mt-5 mb-0"
@@ -840,6 +857,7 @@
   
 <script>
 import alertMixin from '../../../../mixins/alertMixin';
+import gradSubmissionMixin from '../../../../mixins/gradSubmissionMixin';
 import ApiService from '../../../../common/apiService';
 import {ApiRoutes} from '../../../../utils/constants';
 import {getFileNameWithMaxNameLength} from '../../../../utils/file';
@@ -847,7 +865,6 @@ import { mapState } from 'pinia';
 import ConfirmationDialog from '../../../util/ConfirmationDialog.vue';
 import {authStore} from '../../../../store/modules/auth';
 import {FILE_UPLOAD_STATUS} from '../../../../utils/constants/FileUploadStatus';
-import {isEmpty, omitBy} from 'lodash';
 import {wsNotifications} from '../../../../store/modules/wsNotifications';
 import {appStore} from '../../../../store/modules/app';
 import {LocalDateTime} from '@js-joda/core';
@@ -862,7 +879,7 @@ export default {
     ConfirmationDialog,
     PreviewStudentsDialog
   },
-  mixins: [alertMixin],
+  mixins: [alertMixin, gradSubmissionMixin],
   props: {
     schoolID: {
       type: String,
@@ -965,6 +982,9 @@ export default {
     };
   },
   computed: {
+    submissionFilesetUrl() {
+      return `${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`;
+    },
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeSchoolsMap']),
     ...mapState(wsNotifications, ['notification']), 
@@ -1287,53 +1307,6 @@ export default {
           fileJSON.status = this.fileUploadError;
         }
       } 
-    },
-    async getFilesetPaginated() {
-      this.isLoading= true;
-      this.filterSearchParams.collectionObject = this.collectionObject;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated`, {
-        params: {
-          pageNumber: this.pageNumber - 1,
-          pageSize: this.pageSize,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
-          sort: {
-            updateDate: 'DESC'
-          },
-        }
-      }).then(response => {
-        this.filesetList = response.data.content;
-        this.totalElements = response.data.totalElements;
-        this.clearAllIntervals();
-        this.startPollingStatus();
-      }).catch(error => {
-        this.clearAllIntervals();
-        console.error(error);
-        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
-      }).finally(() => {
-        this.isLoading = false;
-      });
-    },
-    async getFinalFilesetPaginated() {
-      this.isLoading= true;
-      this.filterSearchParams.collectionObject = this.collectionObject;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/${this.$route.params.schoolID}/paginated/final`, {
-        params: {
-          pageNumber: this.pageNumberFinal - 1,
-          pageSize: this.pageSizeFinal,
-          searchParams: omitBy(this.filterSearchParams, isEmpty),
-          sort: {
-            updateDate: 'DESC'
-          },
-        }
-      }).then(response => {
-        this.finalFilesetList = response.data.content;
-        this.totalElementsFinal = response.data.totalElements;
-      }).catch(error => {
-        console.error(error);
-        this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
-      }).finally(() => {
-        this.isLoading = false;
-      });
     },
     hasRequiredPermission(permission){
       return (this.userInfo?.activeInstitutePermissions?.filter(perm => perm === permission).length > 0);
