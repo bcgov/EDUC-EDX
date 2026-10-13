@@ -333,6 +333,23 @@
     </v-row>
     <v-row>
       <v-col
+        cols="12"
+        sm="4"
+      >
+        <v-select
+          id="submission-reporting-year"
+          v-model="selectedReportingYear"
+          label="Reporting Year"
+          :items="['Current Year', 'Previous Year']"
+          :disabled="isChangingReportingYear"
+          :loading="isChangingReportingYear"
+          variant="underlined"
+          @update:model-value="changeReportingYear"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
         class="mt-n2"
         cols="4"
       >
@@ -796,6 +813,9 @@ export default {
   emits: [],
   data() {
     return {
+      selectedReportingYear: 'Current Year',
+      previousReportingPeriod: null,
+      isChangingReportingYear: false,
       acceptableFileExtensions: ['.xam', '.dem', '.crs'],
       acceptableXLSFileExtensions: ['.xlsx', '.csv'],
       requiredRules: [v => !!v || 'Required'],
@@ -891,6 +911,9 @@ export default {
     };
   },
   computed: {
+    selectedReportingPeriod() {
+      return this.selectedReportingYear === 'Previous Year' ? this.previousReportingPeriod : this.collectionObject;
+    },
     ...mapState(authStore, ['userInfo']),
     ...mapState(appStore, ['activeSchoolsMap', 'schoolsMap']),
     ...mapState(wsNotifications, ['notification']),
@@ -935,6 +958,31 @@ export default {
     clearInterval(this.intervalFinal);
   },
   methods: {
+    async changeReportingYear() {
+      this.clearAllIntervals();
+      this.isChangingReportingYear = true;
+      try {
+        if (this.selectedReportingYear === 'Previous Year' && !this.previousReportingPeriod) {
+          const response = await ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/previous-reporting-period`);
+          if (!response.data?.reportingPeriodID) {
+            throw new Error('Previous reporting period is unavailable.');
+          }
+          this.previousReportingPeriod = response.data;
+        }
+      } catch (error) {
+        console.error(error);
+        this.selectedReportingYear = 'Current Year';
+        this.setFailureAlert('Unable to retrieve the previous reporting year. Please try again later.');
+      }
+      this.pageNumber = 1;
+      this.pageNumberFinal = 1;
+      this.filesetList = [];
+      this.finalFilesetList = [];
+      this.totalElements = 0;
+      this.totalElementsFinal = 0;
+      await Promise.all([this.getFilesetPaginated(), this.getFinalFilesetPaginated()]);
+      this.isChangingReportingYear = false;
+    },
     openFileDialogAfterConfirm(){
       this.showUploadConfirmationDialog = false;
       this.handleFileImport();
@@ -1203,9 +1251,11 @@ export default {
       } 
     },
     async getFilesetPaginated() {
+      const reportingPeriod = this.selectedReportingPeriod;
+      if (!reportingPeriod?.reportingPeriodID) return;
       this.isLoading= true;
-      this.filterSearchParams.collectionObject = this.collectionObject;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
+      this.filterSearchParams.collectionObject = reportingPeriod;
+      return ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated`, {
         params: {
           pageNumber: this.pageNumber - 1,
           pageSize: this.pageSize,
@@ -1215,16 +1265,18 @@ export default {
           },
         }
       }).then(response => {
+        if (reportingPeriod !== this.selectedReportingPeriod) return;
         this.filesetList = response.data.content;
         this.totalElements = response.data.totalElements;
         this.clearAllIntervals();
-        this.startPollingStatus();
+        if (this.selectedReportingYear === 'Current Year') this.startPollingStatus();
       }).catch(error => {
+        if (reportingPeriod !== this.selectedReportingPeriod) return;
         this.clearAllIntervals();
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get fileset list. Please try again later.');
       }).finally(() => {
-        this.isLoading = false;
+        if (reportingPeriod === this.selectedReportingPeriod) this.isLoading = false;
       });
     },
     clearAllIntervals(){
@@ -1232,9 +1284,11 @@ export default {
       clearInterval(this.intervalFinal);
     },
     async getFinalFilesetPaginated() {
+      const reportingPeriod = this.selectedReportingPeriod;
+      if (!reportingPeriod?.reportingPeriodID) return;
       this.isLoading= true;
-      this.filterSearchParams.collectionObject = this.collectionObject;
-      ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated/final`, {
+      this.filterSearchParams.collectionObject = reportingPeriod;
+      return ApiService.apiAxios.get(`${ApiRoutes.gdc.BASE_URL}/fileset/district/${this.districtID}/paginated/final`, {
         params: {
           pageNumber: this.pageNumberFinal - 1,
           pageSize: this.pageSizeFinal,
@@ -1244,13 +1298,15 @@ export default {
           },
         }
       }).then(response => {
+        if (reportingPeriod !== this.selectedReportingPeriod) return;
         this.finalFilesetList = response.data.content;
         this.totalElementsFinal = response.data.totalElements;
       }).catch(error => {
+        if (reportingPeriod !== this.selectedReportingPeriod) return;
         console.error(error);
         this.setFailureAlert('An error occurred while trying to get final fileset list. Please try again later.');
       }).finally(() => {
-        this.isLoading = false;
+        if (reportingPeriod === this.selectedReportingPeriod) this.isLoading = false;
       });
     },
     hasRequiredPermission(permission){
