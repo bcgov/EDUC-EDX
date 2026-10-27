@@ -14,13 +14,13 @@ on:
       - 'fix/*'
       - 'Fix/*'
     paths: 
-      - 'backend/src/**'
-      - 'backend/tests/unit/**'
+      - 'backend/**'
+      - '.github/workflows/*'
   pull_request:
     branches: [ master ]
     paths: 
-      - 'backend/src/**'
-      - 'backend/tests/unit/**'
+      - 'backend/**'
+      - '.github/workflows/*'
 
 jobs:
   test:
@@ -30,9 +30,9 @@ jobs:
         working-directory: backend
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '22.x'
     - run: npm ci
     - run: npm run lint:fix
       env:
@@ -46,9 +46,9 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14.x'
+          node-version: '22.x'
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
