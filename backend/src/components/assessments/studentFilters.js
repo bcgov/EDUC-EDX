@@ -4,7 +4,7 @@ const cacheService = require('../cache-service');
 
 const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
 
-function createMoreFiltersSearchCriteria(searchFilter = [], activeInstituteType, activeInstituteIdentifier) {
+function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
   let searchCriteriaList = [];
 
   let writingSiteFilter = [];
@@ -39,17 +39,17 @@ function createMoreFiltersSearchCriteria(searchFilter = [], activeInstituteType,
     if (key === 'writingSite' && pValue) {
       if(pValue.toString() === 'anyWritingAtMySchool') {
         const searchWriteCriteria = [];
-        searchWriteCriteria.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
-        searchWriteCriteria.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        searchWriteCriteria.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        searchWriteCriteria.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
         writingSiteFilter = [...searchWriteCriteria];
       } else if(pValue.toString() === 'writingAtMySchool') {
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       } else if(pValue.toString() === 'writingAtAnotherSchool') {
-        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       } else if(pValue.toString() === 'nonSORStudents') {
-        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       }
     }
 
@@ -141,7 +141,12 @@ function createMoreFiltersSearchCriteria(searchFilter = [], activeInstituteType,
       searchCriteriaList: searchCriteriaList
     });
   }
-  // Scope comes from the session, never the client filters. Pushed last so it wraps every group above.
+  return search;
+}
+
+// Scope comes from the session, never the client filters. Pushed last so it wraps every filter group.
+function createAssessmentStudentSearchCriteria(searchFilter, activeInstituteType, activeInstituteIdentifier) {
+  const search = createMoreFiltersSearchCriteria(searchFilter, activeInstituteIdentifier);
   search.push(createInstituteScopeSearchCriteria(activeInstituteType, activeInstituteIdentifier));
   return search;
 }
@@ -200,5 +205,5 @@ function createAssessmentCenterNameNumberSearchCriteria(value) {
 
 
 module.exports = {
-  createMoreFiltersSearchCriteria
+  createAssessmentStudentSearchCriteria
 };

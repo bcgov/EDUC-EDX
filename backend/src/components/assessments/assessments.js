@@ -13,7 +13,7 @@ const {
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
-const {createMoreFiltersSearchCriteria} = require('./studentFilters');
+const {createAssessmentStudentSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {doesSchoolBelongToDistrict} = require('../institute-cache');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
@@ -92,7 +92,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
 
 async function getAssessmentStudentsPaginated(req, res) {
   try {
-    const search = createMoreFiltersSearchCriteria(req.query.searchParams?.['moreFilters'], req.session.activeInstituteType, req.session.activeInstituteIdentifier);
+    const search = createAssessmentStudentSearchCriteria(req.query.searchParams?.['moreFilters'], req.session.activeInstituteType, req.session.activeInstituteIdentifier);
     
     const params = {
       params: {
@@ -559,7 +559,7 @@ async function buildRegistrationExportSearch(req) {
       : [{ value: ['00000000-0000-0000-0000-000000000000'] }];
   }
 
-  return createMoreFiltersSearchCriteria(moreFilters, req.session.activeInstituteType, req.session.activeInstituteIdentifier);
+  return createAssessmentStudentSearchCriteria(moreFilters, req.session.activeInstituteType, req.session.activeInstituteIdentifier);
 }
 
 function getAssessmentSpecialCases(req, res) {
