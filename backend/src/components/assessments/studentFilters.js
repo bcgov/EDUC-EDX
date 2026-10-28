@@ -2,7 +2,9 @@
 const { FILTER_OPERATION, VALUE_TYPE, CONDITION} = require('../../util/constants');
 const cacheService = require('../cache-service');
 
-function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
+const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
+
+function createMoreFiltersSearchCriteria(searchFilter = [], activeInstituteType, activeInstituteIdentifier) {
   let searchCriteriaList = [];
 
   let writingSiteFilter = [];
@@ -37,17 +39,17 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
     if (key === 'writingSite' && pValue) {
       if(pValue.toString() === 'anyWritingAtMySchool') {
         const searchWriteCriteria = [];
-        searchWriteCriteria.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
-        searchWriteCriteria.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        searchWriteCriteria.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
+        searchWriteCriteria.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
         writingSiteFilter = [...searchWriteCriteria];
       } else if(pValue.toString() === 'writingAtMySchool') {
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       } else if(pValue.toString() === 'writingAtAnotherSchool') {
-        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       } else if(pValue.toString() === 'nonSORStudents') {
-        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: schoolID, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
-        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: schoolID, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'assessmentCenterSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
+        searchCriteriaList.push({ key: 'schoolOfRecordSchoolID', value: activeInstituteIdentifier, operation: FILTER_OPERATION.NOT_EQUAL, valueType: VALUE_TYPE.UUID, condition: CONDITION.AND });
       }
     }
 
@@ -65,19 +67,6 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
 
     if (key === 'localID' && pValue) {
       searchCriteriaList.push({ key: 'localID', value: pValue.toString(), operation: FILTER_OPERATION.EQUAL, valueType: VALUE_TYPE.STRING, condition: CONDITION.AND });
-    }
-
-    if (key === 'districtID' && pValue) {
-      let schools = cacheService.getAllPublicSchoolIDsForDistrictID(pValue[0]);
-      if (schools?.length > 0) {
-        const districtSchoolCriteria = [];
-        districtSchoolCriteria.push({ key: 'schoolOfRecordSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
-        districtSchoolCriteria.push({ key: 'assessmentCenterSchoolID', value: schools.join(','), operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR });
-        search.push({
-          condition: CONDITION.AND,
-          searchCriteriaList: districtSchoolCriteria
-        });
-      }
     }
 
     if (key === 'schoolID' && pValue) {
@@ -152,7 +141,33 @@ function createMoreFiltersSearchCriteria(searchFilter = [], schoolID) {
       searchCriteriaList: searchCriteriaList
     });
   }
+  // Scope comes from the session, never the client filters. Pushed last so it wraps every group above.
+  search.push(createInstituteScopeSearchCriteria(activeInstituteType, activeInstituteIdentifier));
   return search;
+}
+
+function createInstituteScopeSearchCriteria(activeInstituteType, activeInstituteIdentifier) {
+  if (!activeInstituteIdentifier) {
+    throw new Error('Active institute identifier is required to search assessment students.');
+  }
+  let schoolIDs;
+  if (activeInstituteType === 'SCHOOL') {
+    schoolIDs = [activeInstituteIdentifier];
+  } else if (activeInstituteType === 'DISTRICT') {
+    schoolIDs = cacheService.getAllPublicSchoolIDsForDistrictID(activeInstituteIdentifier);
+  } else {
+    throw new Error(`Unsupported institute type for assessment student search: ${activeInstituteType}`);
+  }
+  // pass an empty guid when a district has no schools. Ensures a valid IN clause that matches nothing
+  const schoolIDValues = schoolIDs.length > 0 ? schoolIDs.join(',') : EMPTY_GUID;
+
+  return {
+    condition: CONDITION.AND,
+    searchCriteriaList: [
+      { key: 'schoolOfRecordSchoolID', value: schoolIDValues, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR },
+      { key: 'assessmentCenterSchoolID', value: schoolIDValues, operation: FILTER_OPERATION.IN, valueType: VALUE_TYPE.UUID, condition: CONDITION.OR }
+    ]
+  };
 }
 
 function createSchoolNameNumberSearchCriteria(value) {
