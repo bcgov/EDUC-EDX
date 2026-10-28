@@ -452,7 +452,7 @@ export default {
         ];
       } else {
         this.filterSearchParams.moreFilters.writingSite = [
-          { title: 'Any Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
+          { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
         ];
       }
       this.pageNumber = 1;

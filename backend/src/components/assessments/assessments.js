@@ -13,7 +13,7 @@ const {
 const HttpStatus = require('http-status-codes');
 const config = require('../../config');
 const cacheService = require('../cache-service');
-const {createMoreFiltersSearchCriteria} = require('./studentFilters');
+const {createAssessmentStudentSearchCriteria} = require('./studentFilters');
 const moment = require('moment');
 const {doesSchoolBelongToDistrict} = require('../institute-cache');
 const {DateTimeFormatter, LocalDate, LocalDateTime} = require('@js-joda/core');
@@ -92,7 +92,7 @@ async function getAssessmentSessionsBySchoolYear(req, res) {
 
 async function getAssessmentStudentsPaginated(req, res) {
   try {
-    const search = req.query.searchParams?.['moreFilters'] ? createMoreFiltersSearchCriteria(req.query.searchParams['moreFilters'], req.session.activeInstituteIdentifier) : [];
+    const search = createAssessmentStudentSearchCriteria(req.query.searchParams?.['moreFilters'], req.session.activeInstituteType, req.session.activeInstituteIdentifier);
     
     const params = {
       params: {
@@ -545,7 +545,6 @@ function getSchoolName(school) {
 }
 
 async function buildRegistrationExportSearch(req) {
-  const schoolID = req.session.activeInstituteIdentifier;
   const sessions = await getData(`${config.get('assessments:assessmentSessionsURL')}`, req.session?.correlationID);
   const nonApprovedSessionIDs = sessions
     .filter(session => session?.completionDate === null)
@@ -553,11 +552,6 @@ async function buildRegistrationExportSearch(req) {
 
   const moreFilters = req.query.searchParams?.moreFilters ? cloneDeep(req.query.searchParams.moreFilters) : {};
 
-  if (!moreFilters.writingSite || moreFilters.writingSite.length === 0) {
-    moreFilters.writingSite = [
-      { title: 'My Students and Students Writing at My School', id: 'anyWritingAtMySchool', value: 'anyWritingAtMySchool' }
-    ];
-  }
   // pass an empty guid in the event that there are no approved sessions in search. Ensures a valid IN clause ~cd
   if ((!moreFilters.session || moreFilters.session.length === 0) && (!moreFilters.openSessions || moreFilters.openSessions.length === 0)) {
     moreFilters.openSessions = nonApprovedSessionIDs.length > 0
@@ -565,7 +559,7 @@ async function buildRegistrationExportSearch(req) {
       : [{ value: ['00000000-0000-0000-0000-000000000000'] }];
   }
 
-  return createMoreFiltersSearchCriteria(moreFilters, schoolID);
+  return createAssessmentStudentSearchCriteria(moreFilters, req.session.activeInstituteType, req.session.activeInstituteIdentifier);
 }
 
 function getAssessmentSpecialCases(req, res) {
