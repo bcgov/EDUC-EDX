@@ -478,6 +478,10 @@ export default {
     },
     clear() {
       this.selected = {};
+      // Writing site can't be cleared; reset it to the first option ("My Students and Students Writing at My School")
+      if (this.filters?.writingSite) {
+        this.selected.writingSite = [this.filters.writingSite.filterOptions[0]];
+      }
       this.schoolNameNumberFilter = null;
       this.assessmentCenterNameNumberFilter = null;
       this.givenName = null;
