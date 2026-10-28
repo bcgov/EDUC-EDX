@@ -192,6 +192,7 @@
             color="#003366"
             rounded="0"
             :multiple="filter?.multiple"
+            :mandatory="filter?.id === 'writingSite'"
             class="filter-toggle"
             @update:model-value="!isInitializing && filter?.id !== 'writingSite' ? setFilter(selected[key], key) : null"
           >
@@ -478,6 +479,11 @@ export default {
     },
     clear() {
       this.selected = {};
+      Object.entries(this.filters).forEach(([key, filter]) => {
+        if (filter?.id === 'writingSite') {
+          this.selected[key] = [filter.filterOptions.find(option => option.value === 'anyWritingAtMySchool')];
+        }
+      });
       this.schoolNameNumberFilter = null;
       this.assessmentCenterNameNumberFilter = null;
       this.givenName = null;
