@@ -131,8 +131,8 @@
 
 <script>
 import DownloadLink from '../../../common/DownloadLink.vue';
-import { mapState } from 'pinia';
-import { authStore } from '../../../../store/modules/auth';
+import {mapState} from 'pinia';
+import {authStore} from '../../../../store/modules/auth';
 import alertMixin from '../../../../mixins/alertMixin';
 import {ApiRoutes} from '../../../../utils/constants';
 import ApiService from '../../../../common/apiService';
@@ -167,8 +167,9 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth();
       let startingYear = null;
-      
-      if (currentMonth < 10) {
+
+      //month is 0 indexed. 9 is October
+      if (currentMonth < 9) {
         startingYear = currentYear - 1;
       } else {
         startingYear = currentYear;
