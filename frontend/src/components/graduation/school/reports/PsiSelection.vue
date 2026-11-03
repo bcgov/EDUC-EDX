@@ -168,8 +168,8 @@ export default {
       const currentMonth = currentDate.getMonth();
       let startingYear = null;
 
-      //month is 0 indexed. 9 is October
-      if (currentMonth < 9) {
+      //month is 0 indexed. 8 is September
+      if (currentMonth < 8) {
         startingYear = currentYear - 1;
       } else {
         startingYear = currentYear;
