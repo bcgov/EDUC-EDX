@@ -128,7 +128,6 @@
               variant="outlined"
               prepend-icon="mdi-download-outline"
               class="mr-1 mb-1"
-              v-if="userInfo.activeInstituteType === 'SCHOOL'"
               :disabled="totalElements <= 0"
               @click="downloadRegistrationsExport"
             />
@@ -429,7 +428,7 @@ export default {
     async downloadRegistrationsExport() {
       this.isLoading = true;
       try {
-        await downloadRegistrationExportCsv(this.filterSearchParams.moreFilters);
+        await downloadRegistrationExportCsv(this.userInfo.activeInstituteType, this.filterSearchParams.moreFilters);
       } finally {
         this.isLoading = false;
       }
