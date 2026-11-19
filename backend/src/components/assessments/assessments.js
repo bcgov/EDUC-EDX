@@ -123,7 +123,7 @@ async function getAssessmentStudentsPaginated(req, res) {
   }
 }
 
-async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
+async function downloadAssessmentRegistrationsCsv(req, res) {
   try {
     const search = await buildRegistrationExportSearch(req);
     const params = {
@@ -140,7 +140,7 @@ async function downloadSchoolAssessmentRegistrationsCsv(req, res) {
       responseErrorLogMessage: 'Error writing assessment registration report to client response:',
     });
   } catch (e) {
-    logApiError(e, 'downloadSchoolAssessmentRegistrationsCsv', 'Error occurred while attempting to download the school assessment registrations CSV.');
+    logApiError(e, 'downloadAssessmentRegistrationsCsv', 'Error occurred while attempting to download the assessment registrations CSV.');
     if (!res.headersSent) {
       return handleExceptionResponse(e, res);
     }
@@ -551,6 +551,9 @@ async function buildRegistrationExportSearch(req) {
     .map(session => session.sessionID);
 
   const moreFilters = req.query.searchParams?.moreFilters ? cloneDeep(req.query.searchParams.moreFilters) : {};
+  if (req.session.activeInstituteType === 'DISTRICT') {
+    delete moreFilters.writingSite;
+  }
 
   // pass an empty guid in the event that there are no approved sessions in search. Ensures a valid IN clause ~cd
   if ((!moreFilters.session || moreFilters.session.length === 0) && (!moreFilters.openSessions || moreFilters.openSessions.length === 0)) {
@@ -620,7 +623,7 @@ module.exports = {
   getAssessmentSpecialCases,
   getGradAssessmentSpecialCases,
   postAssessmentStudent,
-  downloadSchoolAssessmentRegistrationsCsv,
+  downloadAssessmentRegistrationsCsv,
   downloadAssessmentCompletionCurrentStudentsCsv,
   downloadXamFile,
   downloadAssessmentReport,

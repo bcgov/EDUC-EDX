@@ -10,7 +10,7 @@ const {
   downloadAssessmentCompletionCurrentStudentsCsv,
   downloadAssessmentReport,
   downloadAssessmentStudentReport,
-  downloadSchoolAssessmentRegistrationsCsv,
+  downloadAssessmentRegistrationsCsv,
   downloadXamFile,
   getActiveAssessmentSessions,
   getAssessmentSessions,
@@ -73,7 +73,8 @@ router.put('/assessment-registrations/district/students/:assessmentStudentID', p
 router.put('/assessment-registrations/school/students/:assessmentStudentID', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), validate(putStudentAssessmentSchema), findAssessmentStudentID_params, loadRequestedAssessmentStudent, checkCurrentUserAccessToRequestedAssessmentStudent, checkCurrentUserAccessToSchoolSpecifiedOnAssessmentStudent, updateAssessmentStudentByID);
 router.post('/assessment-registrations/district/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_EDIT), findAssessmentStudentIDs_body, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudents, removeAssessmentStudents);
 router.post('/assessment-registrations/school/students/remove', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_EDIT), findAssessmentStudentIDs_body, loadRequestedAssessmentStudents, checkCurrentUserAccessToRequestedAssessmentStudents, removeAssessmentStudents);
-router.get('/assessment-registrations/school/export', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadSchoolAssessmentRegistrationsCsv);
+router.get('/assessment-registrations/school/export', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentRegistrationsCsv);
+router.get('/assessment-registrations/district/export', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), downloadAssessmentRegistrationsCsv);
 router.get('/reports/school/assessment-completions/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_SCH_VIEW), downloadAssessmentCompletionCurrentStudentsCsv);
 router.get('/reports/district/assessment-completions/current-students/download', passport.authenticate('jwt', {session: false}, undefined), isValidBackendToken, validateAccessToken, checkEdxUserPermission(PERMISSION.EAS_DIS_VIEW), downloadAssessmentCompletionCurrentStudentsCsv);
 
